@@ -6,8 +6,14 @@ from django.views.generic.simple import direct_to_template
 from django.contrib.auth import logout, views as auth_views
 from django.shortcuts import redirect, render_to_response
 
+from django.conf import settings
+
+# staticfiles
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
 
 admin.autodiscover()
+
 urlpatterns = patterns("",
 	url(r"^admin/", include(admin.site.urls)),
 	(r"^site_media/(?P<path>.*)$", "django.views.static.serve", {"document_root": "./media/"}),
@@ -32,6 +38,7 @@ def page_not_found(request):
     return render_to_response('./templates/404.html')
 
 
+
 ## apps/indicator
 urlpatterns += patterns('',
     url(r'^indicator/', include('indicator.urls')),
@@ -43,4 +50,16 @@ urlpatterns += patterns('',
     url(r'^search/', include('haystack.urls')),
 )
 
+
+## test 'media' settings
+if settings.DEBUG:
+    urlpatterns += patterns('django.views.static',
+        # media
+        url(r'^media/(?P<path>.*)$',
+            'serve',
+            {'document_root': settings.MEDIA_ROOT}),
+    )
+
+## staticfiles
+urlpatterns += staticfiles_urlpatterns()
 

@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+{% load staticfiles %}
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>编辑历史数据</title>
+	<link rel="stylesheet" type="text/css" href="{% static "css/normalize.css" %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static "css/edit_history_data.css" %}"/>
+	<script type="text/javascript" src="{% static "javascripts/jquery-1.6.min.js" %}"></script>
+	<script type="text/javascript" src="{% static "javascripts/edit_history_data.js" %}"></script>
+</head>
+<body>
+	<div id="edit_history_data_container">
+		<div class="edit_history_data_title_line">
+			<div class="edit_history_data_title">乙肝病毒核算定量（PCR）</div>
+			<div class="edit_history_data_close"></div>
+		</div>
+		<div class="edit_history_data_content">
+			<div class="date_time">
+				<span>日期：2013-07-16</span>
+				<span class="time">时间：11:20</span>
+			</div>
+			<div class="refer_range">参考范围：100 x 10^4 拷贝 /mL</div>
+			<div class="edit_data">您的记录：<span class="data_fir">100</span> x 10^<span class="data_sec">4</span> 拷贝 /mL<input type="button" id="edit_btn" value="修改记录" /></div>
+			<div class="editing_data">
+				<div class="input_container">
+					<label>修改记录：</label>
+					<input class="edit_input_main" type="text" value="" autocomplete="off" /> x 10^
+					<input class="edit_input_sub" type="text" value="" autocomplete="off" />
+				</div>
+				<div class="add_minus_icon">
+					<div class="add_icon"></div>
+					<div class="minus_icon"></div>
+				</div>
+				 拷贝 /mL
+				 <input type="button" id="save_btn" value="保存新记录" />
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+{# vim: set ts=2 sw=2 tw=0 fenc=utf-8 ft=htmldjango.html: #}

@@ -1,0 +1,102 @@
+#edit_history_data_container {
+	width: 588px;
+	height: 164px;
+	background-color: #FFFFFF;
+	border: 1px solid #94C721;
+	padding: 0 20px 0 20px;
+}
+.edit_history_data_title_line {
+	height: 42px;
+	line-height: 42px;
+	border-bottom: 1px solid #D6D0D6;
+	width: 588px;
+}
+.edit_history_data_title_line .edit_history_data_title {
+	font-weight: bold;
+	color: #4A4A4A;
+	font-size: 18px;
+	float: left;
+}
+.edit_history_data_title_line .edit_history_data_close {
+	float: right;
+	background: url('../images/closed.png') no-repeat;
+	height: 11px;
+	width: 11px;
+	margin: 15px 0 0 0;
+	cursor: pointer;
+}
+.edit_history_data_content {
+	color: #4A4A4A;
+	font-size: 14px;
+}
+.edit_history_data_content .date_time {
+	height: 55px;
+	line-height: 55px;
+}
+.edit_history_data_content .date_time .time {
+	margin-left: 27px;
+}
+.edit_history_data_content .refer_range {
+	height: 38px;
+	line-height: 38px;
+	margin-top: -6px;
+}
+.edit_history_data_content .edit_data #edit_btn, .edit_history_data_content .editing_data #save_btn {
+	float: right;
+	height: 24px;
+	line-height: 22px;
+	padding: 1px 26px;
+}
+.edit_history_data_content .editing_data {
+	height: 25px;
+	display: none;
+}
+.edit_history_data_content .editing_data .input_container {
+	float: left;
+}
+.edit_history_data_content .editing_data .input_container label {
+	position: relative;
+	top: -1px;
+}
+.edit_history_data_content .editing_data .input_container input {
+	color: #5C5C5C;
+	background-color: #FFFFFF;
+	border: 1px solid #9C9C9C;
+}
+.edit_history_data_content .editing_data .input_container .error {
+	border: 1px solid red;
+}
+.edit_history_data_content .editing_data .input_container .edit_input_main {
+	width: 42px;
+	height: 17px;
+	line-height: 17px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.edit_history_data_content .editing_data .input_container .edit_input_sub {
+	width: 17px;
+	height: 17px;
+	line-height: 17px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.edit_history_data_content .editing_data .add_minus_icon {
+	float: left;
+	margin-right: 8px;
+}
+.edit_history_data_content .editing_data .add_minus_icon .add_icon {
+	background:url(../images/add.png) no-repeat;
+	width: 15px;
+	height: 11px;
+	border-right: 1px solid #9C9C9C;
+	cursor: pointer;
+}
+.edit_history_data_content .editing_data .add_minus_icon .minus_icon {
+	background:url(../images/minus.png) no-repeat;
+	width: 15px;
+	height: 10px;
+	border-bottom: 1px solid #9C9C9C;
+	border-right: 1px solid #9C9C9C;
+	margin-top: 1px;
+	cursor: pointer;
+}

@@ -1,0 +1,48 @@
+<html>
+<head>
+  <title>Indicator Details (id={{ object.id }})</title>
+</head>
+
+<body>
+  <h1>Indicator Details (id={{ object.id }})</h1>
+
+  <table>
+    <tr>
+      <td>name:</td>
+      <td>{{ object.name }}</td>
+    </tr>
+    <tr>
+      <td>pinyin:</td>
+      <td>{{ object.pinyin }}</td>
+    </tr>
+    <tr>
+      <td>englishName:</td>
+      <td>{{ object.englishName }}</td>
+    </tr>
+    <tr>
+      <td>description:</td>
+      <td>{{ object.description }}</td>
+    </tr>
+    <tr>
+      <td>helpText:</td>
+      <td>{{ object.helpText }}</td>
+    </tr>
+    <tr>
+      <td>addByUser_username:</td>
+      <td>{{ object.addByUser.username }}</td>
+    </tr>
+    <tr>
+      <td>categories_name:</td>
+      <td>
+        {% for c in object.categories.all %}
+          {{ c.name }};
+        {% endfor %}
+      </td>
+    </tr>
+    <tr>
+      <td>dataType:</td>
+      <td>{{ object.dataType }}</td>
+    </tr>
+  </table>
+</body>
+</html>

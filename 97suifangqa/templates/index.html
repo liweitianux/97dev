@@ -29,12 +29,14 @@
   <li class="done"><a href="{% url sciblog.views.blog_index %}">搜索首页</a></li>
   <li class="done"><a href="{% url list_blogs %}">文章列表</a></li>
   <li class="done"><a href="{% url blog_detail 1%}">文章详细信息显示</a></li>
-  <li class="todo"><a href="{% url login %}">登录页面</a></li>
-  <li class="todo"><a href="{% url logout %}">登出页面</a></li>
-  <li class="todo"><a href="{% url signup %}">注册界面</a></li>
+  <li class="done"><a href="{% url login %}">登录页面</a></li>
+  <li class="done"><a href="{% url logout %}">登出页面</a></li>
+  <li class="done"><a href="{% url signup %}">注册界面</a></li>
 </ul>
 	待完成页面:
 <ul>
+  <li class="todo"><a href="{% url follow_indicator %}">关注指标</a></li>
+  <li class="todo"><a href="{% url indicator_status %}">指标状态</a></li>
 </ul>
 </div>
 </body>

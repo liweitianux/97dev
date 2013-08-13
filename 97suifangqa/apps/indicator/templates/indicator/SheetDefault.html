@@ -1,0 +1,212 @@
+<!DOCTYPE HTML>
+{% load staticfiles %}
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=UTF-8">
+	<title>页面4</title>
+  <link rel="stylesheet" type="text/css" href="{% static "css/normalize.css" %}"/>
+  <link rel="stylesheet" type="text/css" href="{% static "plugins/datepicker/datepicker.css" %}"/>
+  <link rel="stylesheet" type="text/css" href="{% static "plugins/thickbox/thickbox.css" %}"/>
+  <link rel="stylesheet" type="text/css" href="{% static "css/sheet_default.css" %}"/>
+  <script type="text/javascript" src="{% static "javascripts/jquery-1.6.min.js" %}"></script>
+  <script type="text/javascript" src="{% static "plugins/datepicker/datepicker.js" %}"></script>
+  <script type="text/javascript" src="{% static "plugins/datepicker/language-zh-CN.js" %}"></script>
+  <script type="text/javascript" src="{% static "plugins/thickbox/thickbox.js" %}"></script>
+  <script type="text/javascript" src="{% static "plugins/highcharts/highcharts.js" %}"></script>
+  <script type="text/javascript" src="{% static "plugins/highcharts/highcharts-more.js" %}"></script>
+  <script type="text/javascript" src="{% static "javascripts/sheetdefault.js" %}"></script>
+  <script type="text/javascript" src="{% static "javascripts/load_card.js" %}"></script>
+</head>
+<body>
+  <!--
+	<iframe align="left" width="420" height="720" src="SideBar.html" style="position:fixed;left:0;top:0" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+  -->
+  <iframe align="left" width="420" height="720" src="{% url indicator_sidebar %}" style="position:fixed;left:0;top:0" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+	<div id="right_container">
+		<div id="index_status_container">
+			<div class="index_title">指标状态</div>
+			<!-- 这里需要后端读取cookie，来判断用户是否已经点击大叉。若否，则显示；若是，则隐藏 -->
+			<div class="index_sub_title">
+				<div class="content">以下可能是您感兴趣的指标，您可以点击卡片右上角“X”，取消关注。</div>
+				<div class="close_icon" id="index_title_closed_icon"></div>
+			</div>
+			
+			<!-- 左边的卡片加一个class "index_card_fir"， 右边的卡片加一个class "index_card_sec"  -->
+			<!-- 卡片div的id为 "index_card_卡片id"，方便后续操作 -->
+			<div class="index_card index_card_fir" id="index_card_1">
+				<div class="card_title">乙肝病毒核算定量 (PCR)1</div>
+				<div class="refer_range">
+					<span class="refer_text">参考范围</span>
+					<span>100 x 10^4 拷贝 /mL</span>
+				</div>
+				<div class="edit_data">
+					<div class="last_edit_data" style="display:none;"><span class="data_fir">0</span> x 10^<span class="data_sec">0</span> 拷贝 /mL</div>
+          <img src="{% static "images/pen.png" %}" class="small_edit_icon">
+          <img class="explain_icon" src="{% static "images/nodata.png" %}">
+				</div>
+				<div class="editing_data">
+					<div class="input_container">
+						<input class="edit_input_main" type="text" value="98" /> x 10^
+						<input class="edit_input_sub" type="text" value="4" />
+					</div>
+					<div class="add_minus_icon">
+						<div class="add_icon"></div>
+						<div class="minus_icon"></div>
+					</div>
+					 拷贝 /mL
+				 	<div class="confirm_edit_icon"></div>
+				 	<div class="cancel_edit_icon"></div>
+				</div>
+				<div class="edit_icon_container">
+					<div class="edit_icon"></div>
+					<div class="curve_icon"></div>
+					<div style="clear:both;"></div>
+				</div>
+				<div class="edit_text">点击右上角的按钮可以编辑数据</div>
+				<div class="card_bottom">
+				  <!--
+					<div class="understand_index"><a class="thickbox" href="popup/IndexDesc.html?TB_iframe=true&no1_title&transfer_params&height=351&width=630&card_id=1">了解该指标</a></div>
+          -->
+          <div class="understand_index"><a class="thickbox" href="{% url indicator_indexdesc %}?TB_iframe=true&no1_title&transfer_params&height=351&width=630&card_id=1">了解该指标</a></div>
+          <div class="simulation_sheet"><a href="{% static "images/demo_sheet.png" %}" class="thickbox">仿真化验单</a></div>
+					<div class="detail_history"><a href="javascript:void(0)">详细历史记录</a></div>
+					<div style="clear:both;"></div>
+				</div>
+				<!-- thickbox插件，方便父级页面与子级弹出层的MVC隔离，方便子级弹出层的复杂需求，如：搜索、分页… -->
+				<!-- height参数为弹出层页面高度+2，width参数为弹出层页面宽度+2，card_id参数为卡片id -->
+        <!--
+				<a class="card_delete_icon card_delete thickbox" href="popup/DeleteCardTip.html?TB_iframe=true&no1_title&transfer_params&height=166&width=630&card_id=1"></a>
+        -->
+        <a class="card_delete_icon card_delete thickbox" href="{% url indicator_deletecardtip %}?TB_iframe=true&no1_title&transfer_params&height=166&width=630&card_id=1"></a>
+			</div>
+			
+			<!-- 右边的卡片 -->
+			<div class="index_card index_card_sec" id="index_card_2">
+				<div class="card_title">乙肝病毒核算定量 (PCR)2</div>
+				<div class="refer_range">
+					<span class="refer_text">参考范围</span>
+					<span>100 x 10^4 拷贝 /mL</span>
+				</div>
+				<div class="edit_data">
+					<div class="last_edit_data" style="display:none;"><span class="data_fir">0</span> x 10^<span class="data_sec">0</span> 拷贝 /mL</div>
+          <img src="{% static "images/pen.png" %}" class="small_edit_icon">
+          <img class="explain_icon" src="{% static "images/nodata.png" %}">
+				</div>
+				<div class="editing_data">
+					<div class="input_container">
+						<input class="edit_input_main" type="text" value="98" /> x 10^
+						<input class="edit_input_sub" type="text" value="4" />
+					</div>
+					<div class="add_minus_icon">
+						<div class="add_icon"></div>
+						<div class="minus_icon"></div>
+					</div>
+					 拷贝 /mL
+				 	<div class="confirm_edit_icon"></div>
+				 	<div class="cancel_edit_icon"></div>
+				</div>
+				<div class="edit_icon_container">
+					<div class="edit_icon"></div>
+					<div class="curve_icon"></div>
+					<div style="clear:both;"></div>
+				</div>
+				<div class="edit_text">点击右上角的按钮可以编辑数据</div>
+				<div class="card_bottom">
+				  <!--
+					<div class="understand_index"><a class="thickbox" href="popup/IndexDesc.html?TB_iframe=true&no1_title&transfer_params&height=351&width=630&card_id=2">了解该指标</a></div>
+          -->
+          <div class="understand_index"><a class="thickbox" href="{% url indicator_indexdesc %}?TB_iframe=true&no1_title&transfer_params&height=351&width=630&card_id=2">了解该指标</a></div>
+          <div class="simulation_sheet"><a href="{% static "images/demo_sheet.png" %}" class="thickbox">仿真化验单</a></div>
+					<div class="detail_history"><a href="javascript:void(0)">详细历史记录</a></div>
+					<div style="clear:both;"></div>
+				</div>
+				<!--
+				<a class="card_delete_icon card_delete thickbox" href="popup/DeleteCardTip.html?TB_iframe=true&no1_title&transfer_params&height=166&width=630&card_id=2"></a>
+        -->
+        <a class="card_delete_icon card_delete thickbox" href="{% url indicator_deletecardtip %}?TB_iframe=true&no1_title&transfer_params&height=166&width=630&card_id=2"></a>
+			</div>
+			
+			<div class="index_card index_card_fir" id="index_card_3">
+				<div class="card_title">乙肝病毒核算定量 (PCR)3</div>
+				<div class="refer_range">
+					<span class="refer_text">参考范围</span>
+					<span>100 x 10^4 拷贝 /mL</span>
+				</div>
+				<div class="edit_data">
+					<div class="last_edit_data"><span class="data_fir">98</span> x 10^<span class="data_sec">4</span> 拷贝 /mL</div>
+          <img src="{% static "images/pen.png" %}" class="small_edit_icon">
+          <img src="{% static "images/last_edit_data.png" %}" class="explain_icon">
+				</div>
+				<div class="editing_data">
+					<div class="input_container">
+						<input class="edit_input_main" type="text" value="" autocomplete="off" /> x 10^
+						<input class="edit_input_sub" type="text" value="" autocomplete="off" />
+					</div>
+					<div class="add_minus_icon">
+						<div class="add_icon"></div>
+						<div class="minus_icon"></div>
+					</div>
+					 拷贝 /mL
+				 	<div class="confirm_edit_icon"></div>
+				 	<div class="cancel_edit_icon"></div>
+				</div>
+				<div class="refresh_data">
+					<div class="refresh_text">这是2013-07-01 化验单上的记录</div>
+					<div class="refresh_icon"></div>
+					<div style="clear:both;"></div>
+				</div>
+				<div class="select_date">
+					<input class="datepicker" type="text" autocomplete="off" />
+				</div>
+				<div id="chart_3" class="chart"></div>
+				<div class="card_bottom">
+				  <!--
+					<div class="understand_index"><a class="thickbox" href="popup/IndexDesc.html?TB_iframe=true&no1_title&transfer_params&height=351&width=630&card_id=3">了解该指标</a></div>
+          -->
+          <div class="understand_index"><a class="thickbox" href="{% url indicator_indexdesc %}?TB_iframe=true&no1_title&transfer_params&height=351&width=630&card_id=3">了解该指标</a></div>
+          <div class="simulation_sheet"><a href="{% static "images/demo_sheet.png" %}" class="thickbox">仿真化验单</a></div>
+					<div class="detail_history"><a href="javascript:void(0)">详细历史记录</a></div>
+					<div style="clear:both;"></div>
+				</div>
+				<!--
+				<a class="card_delete_icon card_delete thickbox" href="popup/DeleteCardTip.html?TB_iframe=true&no1_title&transfer_params&height=166&width=630&card_id=3"></a>
+        -->
+        <a class="card_delete_icon card_delete thickbox" href="{% url indicator_deletecardtip %}?TB_iframe=true&no1_title&transfer_params&height=166&width=630&card_id=3"></a>
+			</div>
+			
+			<div class="detail_card_info">
+				<div class="card_title">乙肝病毒核算定量 (PCR)4<input class="collapse_btn" type="button" value="收 起" /></div>
+				<div class="search_data_div">
+					<input class="recent_one_week shift_week" start_date="2013-08-04" end_date="2013-08-10" type="button" value="最近1周" />
+					<input class="recent_two_week shift_week unselected" start_date="2013-07-28" end_date="2013-08-10" type="button" value="最近2周" />
+					<div class="datepicker_container end_date_container">
+						<label>截至日期</label>
+						<input class="datepicker end_date" id="search_end_date" type="text" value="" />
+					</div>
+					<div class="datepicker_container">
+						<label class="start_label">起始日期</label>
+						<input class="datepicker start_date" id="search_start_date" type="text" value="" />
+					</div>
+					<div style="clear:both;"></div>
+				</div>
+				<div id="detail_chart"></div>
+				<div class="table_div">
+					<table width="100%">
+						<tr class="first_line">
+							<td width="122px">日期</td>
+							<td width="124px">时间</td>
+							<td width="312px">记录</td>
+						</tr>
+					</table>
+				</div>
+				<div class="see_more"><input class="see_more_btn" type="button" value="浏览更多记录" /></div>
+			</div>
+			
+			<div class="act_card_container index_card_sec">
+				<div class="act_card"><a href="NewDeleteIndex.html">添加或删除关注指标</a></div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+{# vim: set ts=2 sw=2 tw=0 fenc=utf-8 ft=htmldjango.html: #}

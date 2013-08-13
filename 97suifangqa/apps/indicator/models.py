@@ -53,8 +53,8 @@ class IndicatorCategory(models.Model):                      # {{{
         return self.__unicode__()
 
     def get_absolute_url(self):
-        # need define url with name='show-category', 'pk' as parameter
-        return reverse('show-category',
+        # need define url with name='show_category', 'pk' as parameter
+        return reverse('show_category',
                 kwargs={'pk': self.id})
 
     # auto generate `pinyin'
@@ -131,7 +131,7 @@ class Indicator(models.Model):                              # {{{
         return self.__unicode__()
 
     def get_absolute_url(self):
-        return reverse('show-indicator',
+        return reverse('show_indicator',
                 kwargs={'pk': self.id})
 
     # auto generate `pinyin'
@@ -291,7 +291,7 @@ class IndicatorRecord(models.Model):                        # {{{
                 self.user.username, self.indicator.name, self.date)
 
     def get_absolute_url(self):
-        return reverse('show-record',
+        return reverse('show_record',
                 kwargs={'pk': self.id})
 
     def save(self, **kwargs):

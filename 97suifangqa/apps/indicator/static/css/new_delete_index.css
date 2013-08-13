@@ -1,0 +1,192 @@
+#new_delete_container {
+	float: left;
+	margin-left: 37px;
+}
+.new_delete_title {
+	width: 596px;
+	height: 26px;
+}
+.new_delete_title .content {
+	float: left;
+	font-weight: bold;
+	font-size: 20px;
+	color: #4A4A4A;
+	height: 26px;
+	line-height: 26px;
+}
+.new_delete_title .search {
+	float: right;
+	height: 26px;
+	line-height: 26px;
+	position: relative;
+}
+.new_delete_title .search input {
+	float: left;
+	height: 20px;
+	width: 127px;
+	border: 1px solid #CACACA;
+	background-color: #FFFFFF;
+	padding: 0;
+	border-radius: 2px;
+	color: #000000;
+	position: relative;
+	top: 2px;
+	margin-right: 2px;
+}
+.new_delete_title .search input::-moz-placeholder {
+	color: #9D9D9D;
+	font-weight: bold;
+}
+.new_delete_title .search img {
+	float: right;
+	position: relative;
+	top: 2px;
+	cursor: pointer;
+}
+.index_navigation {
+	margin: 10px 0;
+}
+.index_navigation .index_type {
+	float: left;
+	width: 63px;
+	height: 20px;
+	text-align: center;
+	border: 1px solid #B5B5B5;
+	border-radius: 2px;
+	margin-right: 11px;
+}
+.index_navigation .index_type a{
+	color: #7E7E7E;
+	cursor: pointer;
+	text-decoration: none;
+}
+.index_navigation #index_all {
+	margin-right: 0;
+}
+.index_navigation .selected {
+	background-color: #99CC33;
+	border: 1px solid #CCE69C;
+}
+.index_navigation .selected a {
+	color: #FFFFFF;
+}
+.show_indexes {
+	position: relative;
+}
+.show_indexes .index_container {
+	float: left;
+	width: 252px;
+	height: 437px;
+	border: 1px solid #b6b6b6;
+	z-index: 1;
+	position: relative;
+	padding: 6px 12px 0 12px;
+	overflow: hidden;
+}
+.show_indexes .add_concerned_icon {
+	float: left;
+	height: 0;
+	width: 0;
+	border-width: 20px;
+	border-style: solid;
+	border-color: #FFFFFF #FFFFFF #FFFFFF #BFBFBF;
+	overflow: hidden;
+	margin-top: 191px;
+	position: relative;
+	left: 10px;
+	z-index: 0;
+}
+.show_indexes .index_container .index_title_container {
+	border-bottom: 1px solid #BFBFBF;
+	height: 26px;
+	line-height: 26px;
+	margin-bottom: 5px;
+}
+.show_indexes .index_container .index_title_container .index_title {
+	font-weight: bold;
+	font-size: 19px;
+	color: #4A4A4A;
+	float: left;
+}
+.show_indexes .index_container .index_title_container .example_sheet {
+	float: right;
+	color: #4A4A4A;
+	margin-top: 4px;
+}
+.show_indexes .index_container .index_title_container .index_btn {
+	float: right;
+}
+.show_indexes .index_container .index_title_container .index_btn input{
+	width: 72px;
+	height: 24px;
+	line-height: 24px;
+	vertical-align: baseline;
+}
+.index_line {
+	margin-top: 3px;
+}
+.index_line .index_name, .index_line .index_category {
+	float: left;
+	font-size: 14px;
+	height: 20px;
+	line-height: 20px;
+	color: #4A4A4A;
+	font-weight: bold;
+	cursor: pointer;
+}
+.index_lines .add .icon {
+	width: 20px;
+	height: 20px;
+	float: right;
+	background: url("../images/addicon.png");
+	margin-right: 2px;
+	cursor: pointer;
+}
+.index_lines .add .index_name, .index_lines .add .index_category, .index_lines .minus .index_name {
+	color: #FFFFFF;
+}
+.index_lines .minus .icon {
+	width: 20px;
+	height: 20px;
+	float: right;
+	background: url("../images/minusicon.png");
+	margin-right: 2px;
+	cursor: pointer;
+}
+.index_lines .add, .index_lines .minus {
+	background: #8FC31F;
+}
+.index_line .index_name {
+	width: 185px;
+}
+
+.all_condition .index_all_title {
+	font-weight: bold;
+	font-size: 19px;
+	color: #4A4A4A;
+	height: 24px;
+	line-height: 24px;
+	margin-bottom: 3px;
+}
+.all_condition .index_all_letter {
+	margin-bottom: 10px;
+	line-height: 20px;
+	height: 40px;
+}
+.all_condition .index_all_letter div {
+	float: left;
+	color: #8F8F8F;
+	font-size: 15px;
+	margin-right: 4px;
+	cursor: pointer;
+}
+.index_letter_container .index_lines {
+	margin-bottom: 46px;
+}
+.index_letter_container .index_lines .letter_title {
+	font-weight: bold;
+	font-size: 32px;
+	color: #4A4A4A;
+	border-bottom: 1px solid #BFBFBF;
+	height: 24px;
+}

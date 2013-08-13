@@ -110,7 +110,7 @@ def get_record_view(request, indicator_id, date_range, **kwargs):
 
 ## add_edit_category                                        # {{{
 @login_required
-def add_edit_category(request, category_id=None, template='simple.html'):
+def add_edit_category(request, category_id=None, template='indicator/simple.html'):
     """
     add/edit category: 'models.IndicatorCategory'
     for 'staff' or 'normal user'
@@ -153,7 +153,7 @@ def add_edit_category(request, category_id=None, template='simple.html'):
 
 # add_edit_indicator                                        # {{{
 @login_required
-def add_edit_indicator(request, indicator_id=None, template='simple.html'):
+def add_edit_indicator(request, indicator_id=None, template='indicator/simple.html'):
     """
     add/edit indicator: 'models.Indicator'
     for 'staff' or 'normal user'
@@ -194,7 +194,7 @@ def add_edit_indicator(request, indicator_id=None, template='simple.html'):
 
 ## add_edit_unit {{{
 @login_required
-def add_edit_unit(request, unit_id=None, template='simple.html'):
+def add_edit_unit(request, unit_id=None, template='indicator/simple.html'):
     """
     add unit for indicator
     """
@@ -233,7 +233,7 @@ def add_edit_unit(request, unit_id=None, template='simple.html'):
 
 ## add_edit_confine {{{
 @login_required
-def add_edit_confine(request, confine_id=None, template='simple.html'):
+def add_edit_confine(request, confine_id=None, template='indicator/simple.html'):
     """
     InnateConfine
     add confines for indicator
@@ -273,7 +273,7 @@ def add_edit_confine(request, confine_id=None, template='simple.html'):
 
 ## add_edit_record {{{
 @login_required
-def add_edit_record(request, record_id=None, template='simple.html'):
+def add_edit_record(request, record_id=None, template='indicator/simple.html'):
     """
     add/edit 'IndicatorRecord'
 
@@ -325,7 +325,7 @@ def add_edit_record(request, record_id=None, template='simple.html'):
 
 ## modify_record {{{
 @login_required
-def modify_record(request, record_id=None, template='simple.html'):
+def modify_record(request, record_id=None, template='indicator/simple.html'):
     """
     modify an existing IndicatorRecord
 
@@ -373,7 +373,7 @@ def modify_record(request, record_id=None, template='simple.html'):
 
 ## add_recordhistory {{{
 @login_required
-def add_recordhistory(request, record_id, template='simple.html'):
+def add_recordhistory(request, record_id, template='indicator/simple.html'):
     """
     add 'RecordHistory' for a record by given
 

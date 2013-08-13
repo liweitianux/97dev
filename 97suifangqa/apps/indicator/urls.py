@@ -21,22 +21,54 @@ urlpatterns = patterns('indicator.views',
         DetailView.as_view(
             model=im.IndicatorCategory,
             template_name='show_category.html'),
-        name='show-category'),
+        name='show_category'),
     # Indicator, name='show-indicator'
     url(r'^show/indicator/(?P<pk>\d+)/$',
         DetailView.as_view(
             model=im.Indicator,
             template_name='show_indicator.html'),
-        name='show-indicator'),
-    # IndicatorRecord, name='show-record'
-    # TODO: howto add '@login_required'
-    url(r'^show/record/(?P<pk>\d+)/$',
-        DetailView.as_view(
-            model=im.IndicatorRecord,
-            template_name='show_record.html'),
-        name='show-record'),
+        name='show_indicator'),
+    ## IndicatorRecord, name='show-record'
+    ## TODO: howto add '@login_required'
+    #url(r'^show/record/(?P<pk>\d+)/$',
+    #    DetailView.as_view(
+    #        model=im.IndicatorRecord,
+    #        template_name='show_record.html'),
+    #    name='show_record'),
 )
 
+## UI pages
+urlpatterns += patterns('',
+    # indicator_index
+    url(r'^$',
+        direct_to_template, {'template': 'indicator/index.html'},
+        name='indicator_index'),
+    # indicator_sidebar
+    url(r'^sidebar/$',
+        direct_to_template, {'template': 'indicator/SideBar.html'},
+        name='indicator_sidebar'),
+    # indicator_status, 指标状态
+    url(r'^status/$',
+        direct_to_template, {'template': 'indicator/SheetDefault.html'},
+        name='indicator_status'),
+    # follow_indicator, 关注指标
+    url(r'^follow/$',
+        direct_to_template, {'template': 'indicator/NewDeleteIndex.html'},
+        name='follow_indicator'),
+    ## indicator: popup
+    # DeleteCardTip
+    url(r'^popup/deletecardtip/$',
+        direct_to_template, {'template': 'indicator/popup/DeleteCardTip.html'},
+        name='indicator_deletecardtip'),
+    # EditHistoryData
+    url(r'^popup/edithistorydata/$',
+        direct_to_template, {'template': 'indicator/popup/EditHistoryData.html'},
+        name='indicator_edithistorydata'),
+    # IndexDesc
+    url(r'^popup/indexdesc/$',
+        direct_to_template, {'template': 'indicator/popup/IndexDesc.html'},
+        name='indicator_indexdesc'),
+)
 
 urlpatterns += patterns('indicator.views',
     ## test
@@ -119,6 +151,6 @@ urlpatterns += patterns('indicator.views',
 
 urlpatterns += patterns('',
     ## done
-    url(r'^done/$', direct_to_template, { 'template': 'done.html' }),
+    url(r'^done/$', direct_to_template, { 'template': 'indicator/done.html' }),
 )
 
