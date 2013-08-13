@@ -1,0 +1,30 @@
+{% extends "sciblog/blog_detail.html" %}
+
+{% block sectionname %}
+文章来源
+{% endblock %}
+
+{% block navigation %}
+{% endblock %}
+
+{% block block_pieces %}
+<h4>原文献标题</h4> 
+<!--下文所有p就是正文标准样式-->	
+<p>{{ blog.entitle }}</p>
+<p>{{ blog.title }}</p>
+<h4>发表国际期刊</h4> 
+<p>{{ blog.journal }}</p>
+<h4>期刊出版日期</h4>
+<p>{{ blog.publish_date}}<p>
+<h4>期刊影响因子</h4>
+<p>{{ blog.ifvalue }}</p>
+<!--h4>本文难度系数</h4>
+<p>{{ blog.level }}</p-->
+<h4>研究学者</h4>
+<p>{{ blog.authors }}</p>
+<h4>学者机构</h4>
+<p>{% for h in blog.hospital.all %}
+{{ h.name }}({{ h.city.nation.name }})
+{% endfor %}
+等等</p>
+{% endblock %}

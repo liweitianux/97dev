@@ -1,0 +1,22 @@
+/**
+ * @file
+ * RTL companion for the navigation.css file.
+ */
+/* line 18, ../../../sass/sass/navigation-rtl.scss */
+#navigation ul.links,
+#navigation ul.menu {
+  /* Menu block links */
+  text-align: right;
+}
+/* line 21, ../../../sass/sass/navigation-rtl.scss */
+#navigation ul.links li,
+#navigation ul.menu li {
+  /* A simple method to get navigation links to appear in one line. */
+  float: right;
+  padding: 0 0 0 10px;
+}
+
+/* line 28, ../../../sass/sass/navigation-rtl.scss */
+#secondary-menu {
+  float: left;
+}

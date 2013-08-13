@@ -1,0 +1,30 @@
+{{ object.title }}
+{{ object.subhead }}
+{{ object.journal }}
+{{ object.entitle }}
+{{ object.authors }}
+{{ object.method }}
+{{ object.aim }}
+{{ object.abstract_result }}
+{{ object.abstractAE }}
+{{ object.treatment_content }}
+{{ object.endpoint_content }}
+{% for endpoint in object.endpoint_content.all %}
+{{ endpoint.content }}
+{% endfor %}
+
+{% for que in object.query.all %}
+{{ que.content }}
+{% endfor %}
+
+{{ object.conclusion }}
+
+{% for piece in object.konwledge_piece.all %}
+{{ piece.content }}
+{% endfor %}
+
+{{ object.detectionAssay }}
+
+{% for result in object.results.all %}
+{{ result.content }}
+{% endfor %}

@@ -1,0 +1,24 @@
+{% extends "picture-base.html" %}
+{% load staticfiles %}
+{% block bodyclasses %}{{ block.super }} registration signup{% endblock %}
+{% block othercss %}
+<link rel="stylesheet" href="{% static "stylesheets/sass/registration.css" %}">
+{% endblock %}
+{% block body %}
+<h2>注册97随访  科学了解乙肝治疗</h2>
+<form method="post">{% csrf_token %}
+  	<table class="reg-form register-form">
+  		{% for item in form %}
+  		<tr>
+  			<td>
+  				<input type="{{ item.field.widget.input_type }}" name="{{ item.name }}" {% if item.field.widget.input_type == "text" %}value="{{ item.value|default_if_none:"" }}"{% endif %} placeholder="{{ item.label }}" class="{{ item.name }}">
+  			</td>
+			<td class="error">{{ item.errors|join:"" }}</td>
+  		</tr>
+  		{% endfor %}
+	</table>
+
+  <input type="submit" value="注册完毕" class="submit register"/> &emsp; |
+  &emsp; <a href="{% url apps.profile.views.login %}">已有账号</a>
+</form>
+{% endblock body %}

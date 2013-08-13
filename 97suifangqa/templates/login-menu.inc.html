@@ -1,0 +1,24 @@
+{% load staticfiles %}
+{% if user.is_authenticated %}
+<nav id="login" class="logged-in">
+	<span class="drop-down-area">
+	  <span class="user-name">{{ user.username }}</span>
+		<img src="{% static "images/icon_down.png" %}" alt="" class="drop-down-menu-button">
+	</span>
+	<div class="drop-down-menu">
+		<div class="text-pointer"></div>
+		<ul class="links">
+			<!--li><a href="">修改密码</a></li>
+			<li><a href="">完善信息</a></li-->
+			<li class="last"><a href="{% url logout %}?next={{ request.path }}">退出</a></li>
+		</ul>
+	</div>
+</nav>
+{% else %}
+<nav id="login" class="not-logged-in">
+	<ul class="links inline">
+	  <li class="first"><a href="{% url login %}?next={{ request.path }}">登录</a></li>
+	  <li class="last"><a href="{% url signup %}?next={{ request.path }}">注册</a></li>
+	</ul>
+</nav>
+{% endif %}

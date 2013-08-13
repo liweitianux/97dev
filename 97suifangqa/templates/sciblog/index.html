@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block bodyclasses %}{{ block.super }} blog blog-index{% endblock %}
+{% block othercss %}
+<link rel="stylesheet" href="{% static "stylesheets/sass/blog.css" %}">
+{% endblock %}
+{% block body %}
+	<div class="background"></div>
+	{% include "login-menu.inc.html" %}
+	<div class="post-question">
+	  {% include "sciblog/blog_search_form.html" %}
+	</div>	
+
+	<header id="header">
+		<div id="logo">
+			<img src="{% static "images/logo-overlay-white.png" %}" alt="">
+		</div>
+	</header>
+
+{% endblock %}
+{% block after_content %}
+<div id="copyright">&copy; Augbase</div>
+{% endblock %}

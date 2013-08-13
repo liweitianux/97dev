@@ -1,0 +1,35 @@
+{% extends "sciblog/blog_detail.html" %}
+
+{% block sectionname %}
+文章简读
+{% endblock %}
+
+{% block navigation %}
+<nav role="navigation" class="section-nav">
+	<ul class="links inline">
+		<li><a href="#methods" class="active">治疗方案</a></li>
+		<li><a href="#objectives">研究目标</a></li>
+		<li><a href="#abstract_result">结果简述</a></li>
+		<li><a href="#side_effect">副作用</a></li>
+		<li><a href="#conclusion">本文结论</a></li>
+	</ul>
+</nav>
+{% endblock %}
+
+{% block block_pieces %}
+<a href="" id="methods"></a>
+<h3>治疗手段</h3>
+<p>{{ blog.method }}</p>
+<a href="" id="objectives"></a>
+<h3>研究目标</h3>
+<p>{{ blog.aim }}</p>
+<a href="" id="abstract_result"></a>
+<h3>结果简述</h3>
+<p>{{ blog.abstract_result }}</p>
+<a href="" id="side_effect"></a>
+<h3>副作用</h3>
+<p>{{ blog.abstractAE }}</p>
+<a href="" id="conclusion"></a>
+<h3>本文结论</h3>
+<p>{{ blog.conclusion}}</p>
+{% endblock %}

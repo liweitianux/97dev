@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block otherlinks %}
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400,600">
+{% endblock %}
+
+{% block bodyclass %}bg{% endblock %}
+
+{% block body %}
+	{% include "profile/person-info.html" %}
+    <div class="body">
+	  <form method="post" class="search" action="/blog/query">
+		{% csrf_token %}
+		<input type="text" name="q" placeholder="乙肝甲肝各种肝炎" class="queinput">
+		<input type="submit" value="提问" class="quebtn">
+		</form>
+      <div class="site_logo"></div>
+    </div>
+{% endblock %}

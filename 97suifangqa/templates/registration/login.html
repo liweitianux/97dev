@@ -1,0 +1,47 @@
+{% extends "picture-base.html" %}
+{% load staticfiles %}
+{% block bodyclasses %}{{ block.super }} registration login{% endblock %}
+{% block othercss %}
+<link rel="stylesheet" href="{% static "stylesheets/sass/registration.css" %}">
+{% endblock %}
+{% block body %}
+<h2>登录97随访  科学了解乙肝治疗</h2>
+<p></p>
+<p>
+	<img src="{% static "images/sinalogo.png" %}" alt="" style="width: 2.5em; vertical-align: middle;">
+	新浪微博账号登录
+</p>
+
+
+<p>
+	<img src="{% static "images/qqlogo.png" %}" alt="" style="width: 2.5em; vertical-align: middle;">
+	腾讯QQ账号登录
+</p>
+
+<form method="post">{% csrf_token %}
+
+	<table class="reg-form login-form">
+		<tr>
+			<td class="login-prompt">
+				<span class="prompt">或者直接用邮箱登陆</span>
+			</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>
+				<input type="text" name="{{ form.username.name }}" value="{{ form.username.value|default_if_none:"" }}" maxlength="80" placeholder="{{ form.username.label }}" class="username ">
+			</td>
+			<td rowspan="2" class="error">
+				{{form.non_field_errors|first}}
+			</td>
+		</tr>
+		<tr>
+			<td><input type="password" name="{{ form.password.name }}" placeholder="{{ form.password.label }}" class="password"></td>
+		</tr>
+	</table>
+
+	<input type="hidden" name="next" value="{{ next }}" />
+	<input type="submit" value="登 录" class="submit login"/> &emsp; | &emsp;
+	<a href="{% url profile.views.signup %}">还没有帐号?</a>
+</form>
+{% endblock body%}

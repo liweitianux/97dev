@@ -1,0 +1,356 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block bodyclasses %}{{ block.super }} two-sidebars blog blog-details{% endblock %}
+{% block othercss %}
+<link rel="stylesheet" href="{% static "stylesheets/base.css" %}">
+<link rel="stylesheet" href="{% static "stylesheets/sass/blog.css" %}">
+{% endblock %}
+{% block oldcss %}{% endblock %}
+{% block sidebar_first %}
+<aside id="sidebar-first" class="region-sidebar-first">
+	<div class="post-question">
+		<form method="post" class="search" action="/query">
+			{% csrf_token %}
+			<input type="text" name="q" placeholder="乙肝甲肝各种肝炎" class="question">
+			<input type="submit" value="提问" class="submit">
+		</form>
+	</div>	
+	<div class="related-questions">
+		<h3>关联问题</h3>
+		<div><a href="" title="查询与此问题相关的文章">什么是乙肝</a></div>
+		<div><a href="" title="查询与此问题相关的文章">什么是乙肝</a></div>
+		<div><a href="" title="查询与此问题相关的文章">什么是乙肝</a></div>
+		<div><a href="" title="查询与此问题相关的文章">什么是乙肝</a></div>
+		<div><a href="" title="查询与此问题相关的文章">什么是乙肝</a></div>
+	</div>
+	<div class="toc">
+		<h3 class="toc-title">目&emsp;录</h3>
+		<ul class="links">
+			<li>
+			<a href="{% url blog_detail blog.id 'source'%}">文章来源</a>
+			</li>
+			<li>
+				<a href="{% url blog_detail blog.id 'abstract'%}">文章简读</a>
+			</li>
+			<li>
+				<a href="{% url blog_detail blog.id 'knowledge'%}">科普扫盲</a>
+			</li>
+			<li>
+				<a href="{% url blog_detail blog.id 'follow'%}">随访与用药</a>
+			</li>
+			<li>
+				<a href="{% url blog_detail blog.id 'comment'%}">学者科学评论</a>
+			</li>
+			<li>
+				<a href="{% url blog_detail blog.id 'refrences'%}">参考信息</a>
+			</li>
+		</ul>
+	</div>
+	<header id="header">
+		<div id="logo">
+			<img src="{% static "images/slilogo.png" %}" alt="">
+		</div>
+	</header>
+</aside>
+{% endblock %}
+{% block sidebar_second %}
+<aside id="sidebar-second" class="region-sidebar-second">
+	{% include "login-menu.inc.html" %}
+	<nav class="social">
+		<!-- Below are CSS-worthy structures. Styling incomplete, but you may start filling data -->
+		<ul class="buttons inline">
+			<li>
+				<button class="multi-segment-button action-button grey-button" id="like-button">
+					<div class="segment first like-button action">&emsp;&nbsp;收藏</div>
+					<div class="segment first unlike-button deaction">不收藏</div>
+					<div class="segment last like-count">58</div>
+				</button>
+			</li>
+			<li>
+				<button class="multi-segment-button action-button" id="no-idea-button">
+					<div class="segment first no-idea-button action">&emsp;&nbsp;不懂</div>
+					<div class="segment first idea-button deaction">看懂了</div>
+					<div class="segment last no-idea-count">37</div>
+				</button>
+			</li>
+		</ul>
+	</nav>
+	<div class="cards-abstract">
+		<div>
+			<p>
+				Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, 
+			</p>
+			<p>
+				In porttitor. Donec laoreet nonummy augue. Suspendisse dui purus, scelerisque at, vulputate vitae, pretium mattis, nunc. Mauris eget neque at sem venenatis eleifend.
+			</p>
+			<p>
+				Donec ut est in lectus consequat consequat. Etiam eget dui. Aliquam erat volutpat. Sed at lorem in nunc porta tristique. Proin nec augue. Quisque aliquam tempor magna. 
+			</p>
+		</div>
+	</div>
+	<div class="lists-container">
+		<nav class="comments expandable expanded" data-expand-group-selector="#sidebar-second .lists-container nav">
+			<h4 class="expand-heading">段落注释</h4>
+			<ol class="expand-container jargon-links">
+				<li>
+					<a href="#gu-bing-zhuan-an-mei">核苷类似物还有其他药物，比如恩替卡韦、替诺福韦，他们的耐药率是否也是很高？</a>
+				</li>
+				<li>
+					<a href="#gu-bing-zhuan-an-mei">核苷类似物还有其他药物，比如恩替卡韦、替诺福韦，他们的耐药率是否也是很高？</a>
+				</li>
+				<li>
+					<a href="#gu-bing-zhuan-an-mei">核苷类似物还有其他药物，比如恩替卡韦、替诺福韦，他们的耐药率是否也是很高？</a>
+				</li>
+			</ol>
+		</nav>
+		<nav class="jargon-list expandable" data-expand-group-selector="#sidebar-second .lists-container nav">
+			<h4 class="expand-heading">专业名词</h4>
+			<ul class="expand-container jargon-links">
+				<li>
+					<a href="#gu-bing-zhuan-an-mei">谷丙转氨酶</a>
+				</li>
+				<li>
+					<a href="#gu-bing-zhuan-an-mei">谷丙转氨酶</a>
+				</li>
+				<li>
+					<a href="#gu-bing-zhuan-an-mei">谷丙转氨酶</a>
+				</li>
+			</ul>
+		</nav>
+	</div>
+</aside>
+{% endblock %}
+{% block before_content %}
+<section id="blog-top-nav" class="blog-top-nav content">
+	<div class="region-wrap">
+	  <h1 class="blog-title">{{ blog.subhead }}</h1>
+	  <h2 class="section-name">{% block sectionname %}临床策略{% endblock %}</h2>
+		<!-- if firstSection -->
+		{% block navigation %}
+		<nav role="navigation" class="section-nav">
+			<ul class="links inline">
+				<li><a href="#methods" class="active">治疗手段</a></li>
+				<li><a href="#objectives">目标</a></li>
+				<li><a href="">结果简述</a></li>
+				<li><a href="">副作用</a></li>
+				<li><a href="">本文结论</a></li>
+			</ul>
+		</nav>
+		{% endblock %}
+		<!-- endif -->
+	</div>
+</section>
+{% endblock %}
+{% block body %}
+	<!-- if not cards -->
+	<div class="text jargons">
+	  {% block block_pieces %}
+		<a href="" id="methods"></a>
+		<h3>治疗手段</h3>
+		<h4>副标题</h4>
+		<p>
+			24周随访期结束以后，<a href="#gu-bing-zhuan-an-mei" class="jargon">谷丙转氨酶</a>（ALT）的复常率（恢复正常值以内的几率）或者<a href="#yi-gan-bing-du" class="jargon">乙肝病毒</a>（HBV） NA水平降低到20,000拷贝/mL的几率在接受含有<a href="#ju-yi-er-chun-gan-rao-su" class="jargon">聚乙二醇干扰素</a>alfa-2a（ 下文此类干扰素都简为“扰素”，如有说到普通干扰素会特别指出）的治疗组人群中会更高（比起那些仅用拉米夫定的患者）。
+		</p>
+		<h4>很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字</h4>
+		<p>
+			在结束治疗24周后，病毒水平降到400<a href="#copies-per-second" class="jargon">拷贝/mL</a>是很多人追求的治疗终点，在含有干扰素的治疗组人群中大概有20%左右获得了这样病毒学<a href="#virulogical-response" class="jargon">应答</a>，仅用拉米夫定的患者这个数字只有7%。
+		</p>
+		<p>
+			在结束治疗24周后，病毒水平降到400<a href="#copies-per-second" class="jargon">拷贝/mL</a>是很多人追求的治疗终点，在含有干扰素的治疗组人群中大概有20%左右获得了这样病毒学<a href="#virulogical-response" class="jargon">应答</a>，仅用拉米夫定的患者这个数字只有7%。
+		</p>
+		<div class="highlight">
+			<p>
+				<a href="surface-antigen" class="jargon">表面抗原</a>（HBsAg）的清除，只有12个人发生（都在含有干扰素的治疗组人群中，占比3.4%），仅用<a href="#la-mi-fu-ding" class="jargon">拉米夫定</a>的治疗组中没有人获得HBsAg清除。
+			</p>
+		</div>
+
+
+		<h3><a href="" id="objectives"></a>治疗手段</h3>
+		<h4>副标题</h4>
+		<p>
+			24周随访期结束以后，<a href="#gu-bing-zhuan-an-mei" class="jargon">谷丙转氨酶</a>（ALT）的复常率（恢复正常值以内的几率）或者<a href="#yi-gan-bing-du" class="jargon">乙肝病毒</a>（HBV） NA水平降低到20,000拷贝/mL的几率在接受含有<a href="#ju-yi-er-chun-gan-rao-su" class="jargon">聚乙二醇干扰素</a>alfa-2a（ 下文此类干扰素都简为“扰素”，如有说到普通干扰素会特别指出）的治疗组人群中会更高（比起那些仅用拉米夫定的患者）。
+		</p>
+		<h4>很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字很多字</h4>
+		<p>
+			在结束治疗24周后，病毒水平降到400<a href="#copies-per-second" class="jargon">拷贝/mL</a>是很多人追求的治疗终点，在含有干扰素的治疗组人群中大概有20%左右获得了这样病毒学<a href="#virulogical-response" class="jargon">应答</a>，仅用拉米夫定的患者这个数字只有7%。
+		</p>
+		<div class="image-wrap">
+			<a href="{% static "images/blog-images-temp/fig2-2.png" %}" class="enlarge-image">
+				<img src="{% static "images/blog-images-temp/fig2-1.png" %}" alt="">
+			</a>
+		</div>
+		<p>
+			在结束治疗24周后，病毒水平降到400<a href="#copies-per-second" class="jargon">拷贝/mL</a>是很多人追求的治疗终点，在含有干扰素的治疗组人群中大概有20%左右获得了这样病毒学<a href="#virulogical-response" class="jargon">应答</a>，仅用拉米夫定的患者这个数字只有7%。
+		</p>
+		<div class="highlight">
+			<p>
+				<a href="surface-antigen" class="jargon">表面抗原</a>（HBsAg）的清除，只有12个人发生（都在含有干扰素的治疗组人群中，占比3.4%），仅用<a href="#la-mi-fu-ding" class="jargon">拉米夫定</a>的治疗组中没有人获得HBsAg清除。
+			</p>
+		</div>
+		<div class="jargon-explanations">
+			<div class="jargon-explanation" data-key="yi-gan-bing-du">
+				<h3 class="name">乙肝病毒</h3>
+				<p>
+					在我们的研究中就接受含有乙二醇干扰素治疗的患者中，有40%的人乙肝病毒（HBV）DNA在治疗结束后24周时，下降到20,000拷贝/mL以下。在我们的研究中就接受含有乙二醇干扰素治疗的患者中，有40%的人乙肝病毒（HBV）DNA在治疗结束后24周时，下降到20,000拷贝/mL以下。
+				</p>
+				<p>
+					在我们的研究中就接受含有乙二醇干扰素治疗的患者中，有40%的人乙肝病毒（HBV）DNA在治疗结束后24周时，下降到20,000拷贝/mL以下。
+				</p>
+				<p>
+					在我们的研究中就接受含有乙二醇干扰素治疗的患者中，有40%的人乙肝病毒（HBV）DNA在治疗结束后24周时，下降到20,000拷贝/mL以下。
+				</p>
+				<p class="references">
+					David E. Boundy (October 1991). "A taxonomy of programmers". 
+				</p>
+			</div>
+			<div class="jargon-explanation" data-key="virulogical-response">
+				<h3 class="name">应答</h3>
+				<p>
+					在我们的研究中就接受含有乙二醇干扰素治疗的患者中，有40%的人乙肝病毒（HBV）DNA在治疗结束后24周时，下降到20,000拷贝/mL以下。在我们的研究中就接受含有乙二醇干扰素治疗的患者中，有40%的人乙肝病毒（HBV）DNA在治疗结束后24周时，下降到20,000拷贝/mL以下。
+				</p>
+				<p>
+					在我们的研究中就接受含有乙二醇干扰素治疗的患者中，有40%的人乙肝病毒（HBV）DNA在治疗结束后24周时，下降到20,000拷贝/mL以下。
+				</p>
+				<p>
+					在我们的研究中就接受含有乙二醇干扰素治疗的患者中，有40%的人乙肝病毒（HBV）DNA在治疗结束后24周时，下降到20,000拷贝/mL以下。
+				</p>
+				<p class="references">
+					David E. Boundy (October 1991). "A taxonomy of programmers". 
+				</p>
+			</div>
+			<div class="jargon-explanation" data-key="gu-bing-zhuan-an-mei">
+				<h3 class="name">谷丙转氨酶</h3>
+				<p>
+					在我们的研究中就接受含有乙二醇干扰素治疗的患者中，有40%的人乙肝病毒（HBV）DNA在治疗结束后24周时，下降到20,000拷贝/mL以下。在我们的研究中就接受含有乙二醇干扰素治疗的患者中，有40%的人乙肝病毒（HBV）DNA在治疗结束后24周时，下降到20,000拷贝/mL以下。
+				</p>
+				<p>
+					在我们的研究中就接受含有乙二醇干扰素治疗的患者中，有40%的人乙肝病毒（HBV）DNA在治疗结束后24周时，下降到20,000拷贝/mL以下。
+				</p>
+				<p>
+					在我们的研究中就接受含有乙二醇干扰素治疗的患者中，有40%的人乙肝病毒（HBV）DNA在治疗结束后24周时，下降到20,000拷贝/mL以下。
+				</p>
+				<p class="references">
+					David E. Boundy (October 1991). "A taxonomy of programmers". 
+				</p>
+			</div>
+		</div>
+	</div>
+	<div class="jargon-explanation-box">
+		<div class="text-pointer"></div>
+		<div class="close-box"></div>
+		<img src="{% static "images/loading.gif" %}" alt="" class="loading-image">
+		<div class="content-wrap">
+		</div>
+		<a class="button like-button grey-button"><img src="{% static "images/grey-heart.png" %}" alt=""> 收藏该条注释</a>
+	</div>
+	<!-- else -->
+	<!-- for ... -->
+	<div class="cards three-columns">
+		<div class="column-first">
+			<div class="card grey" href="">
+				<div class="front">
+					<div class="card-wrap">
+						<h3 class="card-title">ALT 谷丙转氨酶</h3>
+						<h4 class="card-subtitle">谁的组织学应答好？</h4>
+						<div class="card-details">
+							治疗结束随访24周以后<br>
+							ALT恢复正常<br>
+							ALT没有恢复正常
+						</div>
+					</div>
+				</div>
+				<div class="back">
+					<div class="card-wrap">
+						<div class="content-wrap">
+							<div>ALT 谷丙转氨酶</div>
+							<div>HBeAg e抗原</div>
+							<div>...</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="column-second">
+			<div class="card green">
+				<div class="front">
+					<div class="card-wrap">
+						<h3 class="card-title">ALT 谷丙转氨酶</h3>
+						<h4 class="card-subtitle">谁的组织学应答好？</h4>
+						<div class="card-details">
+							治疗结束随访24周以后<br>
+							ALT恢复正常<br>
+							ALT没有恢复正常
+						</div>
+					</div>
+				</div>
+				<div class="back">
+					<div class="card-wrap">
+						<div class="content-wrap">
+							<div>ALT 谷丙转氨酶</div>
+							<div>HBeAg e抗原</div>
+							<div>...</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="column-third">
+			<div class="card blue">
+				<div class="front">
+					<div class="card-wrap">
+						<h4 class="card-title">ALT 谷丙转氨酶</h4>
+						<h5 class="card-subtitle">谁的组织学应答好？</h5>
+						<div class="card-details">
+							治疗结束随访24周以后<br>
+							ALT恢复正常<br>
+							ALT没有恢复正常
+						</div>
+					</div>
+				</div>
+				<div class="back">
+					<div class="card-wrap">
+						<div class="content-wrap">
+							<div>ALT 谷丙转氨酶</div>
+							<div>HBeAg e抗原</div>
+							<div>...</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	  {% endblock %}
+		<div id="back-to-top-button" title="返回顶部" class="hidden"></div>
+	</div>
+	<div id="related-questions-confirm" class="dialog-content">
+		<p>我们将要帮您重新搜索医学文章，会离开本文页面，您确定吗？</p>
+		<div class="controls">
+			<button class="dialog-ok">确认</button>
+			&nbsp;
+			<button class="dialog-cancel grey-button">取消</button>
+		</div>
+	</div>
+	<!-- endfor -->
+	<!-- endif -->
+{% endblock %}
+{% block scripts %}
+{{ block.super }}
+<script type="text/javascript">
+	$(function(){
+		var activeUrl = null;
+		$("#related-questions-confirm .dialog-ok").click(function() {
+			location.href = activeUrl;
+		})
+		$("#related-questions-confirm .dialog-cancel").click(function() {
+			$.modalHide();
+		})
+		$("#sidebar-first .related-questions a").click(function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			activeUrl = $(this).attr('href');
+
+			$("#related-questions-confirm").modalShow();
+		})
+	})
+</script>
+{% endblock %}

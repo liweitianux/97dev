@@ -1,0 +1,5 @@
+{% extends "picture-base.html" %}
+{% block bodyclasses %}{{ block.super }} page-not-found{% endblock %}
+{% block body %}
+	<div class="message">发生了一点错误，点击<a href="/blog/index">离开</a>返回首页吧。</div>
+{% endblock %}

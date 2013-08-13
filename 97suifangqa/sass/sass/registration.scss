@@ -1,0 +1,52 @@
+@charset "utf-8";
+/**
+ * @file
+ * Registration specific styles
+ * @author 赵迤晨 (Zhao Yichen) <interarticle@gmail.com>
+ */
+@import "base";
+
+body.registration {
+	input[type="text"],
+	input[type="password"] {
+		background-color: #f8f8f5;
+		border: 1px solid #babab9;
+		@include border-radius(2px);
+		@include input-placeholder-color(#898989);
+		width: 250px;
+	}
+
+	.reg-form {
+		border: 0px;
+		tr td {
+			padding: 3px;
+			padding-top: 5px;
+			padding-bottom: 5px;
+		}
+		td.error {
+			max-width: 200px;
+			vertical-align: top;
+			padding-left: 10px;
+		}
+	}
+	.error {
+		color: red;
+	}
+
+	input.submit {
+		width: 100px;
+	}
+}
+body.login {
+	.login-prompt {
+		font-size: 0.9em;
+		text-align: center;
+		background: url(../../images/horizontal-bar-grey.png) repeat-x center center;
+
+		.prompt {	
+			background-color: white;
+			padding-left: 5px;
+			padding-right: 5px;
+		}
+	}
+}

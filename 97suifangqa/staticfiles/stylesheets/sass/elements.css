@@ -1,0 +1,326 @@
+/**
+ * @file
+ * Page element styles (buttons, expandable areas etc)
+ * 
+ */
+/* line 10, ../../../sass/sass/elements.scss */
+.multi-segment-button {
+  overflow: hidden;
+  padding: 0;
+}
+/* line 14, ../../../sass/sass/elements.scss */
+.multi-segment-button .segment {
+  display: block;
+  float: left;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  border-right: 1px solid;
+  border-right-color: inherit;
+}
+/* line 26, ../../../sass/sass/elements.scss */
+.multi-segment-button .segment.first {
+  padding-left: 0.5em;
+}
+/* line 30, ../../../sass/sass/elements.scss */
+.multi-segment-button .segment.last {
+  padding-right: 0.5em;
+  border-right: none;
+}
+
+/* line 38, ../../../sass/sass/elements.scss */
+.multi-button .button, .multi-button .multi-segment-button {
+  margin: 0;
+  padding-left: 0.8em;
+  padding-right: 0.8em;
+  padding-top: 0;
+  padding-bottom: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  -ms-border-radius: 0;
+  -o-border-radius: 0;
+  border-radius: 0;
+  border-left: none;
+  border-right: 1px solid #f3f2f0;
+}
+/* line 49, ../../../sass/sass/elements.scss */
+.multi-button .button.first, .multi-button .first.multi-segment-button {
+  -webkit-border-radius: 3px 0 0 3px;
+  -moz-border-radius: 3px 0 0 3px;
+  -ms-border-radius: 3px 0 0 3px;
+  -o-border-radius: 3px 0 0 3px;
+  border-radius: 3px 0 0 3px;
+  border-left: 1px solid #f3f2f0;
+}
+/* line 53, ../../../sass/sass/elements.scss */
+.multi-button .button.last, .multi-button .last.multi-segment-button {
+  -webkit-border-radius: 0 3px 3px 0;
+  -moz-border-radius: 0 3px 3px 0;
+  -ms-border-radius: 0 3px 3px 0;
+  -o-border-radius: 0 3px 3px 0;
+  border-radius: 0 3px 3px 0;
+}
+
+/* line 60, ../../../sass/sass/elements.scss */
+.border-box, .expand-heading {
+  background-color: #f7f7f7;
+  border: solid 1px #c9caca;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-top: 0.4em;
+  padding-bottom: 0.4em;
+}
+
+/* line 72, ../../../sass/sass/elements.scss */
+.expand-heading {
+  cursor: pointer;
+  color: #99cc33;
+  padding-left: 30px;
+  background-image: url(../../images/green-triangle-right.png);
+  background-repeat: no-repeat;
+  background-position: 10px center;
+}
+/* line 81, ../../../sass/sass/elements.scss */
+.expandable.expanded .expand-heading {
+  background-image: url(../../images/green-triangle-down.png);
+}
+
+/* line 87, ../../../sass/sass/elements.scss */
+.expandable .expand-container {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+}
+/* line 91, ../../../sass/sass/elements.scss */
+.expandable.expanded .expand-container {
+  position: static !important;
+  clip: auto;
+  height: auto;
+  width: auto;
+  overflow: auto;
+}
+
+/* line 98, ../../../sass/sass/elements.scss */
+.action-button .deaction {
+  display: none;
+}
+/* line 102, ../../../sass/sass/elements.scss */
+.action-button.acted .deaction {
+  display: block;
+}
+/* line 105, ../../../sass/sass/elements.scss */
+.action-button.acted .action {
+  display: none;
+}
+
+/* line 111, ../../../sass/sass/elements.scss */
+body.modal-active {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* line 116, ../../../sass/sass/elements.scss */
+.modal-page-overlay {
+  z-index: 2000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: url(../../images/modal-dialog-bg.png);
+  -webkit-transition: 0.3s ease;
+  -webkit-transition-delay: 0s;
+  -moz-transition: 0.3s ease 0s;
+  -o-transition: 0.3s ease 0s;
+  transition: 0.3s ease 0s;
+  opacity: 1;
+}
+/* line 127, ../../../sass/sass/elements.scss */
+.modal-page-overlay.hidden {
+  visibility: hidden;
+  opacity: 0;
+}
+
+/* line 133, ../../../sass/sass/elements.scss */
+.image-enlargement-box {
+  z-index: 1;
+  position: absolute;
+  display: none;
+  position: fixed;
+  z-index: 2001;
+  padding: 0;
+  left: 50%;
+  margin-left: -53.5px;
+  top: 50%;
+  margin-top: -38.5px;
+}
+/* line 105, ../../../sass/sass/_custom.scss */
+.image-enlargement-box.open {
+  display: block;
+}
+/* line 136, ../../../sass/sass/elements.scss */
+.image-enlargement-box .loading-image {
+  position: absolute;
+  z-index: -1;
+}
+/* line 140, ../../../sass/sass/elements.scss */
+.image-enlargement-box .image-container {
+  visibility: hidden;
+}
+/* line 143, ../../../sass/sass/elements.scss */
+.image-enlargement-box .image-container img {
+  max-width: none;
+  max-height: none;
+  -webkit-box-shadow: 0px 0px 30px #444444;
+  -moz-box-shadow: 0px 0px 30px #444444;
+  box-shadow: 0px 0px 30px #444444;
+}
+/* line 149, ../../../sass/sass/elements.scss */
+.image-enlargement-box.loaded .loading-image {
+  display: none;
+}
+/* line 152, ../../../sass/sass/elements.scss */
+.image-enlargement-box.loaded .image-container {
+  visibility: visible;
+}
+
+/* line 158, ../../../sass/sass/elements.scss */
+.dialog-content {
+  display: none;
+}
+
+/* line 161, ../../../sass/sass/elements.scss */
+.modal-dialog-box {
+  z-index: 1;
+  position: absolute;
+  display: none;
+  position: fixed;
+  z-index: 2001;
+  padding: 0;
+  left: 50%;
+  margin-left: -50px;
+  top: 50%;
+  margin-top: -50px;
+  -webkit-box-shadow: 0px 0px 30px #444444;
+  -moz-box-shadow: 0px 0px 30px #444444;
+  box-shadow: 0px 0px 30px #444444;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+  border-radius: 2px;
+  border: 1px solid #8fc31f;
+  background-color: white;
+}
+/* line 105, ../../../sass/sass/_custom.scss */
+.modal-dialog-box.open {
+  display: block;
+}
+/* line 168, ../../../sass/sass/elements.scss */
+.modal-dialog-box .close-box {
+  z-index: 1;
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: url(../../images/grey-cross.png) no-repeat center center;
+  cursor: pointer;
+  right: 1em;
+  top: 1em;
+}
+/* line 178, ../../../sass/sass/elements.scss */
+.modal-dialog-box .content-wrap {
+  padding-left: 1.5em;
+  padding-right: 1.5em;
+  padding-top: 0.7em;
+  padding-bottom: 1em;
+}
+/* line 185, ../../../sass/sass/elements.scss */
+.modal-dialog-box .content-wrap .dialog-content {
+  display: block;
+}
+
+/* line 191, ../../../sass/sass/elements.scss */
+.grey-button {
+  border-color: #cccccc;
+  color: #6f6f6f;
+  background-color: #f7f7f7;
+}
+/* line 194, ../../../sass/sass/elements.scss */
+.grey-button:visited {
+  color: #6f6f6f;
+}
+/* line 199, ../../../sass/sass/elements.scss */
+.grey-button:hover {
+  background-color: #eaeaea;
+}
+/* line 202, ../../../sass/sass/elements.scss */
+.grey-button:active {
+  background-color: #dedede;
+}
+/* line 208, ../../../sass/sass/elements.scss */
+.grey-button.disabled:hover, .grey-button.disabled:active {
+  background-color: #f7f7f7;
+}
+
+/* line 214, ../../../sass/sass/elements.scss */
+.dark-grey-button {
+  border: none;
+  color: white;
+  background-color: #4c4948;
+}
+/* line 217, ../../../sass/sass/elements.scss */
+.dark-grey-button:visited {
+  color: white;
+}
+/* line 221, ../../../sass/sass/elements.scss */
+.dark-grey-button:hover {
+  background-color: #3f3c3c;
+}
+/* line 224, ../../../sass/sass/elements.scss */
+.dark-grey-button:active {
+  background-color: #32302f;
+}
+/* line 229, ../../../sass/sass/elements.scss */
+.dark-grey-button.disabled:hover, .dark-grey-button.disabled:active {
+  background-color: #4c4948;
+}
+
+/* line 235, ../../../sass/sass/elements.scss */
+.number-block {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  width: 1.3em;
+  text-align: center;
+  font-family: "Courier New", "DejaVu Sans Mono", monospace, sans-serif, "STHeiti", "WenQuanYi Micro Hei", "Microsoft YaHei", SimSun, sans-serif;
+}
+
+/* line 239, ../../../sass/sass/elements.scss */
+.green-block {
+  background-color: #7BB81B;
+  color: white;
+}
+
+/* line 244, ../../../sass/sass/elements.scss */
+.clearfix {
+  clear: both;
+}
+
+/**
+ * Expands the height of a container by its height, or the page width maximally. Used for extra scrolling
+ */
+/* line 251, ../../../sass/sass/elements.scss */
+.page-expand {
+  position: absolute;
+  width: 1px;
+  height: 100%;
+  z-index: -1000;
+}

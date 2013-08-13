@@ -1,0 +1,92 @@
+[
+    {
+        "pk": 1,
+        "model": "auth.user",
+        "fields": {
+            "username": "admin",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": true,
+            "is_staff": true,
+            "last_login": "2013-08-03T21:06:50.885",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$H6nJhlyljgc4$KpHXyPQ7yvhbt9TVMgGVslPnKKuCbwL0WsWA0/J0iDI=",
+            "email": "admin@admin.com",
+            "date_joined": "2013-08-03T21:06:10.807"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "auth.user",
+        "fields": {
+            "username": "test",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2013-08-03T21:07:14.332",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$9SIFKsWpSUTT$6q0Gl3IwDhVqXw7M7cbrZ6yStxPdlJGZYUY2tVY9fxg=",
+            "email": "",
+            "date_joined": "2013-08-03T21:07:14.332"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "auth.user",
+        "fields": {
+            "username": "isuifangqa",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": true,
+            "is_staff": true,
+            "last_login": "2013-07-20T15:52:13.059",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$PBu41nJCDoS9$eGwEX8ZeS1Ot/urxOqQgVorHFvC+LAlBX3wKYrbtsFM=",
+            "email": "isuifang@gmail.com",
+            "date_joined": "2013-04-23T15:04:43.823"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "auth.user",
+        "fields": {
+            "username": "maxwellhjt",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2013-06-24T22:07:56.201",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$ccvMiwsQB9Cz$EUrqcy7PZ9o4LwPzQPimsLgsrTg8zCtZ5dYNCqbfGzE=",
+            "email": "",
+            "date_joined": "2013-06-24T22:07:56.201"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "auth.user",
+        "fields": {
+            "username": "maxwell",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2013-07-20T14:55:05.551",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$I30HnnfWfD4S$DFmzkurup7phJg+Fr8S64XgDTKABkN3ntH/TMsbp6KA=",
+            "email": "",
+            "date_joined": "2013-07-20T14:55:05.551"
+        }
+    }
+]

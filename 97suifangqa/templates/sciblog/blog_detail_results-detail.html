@@ -1,0 +1,49 @@
+{% extends "sciblog/blog_detail.html" %}
+{% block bodyclasses %}{{ block.super }} blog-results blog-results-detail{% endblock %}
+{% block sectionname %}
+病友治疗结果
+{% endblock %}
+
+{% block navigation %}
+{% endblock %}
+
+{% block  cards_abstract %}
+ <div class="cards-abstract">
+	 <div>
+	   <p>{{ result.abstract }}</p>
+	 </div>
+</div>
+{% endblock %}
+
+{% load group_list %}
+{% block block_pieces %}
+<div class="cards three-columns">
+  <div class="column-first">
+	<div class="card {{ result.color }}" href="">
+	  <div class="front">
+		<div class="card-wrap">
+		  <h3 class="card-title">相关指标&nbsp;</h3>
+		  <h4 class="card-subtitle">{{ result.shorttitle }}&nbsp;</h4>
+		  <div class="card-details">
+			{{ result.card_content }}
+		  </div>
+		</div>
+	  </div>
+	  <div class="back">
+		<div class="card-wrap">
+		  <div class="content-wrap">
+			{% for indicator in result.indicators.all %}
+			  <div>{{ indicator.name }}</div>
+			{% endfor %}
+		  </div>
+		</div>
+	  </div>
+	</div>
+  </div>
+  <div class="column-main right card-brief">
+	<p>{{ result.abstract }}</p>
+  </div>
+</div>
+<br />
+{{ result.content }}
+{% endblock %}

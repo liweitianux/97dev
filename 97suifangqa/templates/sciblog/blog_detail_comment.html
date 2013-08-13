@@ -1,0 +1,15 @@
+{% extends "sciblog/blog_detail.html" %}
+
+{% block sectionname %}
+学者科学评论
+{% endblock %}
+
+{% block navigation %}
+{% endblock %}
+
+{% block block_pieces %}
+{% for piece in blog.konwledge_piece.comments %}
+<h4>{{ piece.title }}</h4>
+<p>{{ piece.content }}</p>
+{% endfor %}
+{% endblock %}

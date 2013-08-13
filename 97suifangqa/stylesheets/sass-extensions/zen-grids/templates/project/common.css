@@ -1,0 +1,56 @@
+/* line 7, ../../../../../sass/sass-extensions/zen-grids/templates/project/common.scss */
+#skip-link {
+  margin: 0;
+}
+/* line 11, ../../../../../sass/sass-extensions/zen-grids/templates/project/common.scss */
+#skip-link a,
+#skip-link a:visited {
+  display: block;
+  width: 100%;
+  padding: 2px 0 3px 0;
+  text-align: center;
+  background-color: #666;
+  color: #fff;
+}
+
+/* line 27, ../../../../../sass/sass-extensions/zen-grids/templates/project/common.scss */
+#header,
+#content,
+#main-menu,
+#aside1,
+#aside2,
+#footer {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 10px;
+}
+
+/* line 38, ../../../../../sass/sass-extensions/zen-grids/templates/project/common.scss */
+#header,
+#main-menu,
+#aside2 {
+  border: 1px solid #ccc;
+}
+
+/* line 43, ../../../../../sass/sass-extensions/zen-grids/templates/project/common.scss */
+#content,
+#aside1,
+#footer {
+  border: 1px solid #09f;
+}
+
+/* line 49, ../../../../../sass/sass-extensions/zen-grids/templates/project/common.scss */
+header h1,
+header h2 {
+  display: inline;
+}
+
+/* line 52, ../../../../../sass/sass-extensions/zen-grids/templates/project/common.scss */
+header p {
+  display: inline;
+  text-transform: uppercase;
+  font-size: 0.8em;
+  color: #c00;
+}

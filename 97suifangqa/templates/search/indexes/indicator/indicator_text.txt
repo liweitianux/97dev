@@ -1,0 +1,6 @@
+{{ object.name }}
+{{ object.pinyin }}
+{{ object.englishName }}
+{{ object.description }}
+{{ object.helpText }}
+

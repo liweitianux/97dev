@@ -1,0 +1,459 @@
+/**
+ * @file
+ * Page Styling
+ *
+ * Style the markup found in page.tpl.php. Also includes some styling of
+ * miscellaneous Drupal elements that appear in the $content variable, such as
+ * ul.links, .pager, .more-link, etc.
+ */
+/*
+ * Body
+ */
+/* line 17, ../../../sass/sass/pages.scss */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/*
+ * The skip-link link will be completely hidden until a user tabs to the link.
+ * See the element-focusable rule in system.base.css.
+ */
+/* line 30, ../../../sass/sass/pages.scss */
+#skip-link {
+  margin: 0;
+}
+/* line 34, ../../../sass/sass/pages.scss */
+#skip-link a,
+#skip-link a:visited {
+  display: block;
+  width: 100%;
+  padding: 2px 0 3px 0;
+  text-align: center;
+  background-color: #666;
+  color: #fff;
+}
+
+/* line 48, ../../../sass/sass/pages.scss */
+.text .highlight {
+  background-color: #efeff0;
+  border: 1px solid #c9caca;
+  padding: 2px;
+  font-weight: bold;
+}
+/* line 53, ../../../sass/sass/pages.scss */
+.text .highlight p {
+  margin: 0;
+}
+
+/*
+ * Header
+ */
+/* line 66, ../../../sass/sass/pages.scss */
+#login {
+  position: relative;
+}
+/* line 69, ../../../sass/sass/pages.scss */
+#login.not-logged-in ul {
+  margin: 0;
+}
+/* line 71, ../../../sass/sass/pages.scss */
+#login.not-logged-in ul li {
+  border-right: 1px solid;
+  padding-left: 0.5em;
+  padding-right: 0.8em;
+}
+/* line 78, ../../../sass/sass/pages.scss */
+#login.not-logged-in ul li.first {
+  padding-left: 0;
+}
+/* line 81, ../../../sass/sass/pages.scss */
+#login.not-logged-in ul li.last {
+  padding-right: 0;
+  border-right: none;
+}
+/* line 86, ../../../sass/sass/pages.scss */
+#login.not-logged-in ul li a {
+  color: inherit;
+}
+/* line 93, ../../../sass/sass/pages.scss */
+#login.logged-in .user-level {
+  font-size: 1em;
+  line-height: 1em;
+  padding-left: 0.2em;
+  padding-right: 0.25em;
+  padding-top: 0.05em;
+  padding-bottom: 0.05em;
+  vertical-align: -0.1em;
+}
+/* line 106, ../../../sass/sass/pages.scss */
+#login.logged-in .user-name,
+#login.logged-in .user-level,
+#login.logged-in .user-photo,
+#login.logged-in .drop-down-menu-button {
+  vertical-align: bottom;
+}
+/* line 109, ../../../sass/sass/pages.scss */
+#login.logged-in .user-name {
+  font-size: 1.14286em;
+  line-height: 1em;
+  font-weight: bold;
+}
+/* line 114, ../../../sass/sass/pages.scss */
+#login.logged-in .drop-down-area {
+  cursor: pointer;
+}
+/* line 118, ../../../sass/sass/pages.scss */
+#login.logged-in .drop-down-menu {
+  color: black;
+  z-index: 1;
+  position: absolute;
+  display: none;
+  top: 100%;
+  margin-top: 10px;
+  left: -10px;
+  background-color: white;
+  border: 1px solid #c9c9c9;
+  -webkit-box-shadow: 0px 0px 10px rgba(85, 85, 85, 0.5);
+  -moz-box-shadow: 0px 0px 10px rgba(85, 85, 85, 0.5);
+  box-shadow: 0px 0px 10px rgba(85, 85, 85, 0.5);
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+  border-radius: 2px;
+}
+/* line 105, ../../../sass/sass/_custom.scss */
+#login.logged-in .drop-down-menu.open {
+  display: block;
+}
+/* line 129, ../../../sass/sass/pages.scss */
+#login.logged-in .drop-down-menu .text-pointer {
+  position: absolute;
+  background: url(../../images/login-menu-popup-pointer.png) no-repeat;
+  width: 20px;
+  height: 8px;
+  top: -8px;
+  left: 90px;
+  margin-left: -10px;
+}
+/* line 139, ../../../sass/sass/pages.scss */
+#login.logged-in .drop-down-menu ul {
+  margin: 0;
+  padding: 0;
+}
+/* line 143, ../../../sass/sass/pages.scss */
+#login.logged-in .drop-down-menu ul li {
+  padding: 2px;
+  border-bottom: 1px solid #efefef;
+}
+/* line 147, ../../../sass/sass/pages.scss */
+#login.logged-in .drop-down-menu ul li.last {
+  border-bottom: none;
+}
+/* line 151, ../../../sass/sass/pages.scss */
+#login.logged-in .drop-down-menu ul li a {
+  padding-left: 1em;
+  display: block;
+  width: 150px;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  text-decoration: none;
+  color: inherit;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+  border-radius: 2px;
+}
+/* line 165, ../../../sass/sass/pages.scss */
+#login.logged-in .drop-down-menu ul li a:hover {
+  text-decoration: none;
+  background-color: #c9cacc;
+  color: white;
+}
+
+/* line 177, ../../../sass/sass/pages.scss */
+#back-to-top-button {
+  z-index: 100;
+  position: fixed;
+  background: url(../../images/back-to-top-button.png) no-repeat;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  -webkit-transition: all 0.3s ease;
+  -webkit-transition-delay: 0s;
+  -moz-transition: all 0.3s ease 0s;
+  -o-transition: all 0.3s ease 0s;
+  transition: all 0.3s ease 0s;
+}
+/* line 191, ../../../sass/sass/pages.scss */
+body.scrolled-down #back-to-top-button {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* line 197, ../../../sass/sass/pages.scss */
+#logo {
+  /* Wrapping link for logo */
+  float: left;
+  /* LTR */
+  margin: 0;
+  padding: 0;
+}
+/* line 202, ../../../sass/sass/pages.scss */
+#logo img {
+  vertical-align: bottom;
+}
+
+/* line 207, ../../../sass/sass/pages.scss */
+#name-and-slogan {
+  /* Wrapper for website name and slogan */
+  float: left;
+}
+
+/* line 211, ../../../sass/sass/pages.scss */
+#site-name {
+  /* The name of the website */
+  margin: 0;
+  font-size: 2em;
+  line-height: 1.5em;
+}
+/* line 217, ../../../sass/sass/pages.scss */
+#site-name a:link,
+#site-name a:visited {
+  color: #000;
+  text-decoration: none;
+}
+/* line 223, ../../../sass/sass/pages.scss */
+#site-name a:hover,
+#site-name a:focus {
+  text-decoration: underline;
+}
+
+/* line 228, ../../../sass/sass/pages.scss */
+#site-slogan {
+  /* The slogan (or tagline) of a website */
+  margin: 0;
+  font-size: 1em;
+}
+
+/* line 233, ../../../sass/sass/pages.scss */
+.region-header {
+  /* Wrapper for any blocks placed in the header region */
+  clear: both;
+  /* Clear the logo */
+}
+
+/*
+ * Main (container for everything else)
+ */
+/*
+ * Content
+ */
+/* line 254, ../../../sass/sass/pages.scss */
+.breadcrumb {
+  /* The path to the current page in the form of a list of links */
+}
+/* line 255, ../../../sass/sass/pages.scss */
+.breadcrumb ol {
+  margin: 0;
+  padding: 0;
+}
+/* line 259, ../../../sass/sass/pages.scss */
+.breadcrumb li {
+  display: inline;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* line 272, ../../../sass/sass/pages.scss */
+h1.title,
+h2.node-title,
+h2.block-title,
+h2.title,
+h2.comment-form,
+h3.title {
+  /* Comment title */
+  margin: 0;
+}
+
+/* line 276, ../../../sass/sass/pages.scss */
+tr.even {
+  /* Some tables have rows marked even or odd. */
+  /* background-color: #eee; */
+  /* Drupal core uses a #eee background */
+}
+
+/* line 280, ../../../sass/sass/pages.scss */
+tr.odd {
+  /* background-color: #eee; */
+  /* Drupal core uses a #eee background */
+}
+
+/* line 284, ../../../sass/sass/pages.scss */
+div.messages {
+  /* Important messages (status, warning, and error) for the user. See also the declarations in messages.css. */
+  margin: 1.5em 0;
+  /* Drupal core uses "6px 0" margin */
+}
+/* line 287, ../../../sass/sass/pages.scss */
+div.messages ul {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* line 293, ../../../sass/sass/pages.scss */
+div.status {
+  /* Normal priority messages */
+}
+
+/* line 297, ../../../sass/sass/pages.scss */
+div.warning,
+tr.warning {
+  /* Medium priority messages */
+  /* border: 1px solid #f0c020; */
+  /* Drupal core uses: 1px solid #f0c020 */
+}
+
+/* line 302, ../../../sass/sass/pages.scss */
+div.error,
+tr.error {
+  /* High priority messages. See also the .error declaration below. */
+}
+
+/* line 305, ../../../sass/sass/pages.scss */
+.error {
+  /* Errors that are separate from div.messages status messages. */
+  /* color: #e55; */
+  /* Drupal core uses a #e55 background */
+}
+
+/* line 309, ../../../sass/sass/pages.scss */
+.warning {
+  /* Warnings that are separate from div.messages status messages. */
+  /* color: #e09010; */
+  /* Drupal core uses a #e09010 background */
+}
+
+/* line 313, ../../../sass/sass/pages.scss */
+.tabs {
+  /* See also the tabs.css file. */
+}
+
+/* line 316, ../../../sass/sass/pages.scss */
+.region-help {
+  /* Help text on a page */
+}
+
+/* line 319, ../../../sass/sass/pages.scss */
+.more-help-link {
+  /* Link to more help */
+}
+
+/* line 322, ../../../sass/sass/pages.scss */
+.region-content {
+  /* Wrapper for the actual page content */
+}
+
+/* line 325, ../../../sass/sass/pages.scss */
+ul.inline {
+  /* List of links generated by theme_links() */
+  display: inline;
+  padding: 0;
+}
+/* line 329, ../../../sass/sass/pages.scss */
+ul.inline li {
+  display: inline;
+  list-style-type: none;
+  padding: 0 1em 0 0;
+  /* LTR */
+}
+
+/* line 335, ../../../sass/sass/pages.scss */
+span.field-label {
+  /* The inline field label used by the Fences module */
+  padding: 0 1em 0 0;
+  /* LTR */
+}
+
+/* line 339, ../../../sass/sass/pages.scss */
+.item-list .pager {
+  /* A list of page numbers when more than 1 page of content is available */
+  padding: 0;
+}
+/* line 342, ../../../sass/sass/pages.scss */
+.item-list .pager li {
+  /* Each page number in the pager list */
+  padding: 0 0.5em;
+}
+
+/* line 347, ../../../sass/sass/pages.scss */
+.feed-icon {
+  /* The link to the RSS or Atom feed for the current list of content */
+}
+
+/* line 350, ../../../sass/sass/pages.scss */
+.more-link {
+  /* Aggregator, blog, and forum more link */
+}
+
+/*
+ * First sidebar (on left in LTR languages, on right in RTL)
+ *
+ * Remember to NOT add padding or margin to your .region-sidebar-first
+ * (see the layout.css file.)
+ */
+/*
+ * Second sidebar (on right in LTR languages, on left in RTL)
+ *
+ * Remember to NOT add padding or margin to your .region-sidebar-second
+ * (see the layout.css file.)
+ */
+/*
+ * Footer
+ */
+/*
+ * Page bottom
+ */
+/* line 384, ../../../sass/sass/pages.scss */
+.region-bottom {
+  /* Wrapper for any blocks placed in the page bottom region */
+}
+
+/* line 389, ../../../sass/sass/pages.scss */
+.left-picture #sidebar-first {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  background: url(../../images/back_main.jpg) no-repeat center top;
+  background-size: auto 100%;
+  min-height: 600px;
+}
+/* line 397, ../../../sass/sass/pages.scss */
+.left-picture #sidebar-first #header {
+  position: absolute;
+  bottom: 30px;
+  text-align: center;
+  width: auto;
+  margin-left: 40px;
+}
+/* line 406, ../../../sass/sass/pages.scss */
+.left-picture #content .region-wrap {
+  margin-top: 50px;
+  margin-left: 0px;
+  margin-right: 0;
+}
+
+/* line 417, ../../../sass/sass/pages.scss */
+.page-not-found .message {
+  position: fixed;
+  top: 50%;
+  font-size: 1.28571em;
+  line-height: 2.22222em;
+  line-height: 20px;
+  margin-top: -10px;
+}

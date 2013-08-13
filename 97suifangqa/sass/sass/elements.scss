@@ -1,0 +1,256 @@
+@charset "utf-8";
+/**
+ * @file
+ * Page element styles (buttons, expandable areas etc)
+ * 
+ */
+
+@import "base";
+
+.multi-segment-button {
+  @extend .button;
+  overflow: hidden;
+  padding: 0;
+  .segment {
+    display: block;
+    float: left;
+
+    padding: {
+      left: 0.5em;
+      right: 0.5em;
+    }
+
+    border-right: 1px solid;
+    border-right-color: inherit;
+
+    &.first {
+      padding-left: 0.5em;
+    }
+
+    &.last {
+      padding-right: 0.5em;
+      border-right: none;
+    }
+  }
+}
+
+.multi-button {
+  .button {
+    margin: 0;
+    padding: {
+      left: 0.8em;
+      right: 0.8em;
+      top: 0;
+      bottom: 0;
+    }
+    @include border-radius(0);
+    border-left: none;
+    border-right: 1px solid #f3f2f0;
+    &.first {
+      @include border-radius(3px 0 0 3px);
+      border-left: 1px solid #f3f2f0;
+    }
+    &.last {
+      @include border-radius(0 3px 3px 0);
+    }
+  }
+}
+
+
+.border-box {
+	background-color: #f7f7f7;
+	border: solid 1px #c9caca;
+	@include border-radius(3px);
+	padding: {
+		left: 1em;
+		right: 1em;
+		top: 0.4em;
+		bottom: 0.4em;
+	}
+}
+
+.expand-heading {
+	@extend .border-box;
+	cursor: pointer;
+	color: $base-green;
+	padding-left: 30px;
+	background-image: url(../../images/green-triangle-right.png);
+	background-repeat: no-repeat;
+	background-position: 10px center;
+
+	.expandable.expanded & {
+		background-image: url(../../images/green-triangle-down.png);
+	}
+}
+
+.expandable {
+	.expand-container {
+		@include element-invisible;
+	}
+	&.expanded {
+		.expand-container {
+			@include element-invisible-off;
+		}
+	}
+}
+
+.action-button {
+	.deaction {
+		display: none;
+	}
+	&.acted {
+		.deaction {
+			display: block;
+		}
+		.action {
+			display: none;
+		}
+	}
+}
+
+body.modal-active {
+  height: 100%;
+  overflow: hidden;
+}
+
+.modal-page-overlay {
+  z-index: 2000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: url(../../images/modal-dialog-bg.png);
+  @include transition(0.3s ease 0s);
+  opacity: 1;
+
+  &.hidden {
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+
+.image-enlargement-box {
+  @include dialog-base;
+  @include modal-box-base(107px, 77px);
+  .loading-image {
+    position: absolute;
+    z-index: -1;
+  }
+  .image-container {
+    visibility: hidden;
+  }
+  .image-container img {
+    max-width: none;
+    max-height: none;
+    @include modal-box-shadow;
+  }
+  &.loaded {
+    .loading-image {
+      display: none;
+    }
+    .image-container {
+      visibility: visible;
+    }
+  }
+}
+
+.dialog-content {
+  display: none;
+}
+.modal-dialog-box {
+  @include dialog-base;
+  @include modal-box-base(100px, 100px);
+  @include modal-box-shadow();
+  @include border-radius(2px);
+  border: 1px solid #8fc31f;
+  background-color: white;
+  .close-box {
+    z-index: 1;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: url(../../images/grey-cross.png) no-repeat center center;
+    cursor: pointer;
+    right: 1em;
+    top: 1em;
+  }
+  .content-wrap {
+    padding:{
+      left: 1.5em;
+      right: 1.5em;
+      top: 0.7em;
+      bottom: 1em;
+    }
+    .dialog-content {
+      display: block;
+    }
+  }
+}
+
+.grey-button {
+  border-color: #cccccc;
+  color: #6f6f6f;
+  &:visited {
+    color: #6f6f6f;
+  }
+  background-color: #f7f7f7;
+
+  &:hover {
+    background-color: darken(#f7f7f7, 5);
+  }
+  &:active {
+    background-color: darken(#f7f7f7, 10);
+  }
+
+  &.disabled {
+    &:hover,
+    &:active {
+      background-color: #f7f7f7;
+    }
+  }
+}
+
+.dark-grey-button {
+  border: none;
+  color: white;
+  &:visited {
+    color: white;
+  }
+  background-color: #4c4948;
+  &:hover {
+    background-color: darken(#4c4948, 5);
+  }
+  &:active {
+    background-color: darken(#4c4948, 10);
+  }
+  &.disabled {
+    &:hover,
+    &:active {
+      background-color: #4c4948;
+    }
+  }
+}
+
+.number-block {
+  @include number-block;
+}
+
+.green-block {
+  background-color: #7BB81B;
+  color: white;
+}
+
+.clearfix {
+  clear: both;
+}
+
+/**
+ * Expands the height of a container by its height, or the page width maximally. Used for extra scrolling
+ */
+.page-expand {
+  position: absolute;
+  width: 1px;
+  height: 100%;
+  z-index: -1000;
+}

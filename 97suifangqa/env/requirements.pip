@@ -1,0 +1,8 @@
+#-*- coding: utf-8 -*-
+# 安装指定依赖的第三方库和版本：pip install -r requirements.pip
+django < 1.5
+PIL
+lxml
+pysolr
+uwsgi
+git+https://github.com/toastdriven/django-haystack.git@master#egg=django-haystack

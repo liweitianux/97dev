@@ -1,0 +1,113 @@
+{% extends "picture-base.html" %}
+{% block bodyclasses %}{{ block.super }} blog blog-list{% endblock %}
+{% load staticfiles %}
+{% block othercss %}
+<link rel="stylesheet" href="{% static "stylesheets/sass/blog.css" %}">
+{% endblock %}
+{% block sidebar_first_content %}
+	{% include "sciblog/nav-ribbon.html" %}
+	<div class="region-wrap">
+		<div class="post-question">
+		  {% include "sciblog/blog_search_form.html" %}
+		</div>
+	</div>
+	<div class="hover-overlay">
+		<div class="region-wrap">
+			<div class="user-info">
+				<h3>用户姓名</h3>
+			</div>
+			<div class="search-history">
+				<h3>搜索历史</h3>
+				<ul>
+				  {% for search in search_history %}
+				  <li><a href="{% url query_blogs %}?q={{ search }}">{{ search }}</a></li>
+				  {% endfor%}
+				</ul>
+			</div>
+			<div class="related-questions">
+				<h3>相关问题</h3>
+				<ul>
+				{% for query in questions%}
+				<li>
+				  <a href="{% url query_blogs %}?q={{ query.content }}" title="查询与此问题相关的文章">{{ query.content }}</a>
+				</li>
+				{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block body %}
+	<section id="blog-list-top-nav">
+		{% include "login-menu.inc.html" %}
+		<nav class="search-type-nav">
+			<ul class="links inline">
+			  <li class="first-level"><a href="" class="{% if tab == 'list' %}active{% endif %}">搜索结果</a></li>
+				<!--li class="first-level"><a href="">术语</a></li-->
+				<li class="first-level"><a href="{% url blog_collection %}" class="{% if tab == 'collection' %}active{% endif %}">我的收藏</a></li>
+			</ul>
+		</nav>
+	</section>
+	<section id="blog-list-content">
+	<h2 class="section-name">专业术语</h2>
+	  {% for noun in ppnouns %}
+	  <ul class="articles">
+	  <li class="article">
+			<div class="article-title"><!--a href=""-->{{noun.firstkeyword }}<!--/a--></div>
+			<div class="excerpt">
+			{{ noun.firstparagraph }}
+			</div>
+		</li>
+	  {% endfor %}
+	  </ul>
+	  <h2 class="section-name">医学文章</h2>
+		{% if has_blogs %}
+		<div class="articles">
+			{% for blog in blogs %}
+			<div class="article">
+				<div class="article-title"><a href="{% url blog_detail blog.id %}">{{ blog.subhead }}</a></div>
+				<ul class="article-subtitles inline">
+					<!--li> 
+						<span>难度：</span>
+						{% load tools %}
+						<ul class="difficulty inline rating-blocks">
+						{% for num in 5|get_range %}
+							{% if num < blog.level %}
+							<li class="filled"></li>
+							{% else %}
+							<li class="empty"></li>
+							{% endif %}
+						{% endfor %}
+						</ul>
+					</li>
+					<li> 
+						<span>权威：</span>
+						<ul class="difficulty inline rating-blocks">
+						{% for num in 5|get_range %}
+							{% if num < blog.quality_value %}
+							<li class="filled"></li>
+							{% else %}
+							<li class="empty"></li>
+							{% endif %}
+						{% endfor %}
+						</ul>
+					</li-->
+					<li> <span>杂志：</span><span>{{ blog.journal }}</span></li>
+					<li> <span>作者：</span><span>{{ blog.communication_author }}</span></li>
+				</ul>
+				<br />
+				<div class="excerpt">
+				{{ blog.conclusion|safe }}
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+		{% else %}
+		<div class="not-found">
+			<img src="{% static "images/blog-not-found.png" %}" alt="">
+			<div class="message">没有搜索到{% if tab == 'list'%}文章{% else %}收藏{% endif %}</div>
+		</div>
+		{% endif %}
+	</section>
+
+{% endblock %}

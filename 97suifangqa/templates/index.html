@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>已完成页面</title>
+<style type="text/css">
+	div.pagelist {
+		width: 800px;
+		margin-left: auto;
+		margin-right: auto;
+		margin-top: 100px;
+	}
+
+	li.done {
+		text-color: green;
+	}
+
+	li.todo {
+		text-color: red;
+	}
+</style>
+</head>
+
+<body>
+<div class="pagelist">
+	已完成页面:
+<ul>
+  <li class="done"><a href="/admin">管理界面</a></li>
+  <li class="done"><a href="{% url sciblog.views.blog_index %}">搜索首页</a></li>
+  <li class="done"><a href="{% url list_blogs %}">文章列表</a></li>
+  <li class="done"><a href="{% url blog_detail 1%}">文章详细信息显示</a></li>
+  <li class="todo"><a href="{% url login %}">登录页面</a></li>
+  <li class="todo"><a href="{% url logout %}">登出页面</a></li>
+  <li class="todo"><a href="{% url signup %}">注册界面</a></li>
+</ul>
+	待完成页面:
+<ul>
+</ul>
+</div>
+</body>
+</html>

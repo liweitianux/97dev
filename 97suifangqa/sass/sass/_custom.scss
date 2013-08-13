@@ -1,0 +1,134 @@
+//
+// Custom sass mixins
+//
+// To use a mixin in this file, add this line to the top of your .scss file:
+//   @import "base";
+// Then to use a mixin for a particular rule, add this inside the ruleset's
+// curly brackets:
+//   @include mix-in-name;
+
+
+// element-invisible as defined by http://snook.ca/archives/html_and_css/hiding-content-for-accessibility
+@mixin element-invisible {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  @if $legacy-support-for-ie6 or $legacy-support-for-ie7 {
+    clip: rect(1px 1px 1px 1px); // IE6 and IE7 use the wrong syntax.
+  }
+  clip: rect(1px, 1px, 1px, 1px);
+}
+
+// Turns off the element-invisible effect.
+@mixin element-invisible-off {
+  position: static !important;
+  clip: auto;
+  height: auto;
+  width: auto;
+  overflow: auto;
+}
+
+@mixin element-focusable {
+  @include element-invisible;
+
+  &:active,
+  &:focus {
+    @include element-invisible-off;
+  }
+}
+
+// The word "Unpublished" displayed underneath unpublished nodes and comments.
+@mixin unpublished-div {
+  height: 0;
+  overflow: visible;
+  color: #d8d8d8;
+  font-size: 75px;
+  line-height: 1;
+  font-family: Impact, "Arial Narrow", Helvetica, sans-serif;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  word-wrap: break-word; // A very nice CSS3 property
+
+  @if $legacy-support-for-ie6 or $legacy-support-for-ie7 {
+    .lt-ie8 &>* {
+      position: relative; // Otherwise these elements will appear below the "Unpublished" text.
+    }
+  }
+}
+
+@mixin input-placeholder-color($color, $focus-color: transparent) {
+  $input-placeholder-selectors: (".placeholder", ".input-placeholder", ":-moz-placeholder", "::-webkit-input-placeholder", "::-moz-placeholder", ":-ms-input-placeholder");
+  //For script fallback
+  @each $selector in $input-placeholder-selectors {
+    &#{$selector} {
+      color: $color;
+    }
+    &:focus#{$selector} {
+      color: $focus-color;
+    }
+  }
+}
+
+
+@mixin number-block() {
+  @include border-radius(3px);
+  width: 1.3em;
+  text-align: center;
+  font-family: $font-monospace;
+}
+
+@mixin modal-box-base($default-width: false, $default-height: false) {
+  position: fixed;
+  z-index: 2001;
+  padding: 0;
+  @if $default-width {
+    left: 50%;
+    margin-left: -($default-width/2);
+  }
+  @if $default-height {
+    top: 50%;
+    margin-top: -($default-height/2);
+  }
+}
+
+@mixin modal-box-shadow() {
+  @include box-shadow(0px 0px 30px #444);
+}
+
+@mixin openable-base() {
+  z-index: 1;
+  position: absolute;
+  display: none;
+
+  &.open {
+    display: block;
+  }
+}
+
+@mixin dialog-base() {
+  @include openable-base;
+}
+
+@mixin hideable-element() {
+   &.hidden {
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+
+@mixin showable-element() {
+  visibility: hidden;
+  opacity: 0;
+  &.show {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+@mixin override-link-color() {
+  a {
+    color: inherit;
+  }
+}

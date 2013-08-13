@@ -1,0 +1,25 @@
+{% extends "sciblog/blog_detail.html" %}
+
+{% block sectionname %}
+参考信息
+{% endblock %}
+
+{% block navigation %}
+<nav role="navigation" class="section-nav">
+	<ul class="links inline">
+		<li><a href="#detect_methods" class="active">检测方法</a></li>
+		<li><a href="#refrences">参考文献</a></li>
+	</ul>
+</nav>
+{% endblock %}
+
+{% block block_pieces %}
+<a href="" id="detect_methods"></a>
+<h3>检测方法罗列</h3>
+<p>{{ blog.detectionAssay }}</p>
+<a href="" id="refrences"></a>
+<h3>参考文献</h3>
+{% for ref in blog.references.all %}
+<a href="{{ ref.link }}">{{ ref.description }}</a>
+{% endfor %}
+{% endblock %}

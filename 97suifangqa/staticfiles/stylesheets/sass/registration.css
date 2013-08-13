@@ -1,0 +1,115 @@
+@charset "UTF-8";
+/**
+ * @file
+ * Registration specific styles
+ * @author 赵迤晨 (Zhao Yichen) <interarticle@gmail.com>
+ */
+/* line 11, ../../../sass/sass/registration.scss */
+body.registration input[type="text"],
+body.registration input[type="password"] {
+  background-color: #f8f8f5;
+  border: 1px solid #babab9;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+  border-radius: 2px;
+  width: 250px;
+}
+/* line 65, ../../../sass/sass/_custom.scss */
+body.registration input[type="text"].placeholder,
+body.registration input[type="password"].placeholder {
+  color: #898989;
+}
+/* line 68, ../../../sass/sass/_custom.scss */
+body.registration input[type="text"]:focus.placeholder,
+body.registration input[type="password"]:focus.placeholder {
+  color: transparent;
+}
+/* line 65, ../../../sass/sass/_custom.scss */
+body.registration input[type="text"].input-placeholder,
+body.registration input[type="password"].input-placeholder {
+  color: #898989;
+}
+/* line 68, ../../../sass/sass/_custom.scss */
+body.registration input[type="text"]:focus.input-placeholder,
+body.registration input[type="password"]:focus.input-placeholder {
+  color: transparent;
+}
+/* line 65, ../../../sass/sass/_custom.scss */
+body.registration input[type="text"]:-moz-placeholder,
+body.registration input[type="password"]:-moz-placeholder {
+  color: #898989;
+}
+/* line 68, ../../../sass/sass/_custom.scss */
+body.registration input[type="text"]:focus:-moz-placeholder,
+body.registration input[type="password"]:focus:-moz-placeholder {
+  color: transparent;
+}
+/* line 65, ../../../sass/sass/_custom.scss */
+body.registration input[type="text"]::-webkit-input-placeholder,
+body.registration input[type="password"]::-webkit-input-placeholder {
+  color: #898989;
+}
+/* line 68, ../../../sass/sass/_custom.scss */
+body.registration input[type="text"]:focus::-webkit-input-placeholder,
+body.registration input[type="password"]:focus::-webkit-input-placeholder {
+  color: transparent;
+}
+/* line 65, ../../../sass/sass/_custom.scss */
+body.registration input[type="text"]::-moz-placeholder,
+body.registration input[type="password"]::-moz-placeholder {
+  color: #898989;
+}
+/* line 68, ../../../sass/sass/_custom.scss */
+body.registration input[type="text"]:focus::-moz-placeholder,
+body.registration input[type="password"]:focus::-moz-placeholder {
+  color: transparent;
+}
+/* line 65, ../../../sass/sass/_custom.scss */
+body.registration input[type="text"]:-ms-input-placeholder,
+body.registration input[type="password"]:-ms-input-placeholder {
+  color: #898989;
+}
+/* line 68, ../../../sass/sass/_custom.scss */
+body.registration input[type="text"]:focus:-ms-input-placeholder,
+body.registration input[type="password"]:focus:-ms-input-placeholder {
+  color: transparent;
+}
+/* line 19, ../../../sass/sass/registration.scss */
+body.registration .reg-form {
+  border: 0px;
+}
+/* line 21, ../../../sass/sass/registration.scss */
+body.registration .reg-form tr td {
+  padding: 3px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+/* line 26, ../../../sass/sass/registration.scss */
+body.registration .reg-form td.error {
+  max-width: 200px;
+  vertical-align: top;
+  padding-left: 10px;
+}
+/* line 32, ../../../sass/sass/registration.scss */
+body.registration .error {
+  color: red;
+}
+/* line 36, ../../../sass/sass/registration.scss */
+body.registration input.submit {
+  width: 100px;
+}
+
+/* line 41, ../../../sass/sass/registration.scss */
+body.login .login-prompt {
+  font-size: 0.9em;
+  text-align: center;
+  background: url(../../images/horizontal-bar-grey.png) repeat-x center center;
+}
+/* line 46, ../../../sass/sass/registration.scss */
+body.login .login-prompt .prompt {
+  background-color: white;
+  padding-left: 5px;
+  padding-right: 5px;
+}

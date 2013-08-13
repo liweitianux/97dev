@@ -1,0 +1,39 @@
+{% extends "sciblog/blog_detail.html" %}
+
+{% block sectionname %}
+随访与用药
+{% endblock %}
+
+{% block navigation %}
+<nav role="navigation" class="section-nav">
+	<ul class="links inline">
+		<li><a href="#follow_medicine" class="active">用药与随访历史</a></li>
+		<li><a href="#endpoints">判别指标</a></li>
+		<li><a href="#guideline">治疗策略</a></li>
+	</ul>
+</nav>
+{% endblock %}
+
+{% block block_pieces %}
+<a href="" id="follow_medicine"></a>
+<h3>用药与随访历史</h3>
+<p>{{ blog.treatment_content }}</p>
+<a href="" id="endpoints"></a>
+<h3>判别疗效的指标</h3>
+<h4>主要</h4>
+{% for end in blog.endpoints.all %}
+  {% if end.type == 1 %}
+  {{ end.content }}
+  {% endif %}
+{% endfor %}
+<h4>次要</h4>
+{% for end in blog.endpoints.all %}
+  {% if end.type == 2 %}
+  {{ end.content }}
+  {% endif %}
+{% endfor %}
+<div></div>
+<a href="" id="guideline"></a>
+<h3>治疗策略</h3>
+{{ blog.guidline.content }}
+{% endblock %}

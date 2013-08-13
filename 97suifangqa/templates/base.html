@@ -1,0 +1,96 @@
+<!doctype html>
+{% load staticfiles %}
+{#-- https://github.com/paulirish/html5-boilerplate/blob/master/index.html -#}
+{#-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -#}
+{% comment %}
+	@note   Justification for lang="en"
+	@author Zhao Yichen 
+	@date   2013-5-22
+	 If you set lang="zh", lang="" or anything that's not lang="en", and set a global font-family with Chinese fonts, all English letters would also have the Chinese fonts applied, regardless of the order of appearance in the font-family fallback list.
+
+	@note   Conditional html elements
+	@author Zhao Yichen
+	@date 2013-5-22
+	 These elements are taken directly from the default Hyde (python tool) template. They are used for conditional css rules.
+	 .ie means the browser is any Internet Explorer, except 10
+	 .ie7 means IE 7
+	 .ie8 means IE 8
+	 Other versions of IE (9 and up) do not have serious standards compliant problems.
+{% endcomment %}
+<!--[if lt IE 7 ]> <html lang="en" class="no-js ie"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="no-js ie7 ie"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="no-js ie8 ie"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+  <head>
+	<meta charset="utf-8">
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>{% block title %}97 随访{% endblock %}</title>
+	{% block css %}
+	<link rel="stylesheet" href="{% static "stylesheets/base.css" %}">
+	{% block othercss %}{% endblock %}
+	{% endblock %}
+	<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+	<script type="text/javascript" src="{% static "javascripts/html5shiv.js" %}"></script>
+	<script type="text/javascript" src="{% static "javascripts/css3-mediaqueries.js" %}"></script>
+	<script type="text/javascript" src="{% static "javascripts/respond.min.js" %}"></script>
+	<![endif]-->
+
+	{% block favicons %}
+	<!-- Fav and touch icons -->
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="{% static "images/apple-touch-icon-144-precomposed.png" %}">
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="{% static "images/apple-touch-icon-114-precomposed.png" %}">
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="{% static "images/apple-touch-icon-72-precomposed.png" %}">
+	<link rel="apple-touch-icon-precomposed" href="{% static "images/apple-touch-icon-57-precomposed.png" %}">
+	<link rel="shortcut icon" href="{% static "images/favicon.png" %}">
+	{% endblock favicons %}
+
+	{% block headjs %}{% endblock %}
+	{% block endhead %}{% endblock %}
+  </head>
+
+  <body class="{% if user.is_authenticated %}logged-in{% else %}not-logged-in{% endif %} {% block bodyclasses %}{% endblock %}">
+  	{% block page %}
+	<div id="page">
+		<div id="main" role="main">
+			{% block before_content %}{% endblock %}
+			<section id="content" class="content">
+				<div class="region-wrap">
+					{% block body %}
+					{% endblock %}
+				</div>
+			</section>
+			{% block sidebar_first %}{% endblock %}
+			{% block sidebar_second %}{% endblock %}
+			{% block after_content %}{% endblock %}
+		</div>
+		<div class="modal-dialog-box" id="modal-dialog-box">
+			<div class="close-box"></div>
+			<div class="content-wrap"></div>
+		</div>
+		<div class="image-enlargement-box" id="image-enlargement-box">
+			<img src="{% static "images/loading.gif" %}" alt="" class="loading-image">
+			<div class="image-container"></div>
+		</div>
+		<div class="modal-page-overlay hidden" id="modal-page-overlay"></div>
+	</div>
+	{% endblock page %}
+
+	{% block js %}
+	{% block jquery %}
+	<script src="{% static "javascripts/jquery-1.9.1.min.js" %}"></script>
+	{% endblock %}
+
+	{% block scripts %}
+	<script type="text/javascript" src="{% static "javascripts/jquery.waitforimages.min.js" %}"></script>
+	<script type="text/javascript" src="{% static "javascripts/jquery.placeholder.min.js" %}"></script>
+	<script type="text/javascript" src="{% static "javascripts/main.js" %}"></script>
+	<script type="text/javascript">
+	$('input, textarea').placeholder();
+	</script>
+	{% block otherscripts %}{% endblock %}
+	{% endblock scripts %}
+	{% endblock js %}
+  </body>
+</html>
