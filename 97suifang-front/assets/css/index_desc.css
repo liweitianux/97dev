@@ -1,0 +1,56 @@
+#index_desc_container {
+	width: 588px;
+	height: 349px;
+	background-color: #FFFFFF;
+	border: 1px solid #94C721;
+	padding: 0 20px 0 20px;
+}
+.index_desc_title_line {
+	height: 42px;
+	line-height: 42px;
+	border-bottom: 1px solid #D6D0D6;
+	width: 588px;
+}
+.index_desc_title_line .index_desc_title {
+	font-weight: bold;
+	color: #4A4A4A;
+	font-size: 18px;
+	float: left;
+}
+.index_desc_title_line .index_desc_close {
+	float: right;
+	background: url('../images/closed.png') no-repeat;
+	height: 11px;
+	width: 11px;
+	margin: 15px 0 0 0;
+	cursor: pointer;
+}
+.index_desc_content {
+	margin-top: 8px;
+	height: 223px;
+	line-height: 20px;
+	color: #4A4A4A;
+	font-size: 14px;
+	letter-spacing: 1px;
+	overflow: auto;
+}
+.collection {
+	background-color: #F7F7F7;
+	height: 38px;
+	line-height: 38px;
+	text-align: center;
+	cursor: pointer;
+}
+.go_library {
+	padding-top: 8px;
+	height: 28px;
+}
+.go_library .go_library_btn {
+	float: right;
+	height: 25px;
+	line-height: 21px;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-bottom: 2px;
+	padding-top: 2px;
+}

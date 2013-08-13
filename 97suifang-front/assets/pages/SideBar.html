@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset=UTF-8">
+	<title>demo</title>
+	<link rel="stylesheet" type="text/css" href="../css/normalize.css"/>
+	<link rel="stylesheet" type="text/css" href="../css/sidebar.css"/>
+	<script type="text/javascript" src="../js/jquery-1.6.min.js"></script>
+	<script type="text/javascript" src="../js/sidebar.js"></script>
+</head>
+<body>
+	<div id="sidebar_container">
+		<!---------------------------------- navigation ---------------------------------->
+		<div id="nav_container">
+			<div class="head-background"></div>
+			<div class="hidden_navs">
+		        <ul>
+		            <li><a href="javascript:void(0)">首页</a></li> 
+		            <li><a href="javascript:void(0)">医学知识</a></li> 
+		        </ul>
+	        </div>
+	        <div class="default_nav">
+		        <div class="tail">
+		        	<a href="javascript:void(0)">导航</a>
+		        </div>
+		        <div class="tail-cut"></div>
+		        <div class="curr_nav">随访工具</div>
+	        </div>
+        </div>
+        <div class="clear"></div>
+        
+        <!---------------------------------- compare ---------------------------------->
+        <div id="compare_container">
+        	<div class="post-question">
+	  			<form action="" class="searchdiv" method="get">
+					<input type="text" value="" class="question" placeholder="在这里搜索关键词" name="q">
+					<input type="submit" class="submit" value="提问">
+				</form>
+			</div>
+			<div class="similar_container">
+				<div class="vertical_bar_component">
+					<div class="v_b_c_top"></div>
+					<div class="v_b_c_middle">
+						<div class="v_b_c_middle_top"></div>
+						<div class="v_b_c_middle_middle"></div>
+						<div class="v_b_c_middle_bottom"></div>
+					</div>
+					<div class="v_b_c_bottom"></div>
+					<div class="cycle1">
+						<div class="cycle1_out"></div>
+						<div class="cycle1_in"></div>
+					</div>
+					<div class="cycle2"></div>
+					<div class="cycle3"></div>
+					<div class="cycle4"></div>
+				</div>
+				<div class="similar_content">
+					<div class="similar_title">经比对，下文中的被研究患者与您很像：</div>
+					<div class="specifix_content"><div class="specifix_text">有 80% 的患者有感到头疼</div></div>
+					<div class="specifix_content"><div class="specifix_text">有 10% 的患者有感到头疼并且也感觉到肌疼</div></div>
+					<div class="specifix_content"><div class="specifix_text">有 20% 的患者ALT到达过正常值</div></div>
+					<div class="specifix_content"><div class="specifix_text">有 3% 的患者有感到肌疼</div></div>
+				</div>
+			</div>
+			<div class="clear"></div>
+			<div class="compare_btn"><div class="compare_btn_in">比对文献</div></div>
+			<div class="logo_container"><img src="../images/slilogo.png" /></div>
+        </div>
+        
+	</div>
+</body>

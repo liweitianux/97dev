@@ -1,0 +1,359 @@
+#right_container {
+	width: 596px;
+	float: left;
+	margin-left: 457px;
+}
+#index_status_container {
+	width: 596px;
+}
+.index_title {
+	color: #4a4a4a;
+	font-size: 20px;
+	letter-spacing: 2px;
+	font-weight: bold;
+}
+.index_sub_title {
+	margin-top: 9px;
+	height: 25px;
+	line-height: 25px;
+	background-color: #f3f3f1;
+}
+.index_sub_title .content {
+	color: #737173;
+	float: left;
+}
+.index_sub_title .close_icon {
+	background: url('../images/closed.png') no-repeat;
+	float: right;
+	height: 11px;
+	width: 11px;
+	margin: 7px 7px 0 0;
+	cursor: pointer;
+}
+.detail_card_info {
+	width: 562px;
+	border: 1px solid #CACACA;
+	position: relative;
+	float: left;
+	margin-top: 9px;
+	padding: 0 14px 6px 20px;
+	display: none;
+}
+.detail_card_info .card_title {
+	height: 32px;
+	line-height: 32px;
+	color: #4b4a48;
+	font-weight: bold;
+	font-size: 18px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #CACACA;
+}
+.detail_card_info .card_title .collapse_btn {
+	width: 80px;
+	height: 23px;
+	line-height: 23px;
+	font-size: 14px;
+	vertical-align: baseline;
+	position: relative;
+	bottom: -10px;
+	float: right;
+}
+.detail_card_info .search_data_div {
+	margin-top: 9px;
+	margin-bottom: 17px;
+	width: 562px;
+}
+.detail_card_info .search_data_div input[type='button'] {
+	width: 80px;
+	height: 23px;
+	line-height: 23px;
+	float: left;
+}
+.detail_card_info .search_data_div .recent_two_week {
+	margin-left: 4px;
+}
+.detail_card_info .search_data_div .unselected {
+	border: 1px solid #9F9F9F;
+	background: #FFFFFF;
+	border-radius: 0;
+	color: #5C5C5C;
+}
+.detail_card_info .search_data_div .datepicker_container {
+	position: relative;
+	float: right;
+}
+.detail_card_info .search_data_div .end_date_container {
+	margin-left: 10px;
+}
+.detail_card_info .search_data_div .datepicker_container .datepicker {
+	background: #FFFFFF;
+	border: 1px solid #9C9C9C;
+	color: #B9B9B9;
+	width: 107px;
+	height: 17px;
+	line-height: 17px;
+	position: relative;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.detail_card_info .search_data_div .datepicker_container .ui-datepicker-trigger {
+	position: absolute;
+	top: 2px;
+	right: 8px;
+}
+.detail_card_info .table_div table {
+	margin-bottom: 0;
+}
+.detail_card_info .table_div table tr {
+	height: 34px;
+}
+.detail_card_info .table_div table tr td {
+	border: 1px solid #CACACA;
+	text-align: center;
+}
+.detail_card_info .table_div table .first_line {
+	background: #99CC33;
+	height: 29px;
+	color: #FFFFFF;
+}
+.detail_card_info .see_more {
+	margin-top: 5px;
+}
+.detail_card_info .see_more .see_more_btn {
+	float: right;
+	width: 107px;
+	height: 24px;
+	line-height: 24px;
+}
+.index_card {
+	width: 278px;
+	height: 375px;
+	border: 1px solid #CACACA;
+	margin-top: 9px;
+	border-radius: 2px;
+	padding: 5px 5px 0 8px;
+	position: relative;
+}
+.index_card_fir {
+	float: left;
+}
+.index_card_sec {
+	float: right;
+}
+.index_card .card_title {
+	height: 40px;
+	line-height: 40px;
+	color: #7D7D7D;
+	font-weight: bold;
+	font-size: 18px;
+}
+.index_card .refer_range {
+	color: #4B4B4B;
+}
+.index_card .refer_range .refer_text {
+	margin-right: 5px;
+}
+.index_card .edit_data, .index_card .editing_data {
+	height: 25px;
+	margin-top: 7px;
+}
+.index_card .edit_data .explain_icon {
+	margin-right: 2px;
+	float: right;
+}
+.index_card .edit_data .small_edit_icon {
+	float: right;
+	cursor: pointer;
+}
+.index_card .edit_data .last_edit_data {
+	float: left;
+}
+.index_card .editing_data {
+	display: none;
+}
+.index_card .editing_data .input_container {
+	float: left;
+}
+.index_card .editing_data .input_container input {
+	color: #5C5C5C;
+	background-color: #FFFFFF;
+	border: 1px solid #9C9C9C;
+}
+.index_card .editing_data .input_container .error {
+	border: 1px solid red;
+}
+.index_card .editing_data .input_container .edit_input_main {
+	width: 42px;
+	height: 17px;
+	line-height: 17px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.index_card .editing_data .input_container .edit_input_sub {
+	width: 17px;
+	height: 17px;
+	line-height: 17px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.index_card .editing_data .add_minus_icon {
+	float: left;
+	margin-right: 8px;
+}
+.index_card .editing_data .add_minus_icon .add_icon {
+	background:url(../images/add.png) no-repeat;
+	width: 15px;
+	height: 11px;
+	border-right: 1px solid #9C9C9C;
+	cursor: pointer;
+}
+.index_card .editing_data .add_minus_icon .minus_icon {
+	background:url(../images/minus.png) no-repeat;
+	width: 15px;
+	height: 10px;
+	border-bottom: 1px solid #9C9C9C;
+	border-right: 1px solid #9C9C9C;
+	margin-top: 1px;
+	cursor: pointer;
+}
+.index_card .editing_data .cancel_edit_icon {
+	float: right;
+	background:url(../images/cancel_edit.png) no-repeat;
+	width: 23px;
+	height: 23px;
+	margin-right: 2px;
+	cursor: pointer;
+}
+.index_card .editing_data .confirm_edit_icon {
+	float: right;
+	background:url(../images/confirm_edit.png) no-repeat;
+	width: 23px;
+	height: 23px;
+	cursor: pointer;
+}
+.index_card .refresh_data {
+	height: 23px;
+	line-height: 23px;
+	margin-top: 3px;
+}
+.index_card .refresh_data .refresh_text {
+	float: left;
+	color: #B9B9B9;
+}
+.index_card .refresh_data .refresh_icon {
+	float: right;
+	background: url("../images/refresh.png") no-repeat;
+	width: 23px;
+	height: 23px;
+	cursor: pointer;
+}
+.index_card .select_date {
+	width: 148px;
+	height: 23px;
+	position: relative;
+	margin-top: 3px;
+	display: none;
+}
+.index_card .select_date .datepicker {
+	background: #FFFFFF;
+	border: 1px solid #9C9C9C;
+	color: #B9B9B9;
+	width: 131px;
+	height: 17px;
+	line-height: 17px;
+	position: relative;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.index_card .select_date .ui-datepicker-trigger {
+	position: absolute;
+	top: 2px;
+	right: 8px;
+}
+.index_card .edit_icon_container .edit_icon {
+	background: url("../images/pen_large.png") no-repeat;
+	height: 85px;
+	width: 85px;
+	float: left;
+	margin: 40px 0 0 95px;
+	cursor: pointer;
+}
+.index_card .edit_icon_container .curve_icon {
+	background: url("../images/curve.png") no-repeat;
+	height: 125px;
+	width: 97px;
+	float: left;
+}
+.index_card .edit_text {
+	color: #4B4B4B;
+	text-align: center;
+	height: 20px;
+	line-height: 20px;
+	margin-top: 11px;
+	margin-bottom: 100px;
+}
+.index_card .chart {
+	height: 230px;
+}
+.index_card .card_bottom {
+	height: 30px;
+	width: 596px;
+}
+.index_card .card_bottom .understand_index, .index_card .card_bottom .simulation_sheet, .index_card .card_bottom .detail_history {
+	float: left;
+}
+.index_card .card_bottom .understand_index a, .index_card .card_bottom .simulation_sheet a, .index_card .card_bottom .detail_history a {
+	color: #B9B9B9;
+	cursor: pointer;
+	text-decoration: none;
+}
+.index_card .card_bottom .understand_index {
+	width: 99px;
+}
+.index_card .card_bottom .simulation_sheet {
+	width: 96px;
+}
+.index_card .card_delete {
+	background: url('../images/closed.png') no-repeat;
+	width: 11px;
+	height: 11px;
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 5px 5px 0 0;
+	cursor: pointer;
+}
+.index_card .card_delete_hover {
+	background: url('../images/closed_hover.png') no-repeat;
+	width: 15px;
+	height: 15px;
+	position: absolute;
+	top: -3px;
+	right: -2px;
+	margin: 5px 5px 0 0;
+	cursor: pointer;
+}
+.act_card_container {
+	width: 293px;
+	height: 380px;
+}
+.act_card{
+	width: 290px;
+	height: 96px;
+	line-height: 96px;
+	text-align: center;
+	border: 2px dashed #A0A0A0;
+	margin-top: 9px;
+	border-radius: 2px;
+}
+.act_card a{
+	color: #7D7D7D;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 17px;
+	letter-spacing: 1px;
+	cursor: pointer;
+}
+.move_div_2_left {
+	float: left;
+}
