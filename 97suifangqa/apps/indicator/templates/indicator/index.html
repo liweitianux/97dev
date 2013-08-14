@@ -1,12 +1,15 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-	<meta http-equiv="content-type" content="text/html;charset=UTF-8">
-	<title>首页</title>
-</head>
-<body>
-  <a href="{% url indicator_status %}">指标状态</a>
-  <a href="{% url follow_indicator %}">关注指标</a>
-</body>
-</html>
-<!-- vim: set ts=2 sw=2 tw=0 fenc=utf-8 ft=html: -->
+{% extends "base.html" %}
+{% load static from staticfiles %}
+
+{% block title %}
+首页 | 随访工具 | 97 随访
+{% endblock %}
+
+{% block body %}
+  <ul>
+    <li><a href="{% url indicator_status %}">指标状态</a></li>
+    <li><a href="{% url follow_indicator %}">关注指标</a></li>
+  </ul>
+{% endblock %}
+
+{# vim: set ts=2 sw=2 tw=0 fenc=utf-8 ft=htmldjango.html: #}

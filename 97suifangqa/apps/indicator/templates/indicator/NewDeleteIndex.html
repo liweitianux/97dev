@@ -1,17 +1,35 @@
-<!DOCTYPE HTML>
-{% load staticfiles %}
-<html>
-<head>
-	<meta http-equiv="content-type" content="text/html;charset=UTF-8">
-	<title>添加或删除关注指标</title>
+{% extends "base.html" %}
+{% load static from staticfiles %}
+
+{% block title %}
+指标状态 | 随访工具 | 97 随访
+{% endblock %}
+
+{% block css %}
   <link rel="stylesheet" type="text/css" href="{% static "css/normalize.css" %}"/>
-  <link rel="stylesheet" type="text/css" href="{% static "plugins/thickbox/thickbox.css" %}"/>
   <link rel="stylesheet" type="text/css" href="{% static "css/new_delete_index.css" %}"/>
+  <link rel="stylesheet" type="text/css" href="{% static "plugins/thickbox/thickbox.css" %}"/>
+{% endblock %}
+
+{% block jquery %}
   <script type="text/javascript" src="{% static "javascripts/jquery-1.6.min.js" %}"></script>
-  <script type="text/javascript" src="{% static "plugins/thickbox/thickbox.js" %}"></script>
+{% endblock %}
+
+{% block scripts %}
   <script type="text/javascript" src="{% static "javascripts/new_delete_index.js" %}"></script>
-</head>
-<body>
+  <script type="text/javascript" src="{% static "plugins/thickbox/thickbox.js" %}"></script>
+
+  <!-- set variables
+       'static_url': used in js to load staticfiles
+       'indicator_url': root url of 'apps/indicator'
+  -->
+  <script>
+    var static_url = "{{ STATIC_URL }}";
+    var indicator_url = "/indicator/";
+  </script>
+{% endblock %}
+
+{% block page %}
   <!--
 	<iframe align="left" width="420" height="720" src="SideBar.html" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
   -->
@@ -423,6 +441,6 @@
 			<div style="clear:both;"></div>
 		</div>
 	</div>
-</body>
-</html>
+{% endblock page %}
+
 {# vim: set ts=2 sw=2 tw=0 fenc=utf-8 ft=htmldjango.html: #}

@@ -6,8 +6,10 @@ apps/indicator views
 """
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden, Http404
 from django.shortcuts import render_to_response, get_object_or_404
+# json
+from django.utils import simplejson as json
 # CRSF
 from django.template import RequestContext
 
@@ -17,6 +19,7 @@ from indicator.tools import *
 
 import re
 import datetime
+
 
 
 def get_indicator_view(request, **kwargs):
@@ -404,6 +407,106 @@ def add_recordhistory(request, record_id, template='indicator/simple.html'):
         'form': form,
     }, context_instance=RequestContext(request))
 # }}}
+
+
+###########################################################
+###### ajax ######
+def ajax_act_index(request):
+    """
+    index action (add/minus)
+    follow/unfollow indicator
+
+    TODO:
+    * howto relate 'index_id' to 'indicator_id'?
+    * howto implement follow/unfollow indicator function?
+    """
+    if request.is_ajax():
+        result = 'success'
+    else:
+        result = 'fail'
+        #raise Http404
+    return HttpResponse(result)
+
+
+def ajax_close_sub_title(request):
+    """
+    close the small prompt banner above the indicator cards
+
+    'indicator/static/javascripts/sheetdefault.js'
+    """
+    if request.is_ajax():
+        result = 'success'
+    else:
+        result = 'fail'
+        #raise Http404
+    return HttpResponse(result)
+
+
+def ajax_edit_history_data(request):
+    """
+    edit history data
+    used in 'detail history' view card
+    """
+    if request.is_ajax():
+        result = 'success'
+    else:
+        result = 'fail'
+        #raise Http404
+    return HttpResponse(result)
+
+
+def ajax_get_card_data_chart(request):
+    """
+    'indicator/static/javascripts/load_card.js'
+    get card data
+    for the 'chart' within the card
+    format: [v1, v2, v3, ...]
+
+    NB.
+    每一天都要有数据，否则时间轴对不上 (load_card.js: redraw_chard())
+    TODO:
+    workaround for the above problem!
+    """
+    # TODO
+    if request.is_ajax():
+        result = [6.0, 5.9, 5.5, 4.5, 6.2, 6.5, 5.2, 6.0,
+                  5.9, 5.5, 4.5, 6.2, 6.5, 5.2, 6.0, 5.9,
+                  5.5, 4.5, 6.2, 6.5]
+    else:
+        result = ''
+        #raise Http404
+    return HttpResponse(json.dumps(result),
+            mimetype='application/json')
+
+
+def ajax_get_card_data_table(request):
+    """
+    get card data
+    for used in 'detail data card'
+    format:
+    <tr><td>yyyy-mm-dd</td><td>hh:mm</td><td>value unit</td></tr>
+    """
+    # TODO
+    if request.is_ajax():
+        result = """
+            <tr><td>2013-08-10</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
+            <tr><td>2013-08-09</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
+            <tr><td>2013-08-08</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
+            <tr><td>2013-08-08</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
+            <tr><td>2013-08-07</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
+            <tr><td>2013-08-06</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
+            <tr><td>2013-08-05</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
+            <tr><td>2013-08-04</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
+            <tr><td>2013-08-03</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
+            <tr><td>2013-08-02</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
+            <tr><td>2013-08-01</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
+            <tr><td>2013-07-31</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
+            <tr><td>2013-07-30</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
+            """
+    else:
+        result = ''
+        #raise Http404
+    return HttpResponse(result)
 
 
 ###########################################################

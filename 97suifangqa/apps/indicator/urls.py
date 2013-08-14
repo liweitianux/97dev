@@ -70,6 +70,32 @@ urlpatterns += patterns('',
         name='indicator_indexdesc'),
 )
 
+## UI ajax
+urlpatterns += patterns('indicator.views',
+    # act_index
+    # index action (add/minus): follow/unfollow indicator
+    url(r'^ajax/act_index/$',
+        'ajax_act_index',
+        name='indicator_ajax_actindex'),
+    # close_sub_title
+    # close the small prompt banner above the indicator cards
+    url(r'^ajax/close_sub_title/$',
+        'ajax_close_sub_title',
+        name='indicator_ajax_closesubtitle'),
+    # edit_history_data
+    url(r'^ajax/edit_history_data/$',
+        'ajax_edit_history_data',
+        name='indicator_ajax_edithistorydata'),
+    # get_card_data_chart
+    url(r'^ajax/get_card_data_chart/$',
+        'ajax_get_card_data_chart',
+        name='indicator_ajax_getcarddatachart'),
+    # get_card_data_table
+    url(r'^ajax/get_card_data_table/$',
+        'ajax_get_card_data_table',
+        name='indicator_ajax_getcarddatatable'),
+)
+
 urlpatterns += patterns('indicator.views',
     ## test
     url(r'^test/$', 'test_view', name='test'),

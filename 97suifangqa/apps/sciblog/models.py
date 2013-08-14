@@ -313,7 +313,7 @@ class BaseLine(models.Model):
 # }}}
 
 
-import signals
+
 admin.site.register([
                      Source,
                      Reference,

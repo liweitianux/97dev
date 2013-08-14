@@ -17,7 +17,7 @@ $(document).ready(function(){
 		var time = date.getTime();
 		$.ajax({
 			type: 'get',
-			url: '../ajax/act_index',
+			url: indicator_url + 'ajax/act_index',
 			data: 'index_id='+index_id+'&act=add'+'&time='+time,
 			success: function(data){
 				if(data == 'success'){
@@ -40,7 +40,7 @@ $(document).ready(function(){
 		var time = date.getTime();
 		$.ajax({
 			type: 'get',
-			url: '../ajax/act_index',
+			url: indicator_url + 'ajax/act_index',
 			data: 'index_id='+index_id+'&act=minus'+'&time='+time,
 			success: function(data){
 				var obj = minus_icon.parent();
@@ -77,3 +77,5 @@ function classHover(obj, c){
 		}
 	);
 }
+
+// vim: set ts=4 sw=4 tw=0 fenc=utf-8 ft=javascript: //

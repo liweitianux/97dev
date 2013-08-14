@@ -68,7 +68,7 @@ $(document).ready(function(){
 		var time = date.getTime();
 		$.ajax({
 			type: 'get',
-			url: '../../ajax/edit_history_data',
+			url: indicator_url + 'ajax/edit_history_data',
 			data: 'time='+time,
 			success: function(data){
 				if(data == 'success'){
@@ -81,3 +81,5 @@ $(document).ready(function(){
 		return false;
 	});
 });
+
+// vim: set ts=4 sw=4 tw=0 fenc=utf-8 ft=javascript: //

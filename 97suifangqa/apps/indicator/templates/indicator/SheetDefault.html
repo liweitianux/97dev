@@ -1,14 +1,22 @@
-<!DOCTYPE HTML>
-{% load staticfiles %}
-<html>
-<head>
-	<meta http-equiv="content-type" content="text/html;charset=UTF-8">
-	<title>页面4</title>
+{% extends "base.html" %}
+{% load static from staticfiles %}
+
+{% block title %}
+指标状态 | 随访工具 | 97 随访
+{% endblock %}
+
+{% block css %}
   <link rel="stylesheet" type="text/css" href="{% static "css/normalize.css" %}"/>
   <link rel="stylesheet" type="text/css" href="{% static "plugins/datepicker/datepicker.css" %}"/>
   <link rel="stylesheet" type="text/css" href="{% static "plugins/thickbox/thickbox.css" %}"/>
   <link rel="stylesheet" type="text/css" href="{% static "css/sheet_default.css" %}"/>
+{% endblock %}
+
+{% block jquery %}
   <script type="text/javascript" src="{% static "javascripts/jquery-1.6.min.js" %}"></script>
+{% endblock %}
+
+{% block scripts %}
   <script type="text/javascript" src="{% static "plugins/datepicker/datepicker.js" %}"></script>
   <script type="text/javascript" src="{% static "plugins/datepicker/language-zh-CN.js" %}"></script>
   <script type="text/javascript" src="{% static "plugins/thickbox/thickbox.js" %}"></script>
@@ -16,8 +24,18 @@
   <script type="text/javascript" src="{% static "plugins/highcharts/highcharts-more.js" %}"></script>
   <script type="text/javascript" src="{% static "javascripts/sheetdefault.js" %}"></script>
   <script type="text/javascript" src="{% static "javascripts/load_card.js" %}"></script>
-</head>
-<body>
+
+  <!-- set variables
+       'static_url': used in js to load staticfiles
+       'indicator_url': root url of 'apps/indicator'
+  -->
+  <script>
+    var static_url = "{{ STATIC_URL }}";
+    var indicator_url = "/indicator/";
+  </script>
+{% endblock %}
+
+{% block page %}
   <!--
 	<iframe align="left" width="420" height="720" src="SideBar.html" style="position:fixed;left:0;top:0" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
   -->
@@ -203,10 +221,12 @@
 			</div>
 			
 			<div class="act_card_container index_card_sec">
-				<div class="act_card"><a href="NewDeleteIndex.html">添加或删除关注指标</a></div>
+        <div class="act_card">
+          <a href="{% url follow_indicator %}">添加或删除关注指标</a>
+        </div>
 			</div>
 		</div>
 	</div>
-</body>
-</html>
+{% endblock page %}
+
 {# vim: set ts=2 sw=2 tw=0 fenc=utf-8 ft=htmldjango.html: #}

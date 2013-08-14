@@ -8,16 +8,16 @@ $(document).ready(function(){
 	
 	//副标题点大叉
 	$("#index_title_closed_icon").bind("click", function(){
-		var clostBtn = $(this);
+		var closeBtn = $(this);
 		var date = new Date();
 		var time = date.getTime();
 		$.ajax({  //数据库还是cookie，都可以，建议使用cookie，html中是否显示sub_title也由后端读取的cookie决定
 			type: 'get',
-			url: '../ajax/close_sub_title',
+			url: indicator_url + 'ajax/close_sub_title',
 			data: 'time='+time,
 			success: function(data){
 				if(data == 'success'){
-					clostBtn.parent().remove();
+					closeBtn.parent().remove();
 				}
 			}
 		});
@@ -146,14 +146,14 @@ $(document).ready(function(){
 	//日期控件
 	$(".select_date>.datepicker").datepicker({
 		 showOn: "both",
-		 buttonImage: "../plugins/datepicker/images/calendar.png",
+		 buttonImage: static_url + "plugins/datepicker/images/calendar.png",
 		 buttonImageOnly: true
 	});
 	
 	//时间范围控制（开始时间<结束时间）
 	$("#search_start_date").datepicker({
 		showOn: "both",
-		buttonImage: "../plugins/datepicker/images/calendar.png",
+		buttonImage: static_url + "plugins/datepicker/images/calendar.png",
 		buttonImageOnly: true,
 		onClose: function( selectedDate ) {
 			$("#search_end_date").datepicker("option", "minDate", selectedDate);
@@ -179,3 +179,5 @@ function delete_card(){
 	});
 	card.remove();
 }
+
+// vim: set ts=4 sw=4 tw=0 fenc=utf-8 ft=javascript: //

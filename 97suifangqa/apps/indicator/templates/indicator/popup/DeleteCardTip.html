@@ -1,15 +1,24 @@
-<!DOCTYPE HTML>
-{% load staticfiles %}
-<html>
-<head>
-	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-	<title>取消关注卡片提示</title>
+{% extends "base.html" %}
+{% load static from staticfiles %}
+
+{% block title %}
+取消关注卡片提示 | 随访工具 | 97 随访
+{% endblock %}
+
+{% block css %}
 	<link rel="stylesheet" type="text/css" href="{% static "css/normalize.css" %}"/>
 	<link rel="stylesheet" type="text/css" href="{% static "css/delete_card_tip.css" %}"/>
+{% endblock %}
+
+{% block jquery %}
 	<script type="text/javascript" src="{% static "javascripts/jquery-1.6.min.js" %}"></script>
+{% endblock %}
+
+{% block scripts %}
 	<script type="text/javascript" src="{% static "javascripts/delete_card_tip.js" %}"></script>
-</head>
-<body>
+{% endblock %}
+	
+{% block page %}
 	<div id="delete_card_tip_container">
 		<div class="delete_card_tip_title_line">
 			<div class="delete_card_tip_title">提示</div>
@@ -21,6 +30,6 @@
 			<a class="action_confirm_ignore">继续关注</a>
 		</div>
 	</div>
-</body>
-</html>
+{% endblock page %}
+
 {# vim: set ts=2 sw=2 tw=0 fenc=utf-8 ft=htmldjango.html: #}
