@@ -180,7 +180,7 @@
 
     <field name="dataType" type="text_en" indexed="true" stored="true" multiValued="false" />
 
-    <field name="categories" type="text_en" indexed="true" stored="true" multiValued="true" />
+    <field name="categories_id" type="text_en" indexed="true" stored="true" multiValued="true" />
 
   </fields>
 
