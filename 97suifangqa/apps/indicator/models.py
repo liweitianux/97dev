@@ -230,6 +230,8 @@ class Indicator(models.Model):                              # {{{
             'dataType': self.dataType,
             'categories_id': [c.id
                 for c in self.categories.all()],
+            'categories_name': [c.name
+                for c in self.categories.all()],
             'units_id': [u.id
                 for u in self.get_unit(type="all")]
         }

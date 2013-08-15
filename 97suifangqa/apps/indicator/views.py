@@ -7,9 +7,7 @@ apps/indicator views
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden, Http404
-from django.shortcuts import render_to_response, get_object_or_404
-# json
-from django.utils import simplejson as json
+from django.shortcuts import render, get_object_or_404
 # CRSF
 from django.template import RequestContext
 
@@ -19,6 +17,14 @@ from indicator.tools import *
 
 import re
 import datetime
+
+## json
+# Django 1.5 deprecates 'django.utils.simplejson'
+# in favor of Python 2.6's bulti-in 'json' module
+try:
+    import json
+except ImportError:
+    from django.utils import simplejson as json
 
 
 
@@ -146,11 +152,11 @@ def add_edit_category(request, category_id=None, template='indicator/simple.html
         # form with data of the specified instance
         form = IndicatorCategoryForm(instance=category)
 
-    return render_to_response(template, {
+    return render(request, template, {
         'object': 'IndicatorCategory',
         'action': action,
         'form': form,
-    }, context_instance=RequestContext(request))
+    })
 # }}}
 
 
@@ -187,11 +193,11 @@ def add_edit_indicator(request, indicator_id=None, template='indicator/simple.ht
         # form with instance
         form = IndicatorForm(instance=indicator)
 
-    return render_to_response(template, {
+    return render(request, template, {
         'object': 'Indicator',
         'action': action,
         'form': form,
-    }, context_instance=RequestContext(request))
+    })
 # }}}
 
 
@@ -226,11 +232,11 @@ def add_edit_unit(request, unit_id=None, template='indicator/simple.html'):
         # form with instance
         form = UnitForm(instance=unit)
 
-    return render_to_response(template, {
+    return render(request, template, {
         'object': 'Unit',
         'action': action,
         'form': form,
-    }, context_instance=RequestContext(request))
+    })
 # }}}
 
 
@@ -266,11 +272,11 @@ def add_edit_confine(request, confine_id=None, template='indicator/simple.html')
         # form with instance
         form = InnateConfineForm(instance=confine)
 
-    return render_to_response(template, {
+    return render(request, template, {
         'object': 'InnateConfine',
         'action': action,
         'form': form,
-    }, context_instance=RequestContext(request))
+    })
 # }}}
 
 
@@ -318,11 +324,11 @@ def add_edit_record(request, record_id=None, template='indicator/simple.html'):
         # form with instance
         form = IndicatorRecordForm(instance=record)
 
-    return render_to_response(template, {
+    return render(request, template, {
         'object': 'IndicatorRecord',
         'action': action,
         'form': form,
-    }, context_instance=RequestContext(request))
+    })
 # }}}
 
 
@@ -366,11 +372,11 @@ def modify_record(request, record_id=None, template='indicator/simple.html'):
         # form with instance
         form = IndicatorRecordForm(instance=record)
 
-    return render_to_response(template, {
+    return render(request, template, {
         'object': 'IndicatorRecord',
         'action': action,
         'form': form,
-    }, context_instance=RequestContext(request))
+    })
 ## }}}
 
 
@@ -401,16 +407,128 @@ def add_recordhistory(request, record_id, template='indicator/simple.html'):
         # form with instance
         form = RecordHistoryForm(instance=recordhistory)
 
-    return render_to_response(template, {
+    return render(request, template, {
         'object': 'RecordHistory',
         'action': action,
         'form': form,
-    }, context_instance=RequestContext(request))
+    })
+# }}}
+
+
+###########################################################
+###### indicator UI pages ######
+# indicator/index.html {{{
+@login_required
+def indicator_index(request):
+    """
+    index page for indicator
+    """
+    template = 'indicator/index.html'
+    return render(request, template)
+# }}}
+
+
+# indicator/SideBar.html {{{
+@login_required
+def indicator_sidebar(request):
+    """
+    sidebar page for indicator
+    """
+    template = 'indicator/SideBar.html'
+    return render(request, template)
+# }}}
+
+
+# indicator/SheetDefault.html {{{
+@login_required
+def indicator_status(request):
+    """
+    status page for indicator
+    add/edit/view indicator data
+    """
+    template = 'indicator/SheetDefault.html'
+    return render(request, template)
+# }}}
+
+
+# indicator/NewDeleteIndex.html {{{
+@login_required
+def follow_indicator(request):
+    """
+    follow/unfollow indicator
+    """
+    template = 'indicator/NewDeleteIndex.html'
+    letters = map(chr, range(ord('a'), ord('z')+1))
+
+    # get 7 categories (page can only contains 1+7 categories)
+    categories = im.IndicatorCategory.objects.all().\
+            order_by('id')[:7]
+    # get indicators, P[inyin] dict format
+    indicators_pdict = get_indicator()
+    # get followed indicator, P[inyin] dict format
+    followed_indicators_pdict = get_followed_indicator(request.user.id)
+    # convert to list
+    followed_indicators = []
+    for l in letters:
+        followed_indicators += followed_indicators_pdict[l]
+
+    # selected category, default "all"
+    if request.GET.get('tab'):
+        selected_catid = request.GET.get('tab')
+        if selected_catid != "all":
+            selected_catid = int(selected_catid)
+    else:
+        selected_catid = "all"
+
+    data = {
+        'categories': categories,
+        'selected_catid': selected_catid,
+        'letters': letters,
+        'indicators_pdict': indicators_pdict,
+        'followed_indicators': followed_indicators,
+    }
+
+    return render(request, template, data)
+# }}}
+
+
+## popup pages
+# indicator/popup/DeleteCardTip.html {{{
+@login_required
+def indicator_deletecardtip(request):
+    """
+    prompted tip for deleting a card
+    """
+    template = 'indicator/popup/DeleteCardTip.html'
+    return render_to_response(template)
+# }}}
+
+
+# indicator/popup/EditHistoryData.html {{{
+@login_required
+def indicator_edithistorydata(request):
+    """
+    popup page to edit history data for an indicator
+    """
+    template = 'indicator/popup/EditHistoryData.html'
+    return render_to_response(template)
+# }}}
+
+
+# indicator/popup/IndexDesc.html {{{
+@login_required
+def indicator_indexdesc(request):
+    """
+    description for an indicator
+    """
+    template = 'indicator/popup/IndexDesc.html'
+    return render_to_response(template)
 # }}}
 
 
 ###########################################################
 ###### ajax ######
+@login_required
 def ajax_act_index(request):
     """
     index action (add/minus)
@@ -442,6 +560,7 @@ def ajax_close_sub_title(request):
     return HttpResponse(result)
 
 
+@login_required
 def ajax_edit_history_data(request):
     """
     edit history data
@@ -455,6 +574,7 @@ def ajax_edit_history_data(request):
     return HttpResponse(result)
 
 
+@login_required
 def ajax_get_card_data_chart(request):
     """
     'indicator/static/javascripts/load_card.js'
@@ -479,6 +599,7 @@ def ajax_get_card_data_chart(request):
             mimetype='application/json')
 
 
+@login_required
 def ajax_get_card_data_table(request):
     """
     get card data
@@ -513,7 +634,23 @@ def ajax_get_card_data_table(request):
 
 ### test_view ###
 def test_view(request, **kwargs):
-    html = '<html><body>%s</body></html>' % u"正文测试内容"
-    text = u"中文测试"
-    return HttpResponse("%s" % request)
+    """
+    test view
+    'indicator/templates/indicator/test.html'
+    """
+    template = 'indicator/test.html'
+    all_letters = map(chr, range(ord('a'), ord('z')+1))
+    all_indicators = get_indicator()
+    followed_indicators_pdict = get_followed_indicator(request.user.id)
+    # convert to list
+    followed_indicators = []
+    for l in letters:
+        followed_indicators += followed_indicators_pdict[l]
+
+    data = {
+        'all_letters': all_letters,
+        'all_indicators': all_indicators,
+        'followed_indicators': followed_indicators,
+    }
+    return render(request, template, data)
 

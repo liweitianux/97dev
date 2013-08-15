@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+{% load dict_get %}
+<html>
+<head>
+  <title>Test</title>
+</head>
+<body>
+  <h3>ul 1</h3>
+  <ul>
+  {% for l in all_letters %}
+    {% with indicators=all_indicators|dict_get:l %}
+      {% if indicators|length >= 1 %}
+        <li>{{ l }}</li>
+        <ul>
+        {% for i in indicators %}
+          <li>id: {{ i|dict_get:"id" }}; name: {{ i|dict_get:"name" }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+  {% endfor %}
+  </ul>
+
+  <h3>ul 2</h3>
+  <ul>
+  {% for fi in followed_indicators %}
+    <li>id: {{ fi|dict_get:"id" }}; name: {{ fi|dict_get:"name" }}</li>
+  {% endfor %}
+  </ul>
+</body>
+</html>
+
+<!-- vim: set ts=8 sw=2 tw=0 fenc= ft=htmldjango.html: -->

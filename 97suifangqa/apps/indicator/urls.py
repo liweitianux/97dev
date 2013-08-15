@@ -38,35 +38,35 @@ urlpatterns = patterns('indicator.views',
 )
 
 ## UI pages
-urlpatterns += patterns('',
+urlpatterns += patterns('indicator.views',
     # indicator_index
     url(r'^$',
-        direct_to_template, {'template': 'indicator/index.html'},
+        'indicator_index',
         name='indicator_index'),
     # indicator_sidebar
     url(r'^sidebar/$',
-        direct_to_template, {'template': 'indicator/SideBar.html'},
+        'indicator_sidebar',
         name='indicator_sidebar'),
     # indicator_status, 指标状态
     url(r'^status/$',
-        direct_to_template, {'template': 'indicator/SheetDefault.html'},
+        'indicator_status',
         name='indicator_status'),
     # follow_indicator, 关注指标
     url(r'^follow/$',
-        direct_to_template, {'template': 'indicator/NewDeleteIndex.html'},
+        'follow_indicator',
         name='follow_indicator'),
     ## indicator: popup
     # DeleteCardTip
     url(r'^popup/deletecardtip/$',
-        direct_to_template, {'template': 'indicator/popup/DeleteCardTip.html'},
+        'indicator_deletecardtip',
         name='indicator_deletecardtip'),
     # EditHistoryData
     url(r'^popup/edithistorydata/$',
-        direct_to_template, {'template': 'indicator/popup/EditHistoryData.html'},
+        'indicator_edithistorydata',
         name='indicator_edithistorydata'),
     # IndexDesc
     url(r'^popup/indexdesc/$',
-        direct_to_template, {'template': 'indicator/popup/IndexDesc.html'},
+        'indicator_indexdesc',
         name='indicator_indexdesc'),
 )
 

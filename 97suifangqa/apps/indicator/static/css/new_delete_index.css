@@ -61,7 +61,7 @@
 	text-decoration: none;
 }
 .index_navigation #index_all {
-	margin-right: 0;
+	margin-right: 11px;
 }
 .index_navigation .selected {
 	background-color: #99CC33;
