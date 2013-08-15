@@ -13,7 +13,12 @@
         <li>{{ l }}</li>
         <ul>
         {% for i in indicators %}
-          <li>id: {{ i|dict_get:"id" }}; name: {{ i|dict_get:"name" }}</li>
+          <li>
+          id: {{ i|dict_get:"id" }};
+          name: {{ i|dict_get:"name" }};
+          category_id: {{ i|dict_get:"categories_id"|first }};
+          category_name: {{ i|dict_get:"categories_name"|first }};
+          </li>
         {% endfor %}
         </ul>
       {% endif %}
@@ -26,6 +31,13 @@
   {% for fi in followed_indicators %}
     <li>id: {{ fi|dict_get:"id" }}; name: {{ fi|dict_get:"name" }}</li>
   {% endfor %}
+  </ul>
+
+  <h3>ul 3</h3>
+  <ul>
+    {% for i in list %}
+      <li>i</li>
+    {% endfor %}
   </ul>
 </body>
 </html>

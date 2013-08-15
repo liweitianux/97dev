@@ -33,7 +33,7 @@ class IndicatorIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
     addByUser = indexes.CharField(model_attr='addByUser')
     dataType = indexes.CharField(model_attr='dataType')
-    categories = indexes.MultiValueField()
+    categories_id = indexes.MultiValueField()
 
     def get_model(self):
         return im.Indicator

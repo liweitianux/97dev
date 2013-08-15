@@ -456,6 +456,11 @@ def indicator_status(request):
 def follow_indicator(request):
     """
     follow/unfollow indicator
+
+    Note:
+    * when 'page_condition == all',
+      indicators -> indicators_pdict, in 'P[inyin] dict' format
+    * other 'page_condition', 'indicators' a object list
     """
     template = 'indicator/NewDeleteIndex.html'
     letters = map(chr, range(ord('a'), ord('z')+1))
@@ -463,6 +468,9 @@ def follow_indicator(request):
     # get 7 categories (page can only contains 1+7 categories)
     categories = im.IndicatorCategory.objects.all().\
             order_by('id')[:7]
+    # set default value for 'selected_cat*'
+    selected_catid = None
+    selected_category = None
     # get indicators, P[inyin] dict format
     indicators_pdict = get_indicator()
     # get followed indicator, P[inyin] dict format
@@ -472,22 +480,51 @@ def follow_indicator(request):
     for l in letters:
         followed_indicators += followed_indicators_pdict[l]
 
-    # selected category, default "all"
-    if request.GET.get('tab'):
-        selected_catid = request.GET.get('tab')
-        if selected_catid != "all":
-            selected_catid = int(selected_catid)
+    # get/post views
+    if request.method == 'GET':
+        if request.GET.get('tab'):
+            # tab: selected category, default "all"
+            selected_catid = request.GET.get('tab')
+            if selected_catid == "all":
+                page_condition = "all"
+                indicators = indicators_pdict
+            else:
+                selected_catid = int(selected_catid)
+                selected_category = get_object_or_404(
+                        im.IndicatorCategory, id=selected_catid)
+                page_condition = "category"
+                # get indicators of the category
+                indicators = selected_category.indicators.\
+                        all().order_by('pinyin')
+        elif request.GET.get('kw'):
+            # kw: search keyword to find indicator
+            search_kw = request.GET.get('kw')
+            page_condition = "search"
+            # TODO
+            indicators = []
+        else:
+            # default page_condition: "all"
+            selected_catid = "all"
+            page_condition = "all"
+            indicators = indicators_pdict
+    elif request.method == 'POST':
+        # do post process
+        # TODO
+        pass
     else:
-        selected_catid = "all"
+        # XXX
+        raise Http404
 
     data = {
+        'page_condition': page_condition,
         'categories': categories,
+        'selected_category': selected_category,
         'selected_catid': selected_catid,
         'letters': letters,
-        'indicators_pdict': indicators_pdict,
+        'indicators': indicators,
         'followed_indicators': followed_indicators,
     }
-
+    # render page
     return render(request, template, data)
 # }}}
 
@@ -644,13 +681,16 @@ def test_view(request, **kwargs):
     followed_indicators_pdict = get_followed_indicator(request.user.id)
     # convert to list
     followed_indicators = []
-    for l in letters:
+    for l in all_letters:
         followed_indicators += followed_indicators_pdict[l]
+
+    list = []
 
     data = {
         'all_letters': all_letters,
         'all_indicators': all_indicators,
         'followed_indicators': followed_indicators,
+        'list': list,
     }
     return render(request, template, data)
 
