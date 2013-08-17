@@ -69,7 +69,7 @@
 				<ul class="article-subtitles inline">
 					<!--li> 
 						<span>难度：</span>
-						{% load tools %}
+						{% load get_range %}
 						<ul class="difficulty inline rating-blocks">
 						{% for num in 5|get_range %}
 							{% if num < blog.level %}

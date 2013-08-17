@@ -51,10 +51,10 @@ urlpatterns += patterns('indicator.views',
     url(r'^status/$',
         'indicator_status',
         name='indicator_status'),
-    # follow_indicator, 关注指标
-    url(r'^follow/$',
-        'follow_indicator',
-        name='follow_indicator'),
+    # indicator_fanduf, 关注指标
+    url(r'^follow_and_unfollow/$',
+        'indicator_fanduf',
+        name='indicator_fanduf'),
     ## indicator: popup
     # DeleteCardTip
     url(r'^popup/deletecardtip/$',
@@ -94,6 +94,10 @@ urlpatterns += patterns('indicator.views',
     url(r'^ajax/get_card_data_table/$',
         'ajax_get_card_data_table',
         name='indicator_ajax_getcarddatatable'),
+    # unfollow_indicator
+    url(r'^ajax/unfollow_indicator/$',
+        'ajax_unfollow_indicator',
+        name='indicator_ajax_unfollowindicator'),
 )
 
 urlpatterns += patterns('indicator.views',

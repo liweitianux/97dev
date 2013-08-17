@@ -5,11 +5,50 @@ utils for apps/indicator
 """
 
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 
 from indicator import models as im
 from sciblog import models as sciblogm
 
+import re
 import datetime
+
+
+# follow_indicator {{{
+def follow_indicator(user_id, indicator_id):
+    """
+    用户关注指标
+    """
+    try:
+        user = get_object_or_404(User, id=user_id)
+        indicator = im.Indicator.objects.get(id=indicator_id)
+        ui, created = im.UserIndicator.objects.get_or_create(user=user)
+        ui.followedIndicators.add(indicator)
+        # to remove the indicator from 'followedHistories' if exists
+        if indicator in ui.followedHistories.all():
+            ui.followedHistories.remove(indicator)
+        return True
+    except:
+        return False
+# }}}
+
+
+# unfollow_indicator {{{
+def unfollow_indicator(user_id, indicator_id):
+    """
+    用户取消关注指标
+    """
+    try:
+        user = get_object_or_404(User, id=user_id)
+        indicator = im.Indicator.objects.get(id=indicator_id)
+        ui, created = im.UserIndicator.objects.get_or_create(user=user)
+        ui.followedIndicators.remove(indicator)
+        # add indicator to 'followedHistories'
+        ui.followedHistories.add(indicator)
+        return True
+    except:
+        return False
+# }}}
 
 
 # get_indicator {{{
@@ -102,7 +141,8 @@ def get_unfollowed_indicator(user_id, category_id="all", startswith="all"):
     u = User.objects.get(id=user_id)
     ui, created = im.UserIndicator.objects.get_or_create(user=u)
     _idict = {}
-    iqueryset = im.Indicator.objects.exclude(user_indicators=ui)
+    # XXX: if 'exclude(followed_indicators=ui)' OK??
+    iqueryset = im.Indicator.objects.exclude(followed_indicators=ui)
     if not category_id == 'all':
         try:
             cid = int(category_id)
@@ -192,25 +232,41 @@ def get_record_std(**kwargs):
 # }}}
 
 
+# types of recommended indicators, and weights {{{
+RI_TYPES = {
+    'ANNOTATION_COLLECTED': u'ANN_CL',
+    'BLOG_CATCHED': u'BLG_CT',
+    'BLOG_COLLECTED': u'BLG_CL',
+    'OTHER': u'OTHER',
+    'ERROR': u'ERROR',      # no 'RelatedIndicator' data
+}
+RI_WEIGHTS = {
+    RI_TYPES['ANNOTATION_COLLECTED']: 4.0,
+    RI_TYPES['BLOG_CATCHED']: 3.0,
+    RI_TYPES['BLOG_COLLECTED']: 2.0,
+    RI_TYPES['OTHER']: 1.0,
+    RI_TYPES['ERROR']: 0.0,
+}
+# }}}
+
+
 # calc_indicator_weight {{{
 def calc_indicator_weight(user_id, indicator_id):
     """
     calculate the weight of given indicator
     used by 'recommend_indicator'
+
+    return format:
+    {'weight': w, 'type': t}
     """
-    ### XXX: weight_type: how to store the weights into database ###
-    weight_annotation = 4.0
-    weight_blog_catched = 3.0
-    weight_blog_collected = 2.0
-    weight_other = 1.0
-    ################################################################
     # weight = weight_type * relatedindicator.weight
     user = User.objects.get(id=user_id)
     ri_qs = im.RelatedIndicator.objects.filter(indicator__id=indicator_id)
     if not ri_qs:
-        # queryset empty
+        # queryset empty: no 'RelatedIndicator' for this indicator
+        type = RI_TYPES['ERROR']
         w = 0.0
-        return w
+        return {'weight': w, 'type': type}
     # queryset not empty
     annotation_ri_qs = ri_qs.filter(annotation__collected_by=user)
     blogcatch_ri_qs = ri_qs.filter(blog__catched_by=user)
@@ -218,26 +274,32 @@ def calc_indicator_weight(user_id, indicator_id):
     weights = []
     if annotation_ri_qs:
         # related to annotations collected by user
+        type = RI_TYPES['ANNOTATION_COLLECTED']
         for ri in annotation_ri_qs:
-            w = weight_annotation * ri.weight
-            weights.append(w)
+            w = RI_WEIGHTS[type] * ri.weight
+            weights.append({'weight': w, 'type': type})
     elif blogcatch_ri_qs:
         # related to blogs catched by user
+        type = RI_TYPES['BLOG_CATCHED']
         for ri in blogcatch_ri_qs:
-            w = weight_blog_catched * ri.weight
-            weights.append(w)
+            w = RI_WEIGHTS[type] * ri.weight
+            weights.append({'weight': w, 'type': type})
     elif blogcollect_ri_qs:
-        # related to blogs catched by user
+        # related to blogs collected by user
+        type = RI_TYPES['BLOG_COLLECTED']
         for ri in blogcollect_ri_qs:
-            w = weight_blog_collected * ri.weight
-            weights.append(w)
+            w = RI_WEIGHTS[type] * ri.weight
+            weights.append({'weight': w, 'type': type})
     else:
         # other type, use 'ri_qs' here
+        type = RI_TYPES['OTHER']
         for ri in ri_qs:
-            w = weight_other * ri.weight
-            weights.append(w)
+            w = RI_WEIGHTS[type] * ri.weight
+            weights.append({'weight': w, 'type': type})
+    # sort results
+    weights_sorted = sorted(weights, key = lambda item: item['weight'])
     # return final result
-    return max(weights)
+    return weights_sorted[-1]
 # }}}
 
 
@@ -247,22 +309,25 @@ def recommend_indicator(user_id, number):
     recommend unfollowed indicator for user,
     based on his/her readings and collections.
 
-    return a list with the id's of recommended indicators
-
-    TODO:
-    performance test
+    return a list of recommended indicators in format:
+    [ {'id': id, 'weight': w, 'type': t}, ... ]
     """
     user_id = int(user_id)
     number = int(number)
     # get unfollowed indicators
     u = User.objects.get(id=user_id)
     ui, created = im.UserIndicator.objects.get_or_create(user=u)
-    uf_ind_qs = im.Indicator.objects.exclude(user_indicators=ui)
+    # XXX: if 'exclude(followed_indicators=ui)' OK??
+    uf_ind_qs = im.Indicator.objects.exclude(followed_indicators=ui)
     # calc weight for each unfollowed indicator
     weights = []
     for ind in uf_ind_qs:
-        w = calc_indicator_weight(user_id, ind.id)
-        weights.append({'id': ind.id, 'weight': w})
+        wdict = calc_indicator_weight(user_id, ind.id)
+        weights.append({
+            'id': ind.id,
+            'weight': wdict.get('weight'),
+            'type': wdict.get('type'),
+        })
     # sort 'weights' dict list by key 'weight'
     weights_sorted = sorted(weights, key=lambda item: item['weight'])
     weights_sorted.reverse()
@@ -270,4 +335,91 @@ def recommend_indicator(user_id, number):
     return weights_sorted[:number]
 # }}}
 
+
+# format_data {{{
+def format_data(indicator_obj, value=None, val_max=None, val_min=None):
+    """
+    format given data according to the dataType of given Indicator,
+    make it proper for django templates
+    e.g.:
+    if number very big, then display in 'exponent notation'
+
+    used in '.views.indicator_status()'
+    """
+    # threshold to show a float number in scientific notation
+    float_threshold = 9999.9
+    # float display format: fixed point, exponent notation
+    fix_fmt = '{:,.1f}'    # comma as a thousands separator
+    exp_fmt = '{:.2e}'
+    # regex to process exponent notation
+    rep = re.compile(r'^(?P<sign>[-+]?)(?P<num>\d\.\d+)[eE]\+?(?P<expminus>-?)0*(?P<exp>[1-9]+)$')
+    # range symbol (range: low $symbol$ high)
+    range_sym = '&sim;'
+    # default return value
+    value_str = u''
+
+    # check given 'indicator_obj'
+    ind = indicator_obj
+    if not isinstance(ind, im.Indicator):
+        print u'Error: given indicator_obj NOT a instance of Indicator'
+        raise ValueError(u'Given indicator_obj NOT a instance of Indicator')
+    # get dataType
+    dataType = ind.dataType
+
+    if value is not None:
+        # a) record float data; b) record integer/pm data;
+        # c) confine integer/pm data.
+        if dataType == ind.INTEGER_TYPE:
+            # TODO: process 'integer type' data
+            value_str = u'INTEGER: %s' % value
+        elif dataType == ind.PM_TYPE:
+            if value == u'+':
+                value_str = u'阳性(+)'
+            else:
+                value_str = u'阳性(-)'
+        elif dataType in [ind.FLOAT_TYPE, ind.FLOAT_RANGE_TYPE]:
+            # process float number
+            value = float(value)
+            if value <= float_threshold:
+                value_str = fix_fmt.format(value)
+            else:
+                value_expstr = exp_fmt.format(value)
+                # convert to html exponent format
+                m = rep.match(value_expstr)
+                value_str = "%s%s&times;10<sup>%s%s</sup>" % (
+                        m.group('sign'), m.group('num'),
+                        m.group('expminus'), m.group('exp'))
+        else:
+            # unknown XXX
+            pass
+    elif (val_max is not None) and (val_min is not None):
+        # a) record range data; b) confine range.
+        # val_max
+        if val_max <= float_threshold:
+            val_max_str = fix_fmt.format(val_max)
+        else:
+            val_max_expstr = exp_fmt.format(val_max)
+            # convert to html exponent format
+            m = rep.match(val_max_expstr)
+            val_max_str = "%s%s&times;10<sup>%s%s</sup>" % (
+                    m.group('sign'), m.group('num'),
+                    m.group('expminus'), m.group('exp'))
+        # val_min
+        if val_min <= float_threshold:
+            val_min_str = fix_fmt.format(val_min)
+        else:
+            val_min_expstr = exp_fmt.format(val_min)
+            # convert to html exponent format
+            m = rep.match(val_min_expstr)
+            val_min_str = "%s%s&times;10<sup>%s%s</sup>" % (
+                    m.group('sign'), m.group('num'),
+                    m.group('expminus'), m.group('exp'))
+        # value_str
+        value_str = u'%s %s %s' % (val_min_str, range_sym, val_max_str)
+    else:
+        # other type??
+        pass
+
+    return value_str
+# }}}
 

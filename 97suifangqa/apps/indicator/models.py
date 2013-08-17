@@ -247,7 +247,11 @@ class UserIndicator(models.Model):                          # {{{
             related_name="user_indicator")
     followedIndicators = models.ManyToManyField(Indicator,
             verbose_name=u"关注的指标",
-            related_name="user_indicators",
+            related_name="followed_indicators",
+            null=True, blank=True)
+    followedHistories = models.ManyToManyField(Indicator,
+            verbose_name=u"历史关注指标",
+            related_name="followed_histories",
             null=True, blank=True)
 
     class Meta:
@@ -658,6 +662,12 @@ class IndicatorRecord(models.Model):                        # {{{
     # }}}
 
     def dump(self, **kwargs):
+        # check if the indicator needs unit
+        if self.unit:
+            unit_id = self.unit.id
+        else:
+            unit_id = None
+        # dump
         dump_data = {
             'id': self.id,
             'indicator_id': self.indicator.id,
@@ -665,7 +675,7 @@ class IndicatorRecord(models.Model):                        # {{{
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat(),
             'date': self.date.isoformat(),
-            'unit_id': self.unit.id,
+            'unit_id': unit_id,
             'value': self.value,
             'val_max': self.val_max,
             'val_min': self.val_min,
@@ -724,13 +734,19 @@ class RecordHistory(models.Model):                          # {{{
         super(RecordHistory, self).save(**kwargs)
 
     def dump(self, **kwargs):
+        # check 'unit_bak'
+        if self.unit_bak:
+            unit_bak_id = self.unit_bak.id
+        else:
+            unit_bak_id = None
+        # dump
         dump_data = {
             'id': self.id,
             'indicatorRecord_id': self.indicatorRecord.id,
             'created_at': self.created_at.isoformat(),
             'reason': self.reason,
             'date_bak': self.date_bak.isoformat(),
-            'unit_bak_id': self.unit_bak.id,
+            'unit_bak_id': unit_bak_id,
             'value_bak': self.value_bak,
             'val_max_bak': self.val_max_bak,
             'val_min_bak': self.val_min_bak,
@@ -930,10 +946,16 @@ class InnateConfine(models.Model):                          # {{{
     # }}}
 
     def dump(self, **kwargs):
+        # check unit, if the indicator not need unit, then return {}
+        if self.unit:
+            unit_dump = self.unit.dump()
+        else:
+            unit_dump = {}
+        # dump
         dump_data = {
             'id': self.id,
             'indicator_id': self.indicator.id,
-            'unit': self.unit.dump(),
+            'unit': unit_dump,
             'val_norm': self.val_norm,
             'human_max': self.human_max,
             'human_min': self.human_min,

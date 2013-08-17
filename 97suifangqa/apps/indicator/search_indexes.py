@@ -12,6 +12,8 @@ class IndicatorCategoryIndex(indexes.SearchIndex, indexes.Indexable):
     search index for 'Indicator'
     """
     text = indexes.CharField(document=True, use_template=True)
+    # pinyin: for ordering the search result
+    pinyin = indexes.CharField(model_attr='pinyin')
     addByUser = indexes.CharField(model_attr='addByUser')
 
     def get_model(self):
@@ -31,6 +33,8 @@ class IndicatorIndex(indexes.SearchIndex, indexes.Indexable):
     search index for 'Indicator'
     """
     text = indexes.CharField(document=True, use_template=True)
+    # pinyin: for ordering the search result
+    pinyin = indexes.CharField(model_attr='pinyin')
     addByUser = indexes.CharField(model_attr='addByUser')
     dataType = indexes.CharField(model_attr='dataType')
     categories_id = indexes.MultiValueField()

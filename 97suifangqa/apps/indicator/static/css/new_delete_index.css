@@ -160,6 +160,18 @@
 	width: 185px;
 }
 
+.index_search_error {
+	margin-top: 3px;
+}
+.index_search_error .index_error {
+	float: left;
+	font-size: 14px;
+	height: 20px;
+	line-height: 20px;
+	color: #4A4A4A;
+	font-weight: bold;
+}
+
 .all_condition .index_all_title {
 	font-weight: bold;
 	font-size: 19px;

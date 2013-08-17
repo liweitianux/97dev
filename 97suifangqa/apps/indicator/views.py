@@ -11,9 +11,15 @@ from django.shortcuts import render, get_object_or_404
 # CRSF
 from django.template import RequestContext
 
+# haystack search
+from haystack.query import SearchQuerySet
+
 from indicator import models as im
 from indicator.forms import *
 from indicator.tools import *
+
+# apps/utils
+from utils.search_tools import objects_of_sqs
 
 import re
 import datetime
@@ -49,40 +55,6 @@ def get_unfollowed_indicator_view(request, **kwargs):
 def recommend_indicator_view(request, **kwargs):
     ilist = recommend_indicator(request.user.id, **kwargs)
     return HttpResponse("%s" % ilist)
-
-
-# follow_indicator {{{
-@login_required
-def follow_indicator(request, indicator_id):
-    """
-    用户关注指标
-    """
-    try:
-        indicator = im.Indicator.objects.get(pk=int(indicator_id))
-        ui, created = im.UserIndicator.objects.get_or_create(
-                user=request.user)
-        ui.followedIndicators.add(indicator)
-        return { 'success': True }
-    except:
-        return { 'success': False }
-# }}}
-
-
-# unfollow_indicator {{{
-@login_required
-def unfollow_indicator(request, indicator_id):
-    """
-    用户取消关注指标
-    """
-    try:
-        indicator = im.Indicator.objects.get(pk=int(indicator_id))
-        ui, created = im.UserIndicator.objects.get_or_create(
-                user=request.user)
-        ui.followedIndicators.remove(indicator)
-        return { 'success': True }
-    except:
-        return { 'success': False }
-# }}}
 
 
 # get_record_view {{{
@@ -445,15 +417,126 @@ def indicator_status(request):
     """
     status page for indicator
     add/edit/view indicator data
+
+    TODO:
+    * when to recommend indicators
+    * how to deal with non-standard units
     """
     template = 'indicator/SheetDefault.html'
-    return render(request, template)
+    letters = map(chr, range(ord('a'), ord('z')+1))
+    # indicators
+    indicators = []
+    followed_indicators = []
+    r_indicators = []
+
+    # get followed indicator, P[inyin] dict format
+    followed_indicators_pdict = get_followed_indicator(request.user.id)
+    # convert to list
+    for l in letters:
+        followed_indicators += followed_indicators_pdict[l]
+
+    ## TODO: when to recommend indicators for user ??
+    if not followed_indicators:
+        # if no followed indicators yet, then recommend 2 indicators
+        r_indicators_unsort = [
+                im.Indicator.objects.get(id=ri['id']).dump()
+                for ri in recommend_indicator(request.user.id, 2)
+        ]
+        r_indicators= sorted(r_indicators_unsort,
+                key = lambda item: item['pinyin'])
+
+    # recommended indicators behind followed ones
+    indicators = followed_indicators + r_indicators
+
+    # process 'indicators' list, to add following keys:         # {{{
+    #   ref_text:
+    #   ref_value:
+    #   std_unit_symbol:
+    #   record_empty: bool, if has no record, then True
+    for ind in indicators:
+        ind_obj = get_object_or_404(im.Indicator, id=ind['id'])
+        # check if 'indicator.is_ready()'
+        if not ind_obj.is_ready():
+            raise ValueError(u"Indicator id=%s is NOT ready yet!"
+                    % ind_obj.id)
+        # the indicator is ready
+        dataType = ind_obj.dataType
+        confine = ind_obj.get_confine()
+        ## set 'ref_text', 'ref_value', 'std_unit_*'
+        if dataType in [ind_obj.FLOAT_TYPE, ind_obj.RANGE_TYPE,
+                ind_obj.FLOAT_RANGE_TYPE]:
+            ind['ref_text'] = u"参考范围"
+            # ref_value
+            human_max = confine.get('human_max')
+            human_min = confine.get('human_min')
+            ind['ref_value'] = format_data(ind_obj,
+                    val_max=human_max, val_min=human_min)
+            # set 'std_unit_*'
+            ind['std_unit_name'] = confine.get('unit').get('name')
+            ind['std_unit_symbol'] = confine.get('unit').get('symbol')
+        elif dataType in [ind_obj.INTEGER_TYPE, ind_obj.PM_TYPE]:
+            ind['ref_text'] = u"参考值"
+            # ref_value
+            val_norm = confine.get('val_norm')
+            ind['ref_value'] = format_data(ind_obj, value=val_norm)
+            # std_unit
+            ind['std_unit_name'] = u""
+            ind['std_unit_symbol'] = u""
+        else:
+            ind['ref_text'] = u"参考"
+            ind['ref_value'] = None
+            ind['std_unit_name'] = None
+            ind['std_unit_symbol'] = None
+        ## check record of indicator
+        records = ind_obj.indicator_records.filter(user=request.user).\
+                order_by('-date', '-updated_at')
+        if records:
+            ind['record_empty'] = False
+            # last record of the indicator
+            last_record = records[0]
+            if dataType in [ind_obj.INTEGER_TYPE, ind_obj.PM_TYPE,
+                    ind_obj.FLOAT_TYPE]:
+                value_str = format_data(ind_obj, value=last_record.value)
+            elif dataType == ind_obj.RANGE_TYPE:
+                value_str = format_data(ind_obj,
+                        val_max=last_record.val_max,
+                        val_min=last_record.val_min)
+            elif dataType == ind_obj.FLOAT_RANGE_TYPE:
+                value = last_record.value
+                val_max = last_record.val_max
+                val_min = last_record.val_min
+                if value is not None:
+                    value_str = format_data(ind_obj, value=value)
+                elif (val_max is not None) and (val_min is not None):
+                    value_str = format_data(ind_obj,
+                            val_max=val_max, val_min=val_min)
+                else:
+                    value_str = u''
+            else:
+                # unknow
+                value_str = u''
+            # save to dict
+            ind['last_record'] = {
+                'date': last_record.date.isoformat(),
+                'value_str': value_str,
+            }
+        else:
+            ind['record_empty'] = True
+            ind['last_record'] = {}
+    # }}}
+
+    data = {
+        'indicators': indicators,
+    }
+    # render template
+    #raise ValueError
+    return render(request, template, data)
 # }}}
 
 
 # indicator/NewDeleteIndex.html {{{
 @login_required
-def follow_indicator(request):
+def indicator_fanduf(request):
     """
     follow/unfollow indicator
 
@@ -471,23 +554,23 @@ def follow_indicator(request):
     # set default value for 'selected_cat*'
     selected_catid = None
     selected_category = None
-    # get indicators, P[inyin] dict format
-    indicators_pdict = get_indicator()
-    # get followed indicator, P[inyin] dict format
-    followed_indicators_pdict = get_followed_indicator(request.user.id)
-    # convert to list
-    followed_indicators = []
-    for l in letters:
-        followed_indicators += followed_indicators_pdict[l]
+    # default parameters
+    indicators = None
+    search_kw_empty = False
+    search_result_empty = False
 
     # get/post views
     if request.method == 'GET':
-        if request.GET.get('tab'):
+        # default page_condition: "all"
+        selected_catid = "all"
+        page_condition = "all"
+        # page_condition: "category"
+        # select category / search indicator
+        if 'tab' in request.GET:
             # tab: selected category, default "all"
             selected_catid = request.GET.get('tab')
-            if selected_catid == "all":
+            if selected_catid == "all" or selected_catid == "":
                 page_condition = "all"
-                indicators = indicators_pdict
             else:
                 selected_catid = int(selected_catid)
                 selected_category = get_object_or_404(
@@ -496,24 +579,49 @@ def follow_indicator(request):
                 # get indicators of the category
                 indicators = selected_category.indicators.\
                         all().order_by('pinyin')
-        elif request.GET.get('kw'):
+        # page_condition: "search"
+        # can override the above 'category' if 'tab' & 'kw' both exist
+        if 'kw' in request.GET:
             # kw: search keyword to find indicator
             search_kw = request.GET.get('kw')
             page_condition = "search"
-            # TODO
-            indicators = []
-        else:
-            # default page_condition: "all"
-            selected_catid = "all"
-            page_condition = "all"
-            indicators = indicators_pdict
+            selected_catid = None
+            # check search keyword
+            if search_kw == "":
+                search_kw_empty = True
+            else:
+                # search
+                # TODO: howto order_by() by 'pinyin'
+                sqs = SearchQuerySet().models(im.Indicator).\
+                        filter(content=search_kw)
+                if sqs:
+                    # search result not empty
+                    inds_unsort = [ind.dump()
+                            for ind in objects_of_sqs(sqs)]
+                    indicators = sorted(inds_unsort,
+                            key = lambda item: item['pinyin'])
+                else:
+                    search_result_empty = True
     elif request.method == 'POST':
-        # do post process
+        # posted data of followed indicators
         # TODO
-        pass
+        post = request.POST
+        raise ValueError(u"TODO")
     else:
         # XXX
         raise Http404
+
+    # all indicators
+    if page_condition == "all":
+        # get indicators, P[inyin] dict format
+        indicators = get_indicator()
+
+    # get followed indicator, P[inyin] dict format
+    followed_indicators_pdict = get_followed_indicator(request.user.id)
+    # convert to list
+    followed_indicators = []
+    for l in letters:
+        followed_indicators += followed_indicators_pdict[l]
 
     data = {
         'page_condition': page_condition,
@@ -523,6 +631,8 @@ def follow_indicator(request):
         'letters': letters,
         'indicators': indicators,
         'followed_indicators': followed_indicators,
+        'search_kw_empty': search_kw_empty,
+        'search_result_empty': search_result_empty,
     }
     # render page
     return render(request, template, data)
@@ -537,7 +647,7 @@ def indicator_deletecardtip(request):
     prompted tip for deleting a card
     """
     template = 'indicator/popup/DeleteCardTip.html'
-    return render_to_response(template)
+    return render(request, template)
 # }}}
 
 
@@ -548,7 +658,7 @@ def indicator_edithistorydata(request):
     popup page to edit history data for an indicator
     """
     template = 'indicator/popup/EditHistoryData.html'
-    return render_to_response(template)
+    return render(request, template)
 # }}}
 
 
@@ -559,30 +669,52 @@ def indicator_indexdesc(request):
     description for an indicator
     """
     template = 'indicator/popup/IndexDesc.html'
-    return render_to_response(template)
+    return render(request, template)
 # }}}
 
 
 ###########################################################
 ###### ajax ######
+# ajax_act_index {{{
 @login_required
 def ajax_act_index(request):
     """
     index action (add/minus)
     follow/unfollow indicator
-
-    TODO:
-    * howto relate 'index_id' to 'indicator_id'?
-    * howto implement follow/unfollow indicator function?
     """
-    if request.is_ajax():
-        result = 'success'
-    else:
-        result = 'fail'
-        #raise Http404
+    # default 'fail'
+    result = 'fail'
+    #if request.is_ajax():
+    if True:
+        # check index_id -> indicator_id
+        if request.GET.get('index_id') is not None:
+            index_id = request.GET.get('index_id')
+            try:
+                indicator_id = int(index_id)
+            except ValueError:
+                print u'Error: Given index_id="%s" cannot convert to integer' % indicator_id
+                result = 'fail'
+                return HttpResponse(result)
+        # check 'act': add/minus -> action: follow/unfollow
+        if request.GET.get('act') is not None:
+            action = request.GET.get('act')
+            if action == "add":
+                # follow
+                if follow_indicator(request.user.id, indicator_id):
+                    result = 'success'
+            elif action == "minus":
+                # unfollow
+                if unfollow_indicator(request.user.id, indicator_id):
+                    result = 'success'
+            else:
+                raise ValueError(u'Error: Given act="%s" unknown' % action)
+                result = 'fail'
+
     return HttpResponse(result)
+# }}}
 
 
+# ajax_close_sub_title {{{
 def ajax_close_sub_title(request):
     """
     close the small prompt banner above the indicator cards
@@ -595,8 +727,10 @@ def ajax_close_sub_title(request):
         result = 'fail'
         #raise Http404
     return HttpResponse(result)
+# }}}
 
 
+# ajax_edit_history_data {{{
 @login_required
 def ajax_edit_history_data(request):
     """
@@ -609,8 +743,10 @@ def ajax_edit_history_data(request):
         result = 'fail'
         #raise Http404
     return HttpResponse(result)
+# }}}
 
 
+# ajax_get_card_data_chart {{{
 @login_required
 def ajax_get_card_data_chart(request):
     """
@@ -634,8 +770,10 @@ def ajax_get_card_data_chart(request):
         #raise Http404
     return HttpResponse(json.dumps(result),
             mimetype='application/json')
+# }}}
 
 
+# ajax_get_card_data_table {{{
 @login_required
 def ajax_get_card_data_table(request):
     """
@@ -665,6 +803,32 @@ def ajax_get_card_data_table(request):
         result = ''
         #raise Http404
     return HttpResponse(result)
+# }}}
+
+
+# ajax_unfollow_indicator {{{
+@login_required
+def ajax_unfollow_indicator(request):
+    """
+    respone to the ajax request from 'delete_card_tip.js'
+    unfollow the specified indicator: GET.indicator_id
+    """
+    # default 'fail'
+    result = 'fail'
+    if request.is_ajax():
+        if request.GET.get('indicator_id') is not None:
+            indicator_id = request.GET.get('indicator_id')
+            try:
+                indicator_id = int(indicator_id)
+            except ValueError:
+                print u'Error: Given indicator_id="%s" cannot convert to integer' % indicator_id
+                result = 'fail'
+            if unfollow_indicator(request.user.id, indicator_id):
+                result = 'success'
+
+    # return result
+    return HttpResponse(result)
+# }}}
 
 
 ###########################################################

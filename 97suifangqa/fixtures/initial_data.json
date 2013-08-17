@@ -9,12 +9,12 @@
             "is_active": true,
             "is_superuser": true,
             "is_staff": true,
-            "last_login": "2013-08-03T21:06:50.885",
+            "last_login": "2013-08-03T13:06:50.885Z",
             "groups": [],
             "user_permissions": [],
             "password": "pbkdf2_sha256$10000$H6nJhlyljgc4$KpHXyPQ7yvhbt9TVMgGVslPnKKuCbwL0WsWA0/J0iDI=",
             "email": "admin@admin.com",
-            "date_joined": "2013-08-03T21:06:10.807"
+            "date_joined": "2013-08-03T13:06:10.807Z"
         }
     },
     {
@@ -27,12 +27,12 @@
             "is_active": true,
             "is_superuser": false,
             "is_staff": false,
-            "last_login": "2013-08-03T21:07:14.332",
+            "last_login": "2013-08-03T13:07:14.332Z",
             "groups": [],
             "user_permissions": [],
             "password": "pbkdf2_sha256$10000$9SIFKsWpSUTT$6q0Gl3IwDhVqXw7M7cbrZ6yStxPdlJGZYUY2tVY9fxg=",
             "email": "",
-            "date_joined": "2013-08-03T21:07:14.332"
+            "date_joined": "2013-08-03T13:07:14.332Z"
         }
     },
     {
@@ -45,12 +45,12 @@
             "is_active": true,
             "is_superuser": true,
             "is_staff": true,
-            "last_login": "2013-07-20T15:52:13.059",
+            "last_login": "2013-07-20T07:52:13.059Z",
             "groups": [],
             "user_permissions": [],
             "password": "pbkdf2_sha256$10000$PBu41nJCDoS9$eGwEX8ZeS1Ot/urxOqQgVorHFvC+LAlBX3wKYrbtsFM=",
             "email": "isuifang@gmail.com",
-            "date_joined": "2013-04-23T15:04:43.823"
+            "date_joined": "2013-04-23T07:04:43.823Z"
         }
     },
     {
@@ -63,12 +63,12 @@
             "is_active": true,
             "is_superuser": false,
             "is_staff": false,
-            "last_login": "2013-06-24T22:07:56.201",
+            "last_login": "2013-06-24T14:07:56.201Z",
             "groups": [],
             "user_permissions": [],
             "password": "pbkdf2_sha256$10000$ccvMiwsQB9Cz$EUrqcy7PZ9o4LwPzQPimsLgsrTg8zCtZ5dYNCqbfGzE=",
             "email": "",
-            "date_joined": "2013-06-24T22:07:56.201"
+            "date_joined": "2013-06-24T14:07:56.201Z"
         }
     },
     {
@@ -81,12 +81,12 @@
             "is_active": true,
             "is_superuser": false,
             "is_staff": false,
-            "last_login": "2013-07-20T14:55:05.551",
+            "last_login": "2013-07-20T06:55:05.551Z",
             "groups": [],
             "user_permissions": [],
             "password": "pbkdf2_sha256$10000$I30HnnfWfD4S$DFmzkurup7phJg+Fr8S64XgDTKABkN3ntH/TMsbp6KA=",
             "email": "",
-            "date_joined": "2013-07-20T14:55:05.551"
+            "date_joined": "2013-07-20T06:55:05.551Z"
         }
     }
 ]

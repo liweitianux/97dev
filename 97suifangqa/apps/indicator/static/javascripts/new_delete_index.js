@@ -1,3 +1,6 @@
+// track the indexes already added(/followed)
+var added_indexes_id = new Array();
+
 $(document).ready(function(){
 	$("#search_btn").bind("click", function(){
 		var kw = $("#search_kw").val();
@@ -10,6 +13,11 @@ $(document).ready(function(){
 	$(".right>.index_line").each(function(){
 		classHover($(this), "minus");
 	});
+	// save the "index_id's of added (type: string)
+	$(".right>.index_line").each(function(){
+		var index_id = $(this).attr("index_id");
+		added_indexes_id.push(index_id);
+	});
 	$(".add>.icon").live("click", function(){
 		var add_icon = $(this);
 		var index_id = add_icon.closest(".index_line").attr("index_id");
@@ -21,12 +29,16 @@ $(document).ready(function(){
 			data: 'index_id='+index_id+'&act=add'+'&time='+time,
 			success: function(data){
 				if(data == 'success'){
-					var obj = add_icon.parent();
-					var objClone = obj.clone();
-					objClone.removeClass("add")
-					objClone.children(".index_category").remove();
-					$(".right").append(objClone);
-					classHover(objClone, "minus");
+					// check if the index exists?
+					if (added_indexes_id.indexOf(index_id) == -1) {
+						var obj = add_icon.parent();
+						var objClone = obj.clone();
+						objClone.removeClass("add")
+						objClone.children(".index_category").remove();
+						$(".right").append(objClone);
+						classHover(objClone, "minus");
+						added_indexes_id.push(index_id);
+					}
 				}
 			}
 		});
@@ -45,6 +57,8 @@ $(document).ready(function(){
 			success: function(data){
 				var obj = minus_icon.parent();
 				obj.remove();
+				rm_index = added_indexes_id.indexOf(index_id);
+				added_indexes_id.splice(rm_index, 1);
 			}
 		});
 		

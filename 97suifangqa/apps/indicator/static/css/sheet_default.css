@@ -153,6 +153,9 @@
 .index_card .refer_range .refer_text {
 	margin-right: 5px;
 }
+.index_card .refer_range .refer_value {
+	margin-right: 5px;
+}
 .index_card .edit_data, .index_card .editing_data {
 	height: 25px;
 	margin-top: 7px;
@@ -215,6 +218,10 @@
 	border-right: 1px solid #9C9C9C;
 	margin-top: 1px;
 	cursor: pointer;
+}
+.index_card .editing_data .data_unit {
+	float: left;
+	margin-right: 8px;
 }
 .index_card .editing_data .cancel_edit_icon {
 	float: right;
