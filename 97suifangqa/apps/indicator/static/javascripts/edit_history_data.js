@@ -1,4 +1,9 @@
 $(document).ready(function(){
+	//点大叉，关闭弹层页面
+	$(".edit_history_data_close").bind("click", function(){
+		parent.TB_remove();
+		return false;
+	});
 	$("#edit_btn").bind("click", function(){
 		var this_edit_data_div = $(this).parent();
 		var data_fir = $(this).siblings(".data_fir").text();

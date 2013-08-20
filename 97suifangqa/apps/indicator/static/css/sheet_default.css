@@ -41,12 +41,17 @@
 }
 .detail_card_info .card_title {
 	height: 32px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #CACACA;
+}
+.detail_card_info .card_title .title {
+	height: 32px;
 	line-height: 32px;
 	color: #4b4a48;
 	font-weight: bold;
 	font-size: 18px;
-	padding-bottom: 10px;
-	border-bottom: 1px solid #CACACA;
+	float: left;
 }
 .detail_card_info .card_title .collapse_btn {
 	width: 80px;
@@ -69,7 +74,7 @@
 	line-height: 23px;
 	float: left;
 }
-.detail_card_info .search_data_div .recent_two_week {
+.detail_card_info .search_data_div .shift_date {
 	margin-left: 4px;
 }
 .detail_card_info .search_data_div .unselected {
@@ -100,6 +105,9 @@
 	position: absolute;
 	top: 2px;
 	right: 8px;
+}
+.detail_card_info .chart {
+	height: 400px;
 }
 .detail_card_info .table_div table {
 	margin-bottom: 0;

@@ -282,15 +282,15 @@ class IndicatorRecord(models.Model):                        # {{{
             related_name="indicator_records", null=True, blank=True)
     value = models.CharField(u"指标数据值", max_length=30,
             blank=True)
-    val_max = models.FloatField(u"数据范围上限",
-            null=True, blank=True)
     val_min = models.FloatField(u"数据范围下限",
+            null=True, blank=True)
+    val_max = models.FloatField(u"数据范围上限",
             null=True, blank=True)
     notes = models.TextField(u"记录说明", blank=True)
 
     class Meta:
         verbose_name_plural = u"指标数据记录"
-        ordering = ['id', 'date', 'created_at']
+        ordering = ['indicator__id', 'date', 'created_at']
 
     def __unicode__(self):
         return u"< IndicatorRecord: #%s; %s, %s, %s >" % (self.id,
@@ -308,6 +308,13 @@ class IndicatorRecord(models.Model):                        # {{{
 
     def is_valid(self, **kwargs):                           # {{{
         """验证输入数据是否合法"""
+        # check if exists record for the date
+        qs = IndicatorRecord.objects.filter(indicator=self.indicator,
+                date=self.date)
+        if qs:
+            raise ValueError(u'date="%s" 该日期已经存在记录' % self.date)
+            return False
+        # check dataType
         if self.indicator.dataType == self.indicator.INTEGER_TYPE:
             # 整数型
             try:
@@ -677,8 +684,8 @@ class IndicatorRecord(models.Model):                        # {{{
             'date': self.date.isoformat(),
             'unit_id': unit_id,
             'value': self.value,
-            'val_max': self.val_max,
             'val_min': self.val_min,
+            'val_max': self.val_max,
             'notes': self.notes,
             'record_histories_id': [rh.id
                 for rh in self.record_histories.all()],
@@ -706,9 +713,9 @@ class RecordHistory(models.Model):                          # {{{
             null=True, blank=True, editable=False)
     value_bak = models.CharField(u"原指标数据值", max_length=30,
             blank=True, editable=False)
-    val_max_bak = models.FloatField(u"原数据范围上限",
-            null=True, blank=True, editable=False)
     val_min_bak = models.FloatField(u"原数据范围下限",
+            null=True, blank=True, editable=False)
+    val_max_bak = models.FloatField(u"原数据范围上限",
             null=True, blank=True, editable=False)
     notes_bak = models.TextField(u"原记录说明", blank=True,
             editable=False)
@@ -727,8 +734,8 @@ class RecordHistory(models.Model):                          # {{{
         self.date_bak = sr.date
         self.unit_bak = sr.unit
         self.value_bak = sr.value
-        self.val_max_bak = sr.val_max
         self.val_min_bak = sr.val_min
+        self.val_max_bak = sr.val_max
         self.notes_bak = sr.notes
         # save
         super(RecordHistory, self).save(**kwargs)
@@ -748,8 +755,8 @@ class RecordHistory(models.Model):                          # {{{
             'date_bak': self.date_bak.isoformat(),
             'unit_bak_id': unit_bak_id,
             'value_bak': self.value_bak,
-            'val_max_bak': self.val_max_bak,
             'val_min_bak': self.val_min_bak,
+            'val_max_bak': self.val_max_bak,
             'notes_bak': self.notes_bak,
         }
         return dump_data
@@ -856,14 +863,14 @@ class InnateConfine(models.Model):                          # {{{
     val_norm = models.CharField(u"正常值", max_length=30, blank=True,
             help_text=u'填写"整数型","阴阳(+/-)型数据"')
     # normal range
-    human_max = models.FloatField(u"人体正常值上限",
-            null=True, blank=True)
     human_min = models.FloatField(u"人体正常值下限",
             null=True, blank=True)
-    # possbile range
-    math_max = models.FloatField(u"数学可能值上限",
+    human_max = models.FloatField(u"人体正常值上限",
             null=True, blank=True)
+    # possbile range
     math_min = models.FloatField(u"数学可能值下限",
+            null=True, blank=True)
+    math_max = models.FloatField(u"数学可能值上限",
             null=True, blank=True)
     # description or notes
     description = models.TextField(u"描述", blank=True)
@@ -957,10 +964,10 @@ class InnateConfine(models.Model):                          # {{{
             'indicator_id': self.indicator.id,
             'unit': unit_dump,
             'val_norm': self.val_norm,
-            'human_max': self.human_max,
             'human_min': self.human_min,
-            'math_max': self.math_max,
+            'human_max': self.human_max,
             'math_min': self.math_min,
+            'math_max': self.math_max,
             'addByUser_id': self.addByUser.id,
         }
         return dump_data

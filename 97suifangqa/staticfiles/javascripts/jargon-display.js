@@ -31,8 +31,12 @@ function jargon_display(annotations) {
         jargonDisplayBox.data('jargon', jargon);
         $(".name", $(this)).text(jargon.name);
         $(".jargon-details", $(this)).html(jargon.content);
-        if (jargon.type == 0){$("a.collect", $(this)).hide()}
-        	else {$("a.collect", $(this)).text(text).show()}
+        if (jargon.type == 0) {
+            $("a.collect", $(this)).hide();
+        }
+        else {
+            $("a.collect", $(this)).text(text).show();
+        }
         		/* Maxwell modified */
     })
 
@@ -130,3 +134,4 @@ function jargon_display(annotations) {
 	})
 }
 
+// vim: set ts=4 sw=4 tw=0 fenc=utf-8 ft=javascript: 

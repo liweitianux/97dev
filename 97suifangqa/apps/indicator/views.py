@@ -18,6 +18,8 @@ from indicator import models as im
 from indicator.forms import *
 from indicator.tools import *
 
+from sciblog import models as sm
+
 # apps/utils
 from utils.search_tools import objects_of_sqs
 
@@ -525,11 +527,20 @@ def indicator_status(request):
             ind['last_record'] = {}
     # }}}
 
+    # dataType
+    DATA_TYPES = {
+        'INTEGER_TYPE': im.Indicator.INTEGER_TYPE,
+        'FLOAT_TYPE': im.Indicator.FLOAT_TYPE,
+        'RANGE_TYPE': im.Indicator.RANGE_TYPE,
+        'FLOAT_RANGE_TYPE': im.Indicator.FLOAT_RANGE_TYPE,
+        'PM_TYPE': im.Indicator.PM_TYPE,
+    }
+
     data = {
         'indicators': indicators,
+        'DATA_TYPES': DATA_TYPES,
     }
     # render template
-    #raise ValueError
     return render(request, template, data)
 # }}}
 
@@ -669,7 +680,51 @@ def indicator_indexdesc(request):
     description for an indicator
     """
     template = 'indicator/popup/IndexDesc.html'
-    return render(request, template)
+    # default parameters
+    annotation = None
+    annotation_not_found = False
+    annotation_url = 'javascript:void(0)'
+    collected_times = 0
+    is_collected = False
+    # check card_id -> indicator_id
+    if request.GET.get('card_id') is not None:
+        card_id = request.GET.get('card_id')
+        try:
+            indicator_id = int(card_id)
+            ind_obj = im.Indicator.objects.get(id=indicator_id)
+        except ValueError:
+            print u'Error: Given card_id="%s" cannot convert to integer' % card_id
+            raise Http404
+        except im.Indicator.DoesNotExist:
+            print u'Error: Indicator id="%s" NOT exist' % indicator_id
+            raise Http404
+    else:
+        print u'Error: No card_id provided'
+        raise Http404
+    # get related 'BlogAnnotation', only type 'PROPER_NAME'
+    related_annotations = ind_obj.related_indicators.\
+            filter(objectType=im.RelatedIndicator.ANNOTATION_TYPE).\
+            filter(annotation__type=sm.BlogAnnotation.PROPER_NOUN).\
+            order_by('-weight')
+    if related_annotations:
+        # has related annotations
+        annotation = related_annotations[0].annotation
+        collected_times = len(annotation.collected_by.all())
+        is_collected = annotation.is_collected_by(request.user)
+        # TODO
+        #annotation_url = annotation.get_absolute_url()
+    else:
+        annotation_not_found = True
+
+    data = {
+        'annotation_not_found': annotation_not_found,
+        'annotation': annotation,
+        'annotation_url': annotation_url,
+        'collected_times': collected_times,
+        'is_collected': is_collected,
+        'indicator': ind_obj,
+    }
+    return render(request, template, data)
 # }}}
 
 
@@ -684,15 +739,14 @@ def ajax_act_index(request):
     """
     # default 'fail'
     result = 'fail'
-    #if request.is_ajax():
-    if True:
+    if request.is_ajax():
         # check index_id -> indicator_id
         if request.GET.get('index_id') is not None:
             index_id = request.GET.get('index_id')
             try:
                 indicator_id = int(index_id)
             except ValueError:
-                print u'Error: Given index_id="%s" cannot convert to integer' % indicator_id
+                print u'Error: Given index_id="%s" cannot convert to integer' % index_id
                 result = 'fail'
                 return HttpResponse(result)
         # check 'act': add/minus -> action: follow/unfollow
@@ -753,23 +807,92 @@ def ajax_get_card_data_chart(request):
     'indicator/static/javascripts/load_card.js'
     get card data
     for the 'chart' within the card
-    format: [v1, v2, v3, ...]
+    format: [[UTC_ms1, v1], [UTC_ms2, v2], [UTC_ms3, v3], ...]
 
-    NB.
-    每一天都要有数据，否则时间轴对不上 (load_card.js: redraw_chard())
-    TODO:
-    workaround for the above problem!
+    NOTE: UTC_ms: is the 'ms' from '1970-01-01T00:00.00Z'
+    GET parameters:
+    begin, end, format: 'YYYY-MM-DD', '%Y-%m-%d'
+    '%Y-%m-%dT%H:%M:%S.%fZ'
     """
-    # TODO
+    # default parameters
+    data = []
+    begin_date = ""
+    end_date = ""
+    #
     if request.is_ajax():
-        result = [6.0, 5.9, 5.5, 4.5, 6.2, 6.5, 5.2, 6.0,
-                  5.9, 5.5, 4.5, 6.2, 6.5, 5.2, 6.0, 5.9,
-                  5.5, 4.5, 6.2, 6.5]
-    else:
-        result = ''
-        #raise Http404
-    return HttpResponse(json.dumps(result),
-            mimetype='application/json')
+        # check card_id -> indicator_id
+        if request.GET.get('card_id') is not None:
+            card_id = request.GET.get('card_id')
+            try:
+                indicator_id = int(card_id)
+            except ValueError:
+                print u'Error: Given card_id="%s" cannot convert to integer' % card_id
+                return HttpResponse(json.dumps(data),
+                        mimetype='application/json')
+        else:
+            return HttpResponse(json.dumps(data),
+                    mimetype='application/json')
+        # begin datetime
+        if request.GET.get('begin') is not None:
+            begin = request.GET.get('begin')
+            try:
+                begin_datetime = datetime.datetime.strptime(begin,
+                        '%Y-%m-%d')
+                begin_date = begin_datetime.date()
+            except ValueError:
+                print u'Error: Given begin="%s" invalid' % begin
+                return HttpResponse(json.dumps(data),
+                        mimetype='application/json')
+        # end datetime
+        if request.GET.get('end') is not None:
+            end = request.GET.get('end')
+            try:
+                end_datetime = datetime.datetime.strptime(end,
+                        '%Y-%m-%d')
+                end_date = end_datetime.date()
+            except ValueError:
+                print u'Error: Given end="%s" invalid' % end
+                return HttpResponse(json.dumps(data),
+                        mimetype='application/json')
+        # get records data
+        records_data = get_record_std(user_id=request.user.id,
+                indicator_id=indicator_id,
+                begin=begin_date, end=end_date)
+        # convert to list, and sort
+        rd_list = []
+        for r in records_data.values():
+            rd_list += r
+        rd_list_sorted = sorted(rd_list, key = lambda item: item['date'])
+        #
+        ind_obj = get_object_or_404(im.Indicator, id=indicator_id)
+        dataType = ind_obj.dataType
+        unix_begin = datetime.datetime(1970, 1, 1, 0, 0)
+        data = []
+        for r in rd_list_sorted:
+            dt = datetime.datetime.strptime(r['date'], '%Y-%m-%d')
+            time_ms = (dt-unix_begin).total_seconds() * 1000.0
+            if dataType == im.Indicator.INTEGER_TYPE:
+                # TODO
+                pass
+            elif dataType == im.Indicator.FLOAT_TYPE:
+                value = r['value']
+                data.append([time_ms, value])
+            elif dataType == im.Indicator.RANGE_TYPE:
+                val_min = r['val_min']
+                val_max = r['val_max']
+                data.append([time_ms, val_min, val_max])
+            elif dataType == im.Indicator.FLOAT_RANGE_TYPE:
+                # TODO
+                pass
+            elif dataType == im.Indicator.PM_TYPE:
+                # TODO
+                pass
+            else:
+                print u'Error: unknow dataType'
+                return HttpResponse(json.dumps(data),
+                        mimetype='application/json')
+
+    return HttpResponse(json.dumps(data), mimetype='application/json')
 # }}}
 
 

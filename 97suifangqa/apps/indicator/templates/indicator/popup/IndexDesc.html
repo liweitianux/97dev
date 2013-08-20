@@ -15,22 +15,77 @@
 {% endblock %}
 
 {% block scripts %}
-	<script type="text/javascript" src="{% static "javascripts/index_desc.js" %}"></script>
+  <script type="text/javascript">
+    $(document).ready(function(){
+      //点大叉，关闭弹层页面
+      $(".index_desc_close").bind("click", function(){
+        parent.TB_remove();
+        return false;
+      });
+
+      // collection
+      $("#collection_btn").bind("update", function(e) {
+        var text = $(this).data('is_collected') ? "点击取消收藏" : "收藏该注释";
+        text += ' (已有' + $(this).data('collected_times') + '人收藏)';
+        $(this).html(text);
+      });
+      // collection ajax request
+      $("#collection_btn").bind("click", function() {
+        var obj = $(this)
+        obj.data('id', {{ annotation.id }});
+        var url = '/blog/annotation/'+$(this).data('id')+'/collect';
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            success: function(data) {
+                //console.log(obj);
+                obj.data('is_collected', data.added);
+                obj.data('collected_times', data.times);
+                obj.trigger("update");
+            }
+        });
+      });
+      
+      //前往医学知识库
+      $(".go_library_btn").bind("click", function(){
+        parent.delete_card();
+        parent.TB_remove();
+        parent.window.location.href = "{{ annotation_url }}";
+        return false;
+      });
+    });
+  </script>
 {% endblock %}
 
 {% block page %}
 	<div id="index_desc_container">
 		<div class="index_desc_title_line">
-			<div class="index_desc_title">乙肝病毒核算定量（PCR）</div>
+      <div class="index_desc_title">
+        {% if annotation_not_found %}
+        {{ indicator.name }}
+        {% else %}
+        {{ annotation.brief_content }}
+        {% endif %}
+      </div>
 			<div class="index_desc_close"></div>
 		</div>
-		<div class="index_desc_content">
-		乙型肝炎仍是全球最严重的公共卫生问题之一。乙型肝炎病毒核酸ＤＮＡ是反映乙肝的感染状态和治疗效果的重要指标。ＨＢＶ ＤＮＡ的定量检测是目前通过国家认证临床ＰＣＲ实验室的常规检测项目之一。
-		<br /><br />
-		目前ＨＢＶ的临床检测从传统的免疫学方法发展到分子生物学方法，这是科技水平的一个重大进步。分子生物学检测经历了早期的ＰＣＲ凝胶电泳法、半定量法到现在的完全定量法，目前各种定量检测方法日趋成熟，国内以ＴＡＱＭＡＮ荧光基因探针技术为主流的多种检测试剂盒已开发出来。荧光基因探针ＰＣＲ?目前ＨＢＶ的临床检测从传统的免疫学方法发展到分子生物学方法，这是科技水平的一个重大进步。分子生物学检测经历了早期的ＰＣＲ凝胶电泳法、半定量法到现在的完全定量法，目前各种定量检测方法日趋成熟，国内以ＴＡＱＭＡＮ荧光基因探针技术为主流的多种检测试剂盒已开发出来。荧光基因探针ＰＣＲ?
-		</div>
-		<div class="collection">收藏该注释（已有 100 人收藏）</div>
-		<div class="go_library"><input type="button" class="go_library_btn" value="前往医学知识库" /></div>
+    <div class="index_desc_content">
+      {% if annotation_not_found %}
+      <div class="not_found">未找到与该指标相关的注释</div>
+      {% else %}
+      {{ annotation.detail|safe }}
+      {% endif %}
+    </div>
+    <div class="collection" id="collection_btn">
+      {% if is_collected %}
+      点击取消收藏 (已有{{ collected_times }}人收藏)
+      {% else %}
+      收藏该注释 (已有{{ collected_times }}人收藏)
+      {% endif %}
+    </div>
+    <div class="go_library">
+      <input type="button" class="go_library_btn" value="前往医学知识库" />
+    </div>
 	</div>
 {% endblock page %}
 

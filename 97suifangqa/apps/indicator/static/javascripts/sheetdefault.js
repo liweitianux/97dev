@@ -1,5 +1,3 @@
-var card_2_delete_id;
-var card_detail_id;
 $(document).ready(function(){
 	//不允许input框复制，减少验证粘帖的交互
 	$("input[type='text']").bind("paste", function(){
@@ -151,7 +149,7 @@ $(document).ready(function(){
 	});
 	
 	//时间范围控制（开始时间<结束时间）
-	$("#search_start_date").datepicker({
+	$("#search_begin_date").datepicker({
 		showOn: "both",
 		buttonImage: static_url + "plugins/datepicker/images/calendar.png",
 		buttonImageOnly: true,
@@ -161,7 +159,7 @@ $(document).ready(function(){
 	});
 	$("#search_end_date").datepicker({
 		onClose: function( selectedDate ) {
-			$("#search_start_date").datepicker("option", "maxDate", selectedDate);
+			$("#search_begin_date").datepicker("option", "maxDate", selectedDate);
 		}
 	});
 });

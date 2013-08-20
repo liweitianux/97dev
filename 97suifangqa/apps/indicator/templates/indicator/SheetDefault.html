@@ -24,24 +24,198 @@
   <script type="text/javascript" src="{% static "plugins/thickbox/thickbox.js" %}"></script>
   <script type="text/javascript" src="{% static "plugins/highcharts/highcharts.js" %}"></script>
   <script type="text/javascript" src="{% static "plugins/highcharts/highcharts-more.js" %}"></script>
+  <!-- library for parsing, validating, manipulating, and formatting dates -->
+  <script type="text/javascript" src="{% static "plugins/moment/moment.min.js" %}"></script>
+  <script type="text/javascript" src="{% static "plugins/moment/lang/zh-cn.js" %}"></script>
   <script type="text/javascript" src="{% static "javascripts/sheetdefault.js" %}"></script>
-  <script type="text/javascript" src="{% static "javascripts/load_card.js" %}"></script>
+  <script type="text/javascript" src="{% static "javascripts/card_chart.js" %}"></script>
 
-  <!-- set variables
+  <!-- global variables
        'static_url': used in js to load staticfiles
        'indicator_url': root url of 'apps/indicator'
   -->
-  <script>
+  <script type="text/javascript">
     var static_url = "{{ STATIC_URL }}";
     var indicator_url = "/indicator/";
   </script>
 
   <!-- Highcharts related, draw records chart -->
-  <script>
+  <script type="text/javascript">
+    // default the language to English
+    moment.lang('en')
+    // default date format
+    var mm_date_fmt = "YYYY-MM-DD";
+    // default to show 30 days' data
+    var data_range = 30;
+    var end_datetime = moment();
+    var begin_datetime = end_datetime.clone();
+    begin_datetime.subtract('days', data_range);
+    var end_date_str = end_datetime.format(mm_date_fmt);
+    var begin_date_str = begin_datetime.format(mm_date_fmt);
+
+    // global variables
+    // NOTES:
+    // global variables of the chart's drawing options
+    // name style: 'options_chart_<id>'
+    // the variables are used in 'detail_history' binded function
+    var detail_card_id = "-1"; // track the id of card in detail (string)
+    var detail_chart = null;
+    var detail_chart_str = "detail_chart";
+    var detail_chart_options = null;
+    var card_2_delete_id = "-1"; // track the id of card to be deleted (string)
+    // regex to match float number in expoential notation
+    var exp_regex = /^([+-]?)(\d\.\d+)[eE]\+?(-?)0*([1-9]+)$/;
+
+    // get indicator records data and 
+    // draw the chart
+    function chart_getdata_draw(chart_str, card_id, options, begin, end) {
+        var time = moment().valueOf();
+        $.ajax ({
+            type: 'get',
+            url: indicator_url + 'ajax/get_card_data_chart',
+            data: 'card_id='+card_id + '&begin='+begin + '&end='+end + '&time='+time,
+            dataType: 'json',
+            success: function (dataJson) {
+                // set data
+                var begin_dt = moment(begin);
+                var end_dt = moment(end);
+                options.xAxis.min = begin_dt.valueOf();
+                options.xAxis.max = end_dt.valueOf();
+                options.series[0].data = dataJson;
+                // draw the chart
+                // given 'chart_str' is the global var name of this chart
+                window[chart_str] = new Highcharts.Chart(options);
+            },
+        });
+    }
+
     {% for ind in indicators %}
       {% if not ind|dict_get:"record_empty" %} {# indicator has records #}
-        var chart_{{ ind|dict_get:"id" }};
-      {% endif %}
+        {% if ind|dict_get:"dataType" == DATA_TYPES|dict_get:"INTEGER_TYPE" %}
+          {# INTEGER_TYPE #}
+          {# TODO #}
+        {% elif ind|dict_get:"dataType" == DATA_TYPES|dict_get:"FLOAT_TYPE" %}
+          {# FLOAT_TYPE #}
+          var chart_{{ ind|dict_get:"id" }};
+          // global var name style: 'options_chart_<id>'
+          // keep the name style, used in 'detail_history' binded functions
+          var options_chart_{{ ind|dict_get:"id" }} = { // {{{
+            chart: {
+              type: 'areaspline',
+              renderTo: 'chart_{{ ind|dict_get:"id" }}'
+            },
+            labels: {
+              items: [{   // custom label for unit_symbol
+                html: '{{ ind|dict_get:"std_unit_symbol" }}',
+                style: {
+                  left: '5px',
+                  top: '0px'
+                }
+              }]
+            },
+            series: [{
+              data: []
+            }],
+            tooltip: {
+              formatter: function() {
+                return '<span style="color:#969696;font-weight:bold;">' + Highcharts.dateFormat('%Y-%m-%d', this.x) + '</span>' +'<br />' + '<span style="color:#464646;font-weight:bold;">' + this.y + ' ({{ ind|dict_get:"std_unit_symbol" }})' + '</span>';
+              }
+            },
+            xAxis: {
+              min: null,
+              max: null
+            },
+            yAxis: {
+              labels: {
+                useHTML: true,
+                formatter: function() {
+                  var value = this.value;
+                  if (value > 9999.0) {
+                    var value_str = value.toExponential(2);
+                    var m = exp_regex.exec(value_str);
+                    var ylabel = m[1] + m[2].replace(/(\.0*|0*)$/, '') + '&times;10<sup>' + m[3]+m[4] + '</sup>';
+                  }
+                  else {
+                    var ylabel = value.toString();
+                  }
+                  return ylabel;
+                }
+              }
+            }
+          }; // }}}
+          // draw chart
+          $(document).ready(function() {
+            chart_getdata_draw("chart_{{ ind|dict_get:"id" }}",
+              {{ ind|dict_get:"id" }},
+              options_chart_{{ ind|dict_get:"id" }},
+              begin_date_str, end_date_str
+            );
+          });
+        {% elif ind|dict_get:"dataType" == DATA_TYPES|dict_get:"RANGE_TYPE" %}
+          {# RANGE_TYPE #}
+          var chart_{{ ind|dict_get:"id" }};
+          var options_chart_{{ ind|dict_get:"id" }} = { // {{{
+            chart: {
+              type: 'areasplinerange',
+              renderTo: 'chart_{{ ind|dict_get:"id" }}'
+            },
+            labels: {
+              items: [{   // custom label for unit_symbol
+                html: '{{ ind|dict_get:"std_unit_symbol" }}',
+                style: {
+                  left: '5px',
+                  top: '0px'
+                }
+              }]
+            },
+            series: [{
+              data: []
+            }],
+            tooltip: {
+              formatter: function() {
+                return '<span style="color:#969696;font-weight:bold;">' + Highcharts.dateFormat('%Y-%m-%d', this.x) + '</span>' + '<br />' + '<span style="color:#464646;font-weight:bold;">' + this.point.low + ' &sim; ' + this.point.high + ' ({{ ind|dict_get:"std_unit_symbol" }})' + '</span>';
+              }
+            },
+            xAxis: {
+              min: null,
+              max: null
+            },
+            yAxis: {
+              labels: {
+                useHTML: true,
+                formatter: function() {
+                  var value = this.value;
+                  if (value > 9999.0) {
+                    var value_str = value.toExponential(2);
+                    var m = exp_regex.exec(value_str);
+                    var ylabel = m[1] + m[2].replace(/(\.0*|0*)$/, '') + '&times;10<sup>' + m[3]+m[4] + '</sup>';
+                  }
+                  else {
+                    var ylabel = value.toString();
+                  }
+                  return ylabel;
+                }
+              }
+            }
+          }; // }}}
+          // draw chart
+          $(document).ready(function() {
+            chart_getdata_draw("chart_{{ ind|dict_get:"id" }}",
+              {{ ind|dict_get:"id" }},
+              options_chart_{{ ind|dict_get:"id" }},
+              begin_date_str, end_date_str
+            );
+          });
+        {% elif ind|dict_get:"dataType" == DATA_TYPES|dict_get:"FLOAT_RANGE_TYPE" %}
+          {# FLOAT_RANGE_TYPE #}
+          {# TODO #}
+        {% elif ind|dict_get:"dataType" == DATA_TYPES|dict_get:"PM_TYPE" %}
+          {# PM_TYPE #}
+          {# TODO #}
+        {% else %}
+          {# unknown TYPE #}
+        {% endif %} {# end: DATA_TYPES #}
+      {% endif %} {# end: record_empty #}
     {% endfor %}
   </script>
 {% endblock %}
@@ -71,7 +245,7 @@
           <div class="refer_range">
             <span class="refer_text">{{ ind|dict_get:"ref_text" }}</span>
             <span class="refer_value">{{ ind|dict_get:"ref_value"|safe }}</span>
-            <span class="data_unit">{{ ind|dict_get:"std_unit_symbol" }}</span>
+            <span class="data_unit">{% if ind|dict_get:"std_unit_symbol" %}({{ ind|dict_get:"std_unit_symbol" }}){% endif %}</span>
           </div>
           {% if ind|dict_get:"record_empty" %} {# vim: {{{ #}
             {# if no record, then hide 'last_edit_data' #}
@@ -79,7 +253,7 @@
             <div class="edit_data">
                 <div class="last_edit_data" style="display: none;">
                   <span class="last_data">Null</span>
-                  <span class="data_unit">{{ ind|dict_get:"std_unit_symbol" }}</span>
+                  <span class="data_unit">{% if ind|dict_get:"std_unit_symbol" %}({{ ind|dict_get:"std_unit_symbol" }}){% endif %}</span>
                 </div>
                 <img class="small_edit_icon" src="{% static "images/pen.png" %}" />
                 <img class="explain_icon" src="{% static "images/nodata.png" %}" />
@@ -94,7 +268,7 @@
                 <div class="add_icon"></div>
                 <div class="minus_icon"></div>
               </div>
-              <div class="data_unit">{{ ind|dict_get:"std_unit_symbol" }}</div>
+              <div class="data_unit">{% if ind|dict_get:"std_unit_symbol" %}({{ ind|dict_get:"std_unit_symbol" }}){% endif %}</div>
               <div class="confirm_edit_icon"></div>
               <div class="cancel_edit_icon"></div>
             </div> <!-- end: editing_data -->
@@ -111,8 +285,8 @@
             <!-- "record_empty": False -->
             <div class="edit_data">
                 <div class="last_edit_data" style="display: block;">
-                  <span class="last_data">{{ ind|dict_get:"last_record"|dict_get:"value_str" }}</span>
-                  <span class="data_unit">{{ ind|dict_get:"std_unit_symbol" }}</span>
+                  <span class="last_data">{{ ind|dict_get:"last_record"|dict_get:"value_str"|safe }}</span>
+                  <span class="data_unit">{% if ind|dict_get:"std_unit_symbol" %}({{ ind|dict_get:"std_unit_symbol" }}){% endif %}</span>
                 </div>
                 <img class="small_edit_icon" src="{% static "images/pen.png" %}" />
                 <img class="explain_icon" src="{% static "images/last_edit_data.png" %}" />
@@ -127,7 +301,7 @@
                 <div class="add_icon"></div>
                 <div class="minus_icon"></div>
               </div>
-              <div class="data_unit">{{ ind|dict_get:"std_unit_symbol" }}</div>
+              <div class="data_unit">{% if ind|dict_get:"std_unit_symbol" %}({{ ind|dict_get:"std_unit_symbol" }}){% endif %}</div>
               <div class="confirm_edit_icon"></div>
               <div class="cancel_edit_icon"></div>
             </div> <!-- end: editing_data -->
@@ -142,11 +316,11 @@
               <input class="datepicker" type="text" autocomplete="off" />
             </div>
             <!-- chart rendered by Highcharts -->
-            <div id="chart_{{ ind|dict_get:"id" }}" class="chart"></div>
+            <div class="chart" id="chart_{{ ind|dict_get:"id" }}"></div>
           {% endif %} {# end: record_empty; vim: }}} #}
 
           <div class="card_bottom">
-            <div class="understand_index"><a class="thickbox" href="{% url indicator_indexdesc %}?TB_iframe=true&no1_title&transfer_params&height=351&width=630&card_id={{ ind|dict_get:"id" }}">了解该指标</a></div>
+            <div class="understand_index"><a class="thickbox" href="{% url indicator_indexdesc %}?card_id={{ ind|dict_get:"id" }}&TB_iframe=true&transfer_params&height=351&width=630">了解该指标</a></div>
             <!-- TODO -->
             <div class="simulation_sheet"><a href="{% static "images/demo_sheet.png" %}" class="thickbox">仿真化验单</a></div>
             <div class="detail_history">
@@ -163,27 +337,31 @@
             width参数为弹出层页面宽度+2，
             card_id参数为 "卡片id"
           {% endcomment %}
-          <a class="card_delete_icon card_delete thickbox" href="{% url indicator_deletecardtip %}?TB_iframe=true&no1_title&transfer_params&height=166&width=630&card_id={{ ind|dict_get:"id" }}"></a>
+          <a class="card_delete_icon card_delete thickbox" href="{% url indicator_deletecardtip %}?card_id={{ ind|dict_get:"id" }}&TB_iframe=true&transfer_params&height=166&width=630"></a>
         </div> <!-- end: index_card -->
       {% endfor %} {# end: indicators #}
 
       <!-- detail card info -->
       <div class="detail_card_info">
-        <div class="card_title">乙肝病毒核算定量 (PCR)4<input class="collapse_btn" type="button" value="收 起" /></div>
+        <div class="card_title">
+          <div class="title">Indicator</div>
+          <input class="collapse_btn" type="button" value="收 起" />
+        </div>
         <div class="search_data_div">
-          <input class="recent_one_week shift_week" start_date="2013-08-04" end_date="2013-08-10" type="button" value="最近1周" />
-          <input class="recent_two_week shift_week unselected" start_date="2013-07-28" end_date="2013-08-10" type="button" value="最近2周" />
+          <!-- two buttons default to unselected -->
+          <input class="recent_three_month shift_date unselected" begin_date="2013-08-04" end_date="2013-08-10" type="button" value="最近三个月" />
+          <input class="recent_six_month shift_date unselected" begin_date="2013-07-28" end_date="2013-08-10" type="button" value="最近六个月" />
           <div class="datepicker_container end_date_container">
-            <label>截止日期</label>
+            <label class="end_label">截止日期</label>
             <input class="datepicker end_date" id="search_end_date" type="text" value="" />
           </div>
-          <div class="datepicker_container">
-            <label class="start_label">起始日期</label>
-            <input class="datepicker start_date" id="search_start_date" type="text" value="" />
+          <div class="datepicker_container begin_date_container">
+            <label class="begin_label">起始日期</label>
+            <input class="datepicker begin_date" id="search_begin_date" type="text" value="" />
           </div>
           <div style="clear:both;"></div>
         </div>
-        <div id="detail_chart"></div>
+        <div class="chart" id="detail_chart"></div>
         <div class="table_div">
           <table width="100%">
             <tr class="first_line">

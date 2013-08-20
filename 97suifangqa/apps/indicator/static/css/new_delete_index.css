@@ -202,3 +202,30 @@
 	border-bottom: 1px solid #BFBFBF;
 	height: 24px;
 }
+
+.link_container {
+    width: 596px;
+    height: 39px;
+    margin: 10px 0;     /* top/bottom: 10px; left/right: 0 */
+}
+
+.link_container .status_link {
+    width: 594px;
+    height: 37px;
+    line-height: 37px;
+    border: 1px solid #B5B5B5;
+    border-radius: 2px;
+    /* background-color: #F7F7F7; */
+    background-color: #F3F3F1;
+    text-align: center;
+}
+
+.link_container .status_link a {
+    color: #4A4A4A;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 19px;
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+

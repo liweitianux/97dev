@@ -153,15 +153,18 @@ function TB_show(caption, url, imageGroup) {//function called when the user clic
 			var queryString = url.replace(/^[^\?]+\??/,'');
 			var params = TB_parseQuery( queryString );
 			
-//			TB_WIDTH = (params['width']*1) + 30;
-//			TB_HEIGHT = (params['height']*1) + 40;
-//			ajaxContentW = TB_WIDTH - 30;
-//			ajaxContentH = TB_HEIGHT - 45;
+			//console.log(queryString);
+			//console.log(params);
+			TB_WIDTH = (params['width']*1) + 30 || 630;
+			TB_HEIGHT = (params['height']*1) + 40 || 440;
+			ajaxContentW = TB_WIDTH - 30;
+			ajaxContentH = TB_HEIGHT - 45;
 			TB_WIDTH = (params['width']*1);
 			TB_HEIGHT = (params['height']*1);
 			ajaxContentW = TB_WIDTH;
 			ajaxContentH = TB_HEIGHT;
 			
+			//console.log(url);
 			if(url.indexOf('no_title') != -1){
 				$("#TB_window").append("<div id='TB_title'><div id='TB_ajaxWindowTitle'>"+caption+"</div><div id='TB_closeAjaxWindow'><a href='#' id='TB_closeWindowButton'>close</a></div></div>");
 				TB_HEIGHT += 27; //title height

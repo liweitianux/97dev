@@ -51,6 +51,7 @@
       </div>
       <div style="clear: both;"></div>
     </div>
+
     <div class="index_navigation">
       <!-- 所有指标 -->
       <div class="index_type {% if page_condition == "all" %}selected{% endif %}">
@@ -64,6 +65,7 @@
       {% endfor %}
       <div style="clear:both;"></div>
     </div>
+
     <div class="show_indexes">
       <div class="index_container">
         <!-- 所有的展示 -->
@@ -124,7 +126,7 @@
           </div> <!-- end: index_letter_container -->
           {% endif %} {# end: page_condition == all #}
         </div> <!-- end: all_condition -->
-        
+
         <!-- category view, 点击"指标类型"页面的左侧显示 -->
         <!-- 如若kw参数为空，且tab不等于all（即点击指标类型后的页面），则把 <div class="index_category">XXXX</div> 隐藏掉即可 -->
         {# page_condition == "category" #}
@@ -217,10 +219,16 @@
             </div>
           {% endfor %}
         </div> <!-- end: index_lines right -->
-
-      </div>
+      </div> <!-- end: index_container -->
       <div style="clear:both;"></div>
+    </div> <!-- end: show_indexes -->
+
+    <div class="link_container">
+      <div class="status_link">
+        <a href="{% url indicator_status %}">查看指标状态</a>
+      </div>
     </div>
+
   </div>
 {% endblock page %}
 

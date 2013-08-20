@@ -181,19 +181,30 @@ class BlogAnnotation(models.Model):
         文章注释
     '''
 
-    type_choices = ((0, u"段落注释"),
-                    (1, u"专有名词"),)
+    PARAGRAPH = 0
+    PROPER_NOUN = 1
+    ANNOTATION_TYPES = (
+        (PARAGRAPH, u"段落注释"),
+        (PROPER_NOUN, u"专有名词"),
+    )
 
-    type = models.IntegerField(u"注释类型", choices=type_choices)
+    type = models.IntegerField(u"注释类型", choices=ANNOTATION_TYPES)
     no   = models.IntegerField(u"编号", blank=True, null=True)
-    brief_content = models.CharField(u"简短内容", max_length=400, blank= True)
+    brief_content = models.CharField(u"简短内容", max_length=400,
+            blank=True)
     detail = models.TextField(u"详细内容", blank=True)
-    blogs = models.ManyToManyField("SciBlog", verbose_name=u"文章", related_name="annotations", null=True, blank=True)
-    keywords = models.ManyToManyField("info.KeyWord", verbose_name=u"关键词", related_name="annotations", null=True, blank=True)
-    figures = models.ManyToManyField("figure.Figure", verbose_name=u"图片", related_name="annotations", null=True, blank=True)
-    collected_by = models.ManyToManyField(User, verbose_name=u"收藏者", related_name="annotation_collection", null=True, blank=True)
+    blogs = models.ManyToManyField("SciBlog", verbose_name=u"文章",
+            related_name="annotations", null=True, blank=True)
+    keywords = models.ManyToManyField("info.KeyWord",
+            verbose_name=u"关键词", related_name="annotations",
+            null=True, blank=True)
+    figures = models.ManyToManyField("figure.Figure",
+            verbose_name=u"图片", related_name="annotations",
+            null=True, blank=True)
+    collected_by = models.ManyToManyField(User,
+            verbose_name=u"收藏者", related_name="annotation_collection",
+            null=True, blank=True)
     objects = AnnotationManager()
-	
 
     class Meta:
         verbose_name_plural = u"文章注释"
@@ -208,6 +219,10 @@ class BlogAnnotation(models.Model):
         """
         return self.__unicode__()
 
+    def get_absolute_url(self):
+        # TODO
+        return ''
+
     def firstkeyword(self):
         u'''
         第一个关键词,注意对于专有名词，通常只有一个
@@ -217,7 +232,8 @@ class BlogAnnotation(models.Model):
 
     def firstparagraph(self):
         u'''
-        bloglist页面二上内容的阶段，django里面的注释第一段的末尾都是一个空格
+        bloglist页面二上内容的阶段，
+        django里面的注释第一段的末尾都是一个空格
         '''
         return self.detail.split(' ')[0]
 
@@ -227,7 +243,8 @@ class BlogAnnotation(models.Model):
         '''
         if user.is_authenticated() and user.annotation_collection.filter(id=self.id):
             return True
-        return False
+        else:
+            return False
 # }}}
 
 
