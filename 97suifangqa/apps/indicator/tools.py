@@ -168,23 +168,39 @@ def get_unfollowed_indicator(user_id, category_id="all", startswith="all"):
 
 
 # get_record {{{
-def get_record(user_id, indicator_id, begin="", end="", std=False):
+def get_record(user_id, indicator_id, begin=None, end=None, number=None, std=False):
     """
-    get_record(user_id, indicator_id, begin="", end="", std=False)
-
-    return a dict with 'date' as key, and 'get_data()' as value.
     args 'begin' and 'end' to specify the date range.
     arg 'std=True' to get data in standard unit
-    if 'begin=""', then the earliest date is given;
-    if 'end=""', then the latest date is given.
 
-    return dict format:
+    if 'begin=None', then the earliest date is given;
+    if 'end=None', then the latest date is given.
+
+    if 'number' given, then return the lastest number of records.
+    if there is not that much, then return all the records.
+
+    the date range filter *first*, then number filter
+
+    return dict format: (data sorted by 'date')
     rdata = {
-        'date1': [d1r1.get_data(), d1r2.get_data(), ...],
-        'date2': [d2r1.get_data(), d2r2.get_data(), ...],
-        ...
+        'failed': False,
+        'number_req': number_of_records_request,
+        'begin_req': begin_req,
+        'end_req': end_req,
+        'number_rsp': number_of_records_response,
+        'begin_rsp': begin_rsp,
+        'end_rsp': end_rsp,
+        'has_more': True|False,
+        'has_earlier': True|False,
+        'has_later': True|False,
+        'data': [d1r1.get_data(), d1r2.get_data(), ...],
     }
     """
+    # default parameters
+    number_req = None
+    begin_req = None
+    end_req = None
+    #
     uid = int(user_id)
     indid = int(indicator_id)
     all_records = im.IndicatorRecord.objects.\
@@ -192,43 +208,199 @@ def get_record(user_id, indicator_id, begin="", end="", std=False):
             order_by('date', 'created_at')
     # check if 'all_records' empty
     if not all_records:
-        return {}
-    # set 'begin' and 'end'
-    if begin == '':
-        begin = all_records[0].date
-    if end == '':
-        end = all_records.reverse()[0].date
-    # check the validity of given 'begin' and 'end'
-    if (isinstance(begin, datetime.date) and
-            isinstance(end, datetime.date)):
-        records = all_records.filter(date__range=(begin, end))
-        _rdata = {}
-        for r in records:
-            _d = r.date.isoformat()
-            # get data
-            if std:
-                _data = r.get_data_std()
-            else:
-                _data = r.get_data()
-            #
-            if _rdata.has_key(_d):
-                # the date key already exist
-                _rdata[_d] += [_data]
-            else:
-                # the date key not exist
-                _rdata[_d] = [_data]
-        # return
-        return _rdata
+        return {'failed': True}
+    # check date range and given number
+    if (begin is None) and (end is None):
+        # select by given 'number'
+        if number is not None:
+            try:
+                number_req = int(number)
+                records = all_records.reverse()[:number_req]
+            except ValueError:
+                raise ValueError(u"number='%s' 错误" % number)
+                return {'failed': True}
+        else:
+            records = all_records.reverse()
+        # convert to list, and re-sort by 'date'
+        records_list = list(records)
+        records_list.reverse()
     else:
-        raise ValueError(u"begin='%s' or end='%s' 不是合法的日期" %
-                (begin, end))
-        return {}
+        # check date range
+        # begin
+        if begin is None:
+            begin = all_records[0].date
+        elif isinstance(begin, datetime.date):
+            begin_req = begin.isoformat()
+        else:
+            raise ValueError(u"begin='%s' 不是合法的日期" % begin)
+            return {'failed': True}
+        # end
+        if end is None:
+            end = all_records.reverse()[0].date
+        elif isinstance(end, datetime.date):
+            end_req = end.isoformat()
+        else:
+            raise ValueError(u"end='%s' 不是合法的日期" % end)
+            return {'failed': True}
+        # filter by date range
+        records = all_records.filter(date__range=(begin, end))
+        records_list = list(records)
+
+    # process records
+    number_rsp = len(records_list)
+    begin_rsp_py = records_list[0].date
+    begin_rsp = begin_rsp_py.isoformat()
+    end_rsp_py = records_list[-1].date
+    end_rsp = end_rsp_py.isoformat()
+    # has_earlier, has_later, has_more
+    has_earlier = False
+    has_later = False
+    has_more = False
+    r_earlier = all_records.filter(date__lt=begin_rsp_py)
+    r_later = all_records.filter(date__gt=end_rsp_py)
+    if r_earlier:
+        has_earlier = True
+    if r_later:
+        has_later = True
+    if has_earlier or has_later:
+        has_more = True
+    #
+    _rdata = {
+        'failed': False,
+        'number_req': number_req,
+        'begin_req': begin_req,
+        'end_req': end_req,
+        'number_rsp': number_rsp,
+        'begin_rsp': begin_rsp,
+        'end_rsp': end_rsp,
+        'has_more': has_more,
+        'has_earlier': has_earlier,
+        'has_later': has_later,
+        'data': [],
+    }
+    for r in records_list:
+        # get data
+        if std:
+            _data = r.get_data_std()
+        else:
+            _data = r.get_data()
+        # append data
+        _rdata['data'].append(_data)
+
+    # return
+    return _rdata
+# }}}
+
+
+# get_num_record {{{
+def get_num_record(user_id, indicator_id, number, end=None, std=False):
+    """
+    return the *latest* number records.
+    args 'end' to specify the end date range.
+    arg 'std=True' to get data in standard unit
+
+    return dict format: (data sorted by 'date')
+    rdata = {
+        'failed': False,
+        'number_req': number_of_records_request,
+        'begin_req': begin_req,
+        'end_req': end_req,
+        'number_rsp': number_of_records_response,
+        'begin_rsp': begin_rsp,
+        'end_rsp': end_rsp,
+        'has_more': True|False,
+        'has_earlier': True|False,
+        'has_later': True|False,
+        'data': [r1.get_data(), r2.get_data(), ...],
+    }
+    """
+    # default parameters
+    number_req = None
+    begin_req = None
+    end_req = None
+    #
+    uid = int(user_id)
+    indid = int(indicator_id)
+    all_records = im.IndicatorRecord.objects.\
+            filter(user__id=uid, indicator__id=indid).\
+            order_by('date', 'created_at')
+    # check if 'all_records' empty
+    if not all_records:
+        return {'failed': True}
+    # check end date
+    if end is None:
+        end = all_records.reverse()[0].date
+    elif isinstance(end, datetime.date):
+        end_req = end.isoformat()
+    else:
+        raise ValueError(u"end='%s' 不是合法的日期" % end)
+        return {'failed': True}
+    records = all_records.filter(date__lte=end)
+    # check number (required param)
+    try:
+        number_req = int(number)
+        records_list = list(records.reverse()[:number_req])
+    except ValueError:
+        raise ValueError(u"number='%s' 错误" % number)
+        return {'failed': True}
+    # re-sort by 'date'
+    records_list.reverse()
+
+    # process records
+    number_rsp = len(records_list)
+    begin_rsp_py = records_list[0].date
+    begin_rsp = begin_rsp_py.isoformat()
+    end_rsp_py = records_list[-1].date
+    end_rsp = end_rsp_py.isoformat()
+    # has_earlier, has_later, has_more
+    has_earlier = False
+    has_later = False
+    has_more = False
+    r_earlier = all_records.filter(date__lt=begin_rsp_py)
+    r_later = all_records.filter(date__gt=end_rsp_py)
+    if r_earlier:
+        has_earlier = True
+    if r_later:
+        has_later = True
+    if has_earlier or has_later:
+        has_more = True
+    #
+    _rdata = {
+        'failed': False,
+        'number_req': number_req,
+        'begin_req': begin_req,
+        'end_req': end_req,
+        'number_rsp': number_rsp,
+        'begin_rsp': begin_rsp,
+        'end_rsp': end_rsp,
+        'has_more': has_more,
+        'has_earlier': has_earlier,
+        'has_later': has_later,
+        'data': [],
+    }
+    for r in records_list:
+        # get data
+        if std:
+            _data = r.get_data_std()
+        else:
+            _data = r.get_data()
+        # append data
+        _rdata['data'].append(_data)
+
+    # return
+    return _rdata
 # }}}
 
 
 # get_record_std {{{
 def get_record_std(**kwargs):
     return get_record(std=True, **kwargs)
+# }}}
+
+
+# get_num_record_std {{{
+def get_num_record_std(**kwargs):
+    return get_num_record(std=True, **kwargs)
 # }}}
 
 

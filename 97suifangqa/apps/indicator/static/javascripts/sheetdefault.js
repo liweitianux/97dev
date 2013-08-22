@@ -144,20 +144,23 @@ $(document).ready(function(){
 	//日期控件
 	$(".select_date>.datepicker").datepicker({
 		 showOn: "both",
-		 buttonImage: static_url + "plugins/datepicker/images/calendar.png",
+		 buttonImage: static_url + "images/calendar.png",
 		 buttonImageOnly: true
 	});
 	
 	//时间范围控制（开始时间<结束时间）
 	$("#search_begin_date").datepicker({
 		showOn: "both",
-		buttonImage: static_url + "plugins/datepicker/images/calendar.png",
+		buttonImage: static_url + "images/calendar.png",
 		buttonImageOnly: true,
 		onClose: function( selectedDate ) {
 			$("#search_end_date").datepicker("option", "minDate", selectedDate);
 		}
 	});
 	$("#search_end_date").datepicker({
+		showOn: "both",
+		buttonImage: static_url + "images/calendar.png",
+		buttonImageOnly: true,
 		onClose: function( selectedDate ) {
 			$("#search_begin_date").datepicker("option", "maxDate", selectedDate);
 		}

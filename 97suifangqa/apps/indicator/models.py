@@ -301,7 +301,7 @@ class IndicatorRecord(models.Model):                        # {{{
                 kwargs={'pk': self.id})
 
     def save(self, **kwargs):
-        if self.is_valid() and self.check_confine:
+        if self.is_valid() and self.check_confine():
             super(IndicatorRecord, self).save(**kwargs)
         else:
             raise ValueError(u'您输入的数据不符合要求')
@@ -311,7 +311,7 @@ class IndicatorRecord(models.Model):                        # {{{
         # check if exists record for the date
         qs = IndicatorRecord.objects.filter(indicator=self.indicator,
                 date=self.date)
-        if qs:
+        if qs and qs[0].id != self.id:
             raise ValueError(u'date="%s" 该日期已经存在记录' % self.date)
             return False
         # check dataType
@@ -484,6 +484,7 @@ class IndicatorRecord(models.Model):                        # {{{
                 val_min = None
             # output data
             data = {
+                'id': self.id,
                 'date': self.date.isoformat(),
                 'value': value,
                 'val_max': val_max,
@@ -495,6 +496,7 @@ class IndicatorRecord(models.Model):                        # {{{
             }
         else:
             data = {
+                'id': self.id,
                 'date': self.date.isoformat(),
                 'value': self.value,
                 'val_max': self.val_max,
@@ -562,6 +564,7 @@ class IndicatorRecord(models.Model):                        # {{{
                     val_min_std = None
                 # output data
                 data_std = {
+                    'id': self.id,
                     'date': self.date.isoformat(),
                     'value': value_std,
                     'val_max': val_max_std,

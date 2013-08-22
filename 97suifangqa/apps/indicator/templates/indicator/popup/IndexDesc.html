@@ -10,10 +10,6 @@
 	<link rel="stylesheet" type="text/css" href="{% static "css/index_desc.css" %}"/>
 {% endblock %}
 
-{% block jquery %}
-	<script type="text/javascript" src="{% static "javascripts/jquery-1.6.min.js" %}"></script>
-{% endblock %}
-
 {% block scripts %}
   <script type="text/javascript">
     $(document).ready(function(){
@@ -24,6 +20,11 @@
       });
 
       // collection
+      {% if annotation_not_found %}
+      {# change cursor style #}
+      $("#collection_btn").css('cursor', 'auto');
+      {% else %}
+      {# annotation found #}
       $("#collection_btn").bind("update", function(e) {
         var text = $(this).data('is_collected') ? "点击取消收藏" : "收藏该注释";
         text += ' (已有' + $(this).data('collected_times') + '人收藏)';
@@ -41,10 +42,11 @@
                 //console.log(obj);
                 obj.data('is_collected', data.added);
                 obj.data('collected_times', data.times);
-                obj.trigger("update");
+                obj.trigger('update');
             }
         });
       });
+      {% endif %} {# end: not annotation_not_found #}
       
       //前往医学知识库
       $(".go_library_btn").bind("click", function(){
@@ -53,6 +55,10 @@
         parent.window.location.href = "{{ annotation_url }}";
         return false;
       });
+      {% if annotation_not_found %}
+      {# annotation not found, disable the button #}
+      $(".go_library_btn").attr('disabled', 'disabled');
+      {% endif %}
     });
   </script>
 {% endblock %}

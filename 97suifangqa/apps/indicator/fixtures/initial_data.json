@@ -93,22 +93,6 @@
         }
     },
     {
-        "pk": 1,
-        "model": "indicator.indicator",
-        "fields": {
-            "addByUser": 1,
-            "name": "\u5b9a\u503c1",
-            "dataType": "FL",
-            "pinyin": "ding-zhi-1",
-            "helpText": "\u6d6e\u70b9\u578b",
-            "englishName": "float1",
-            "categories": [
-                1
-            ],
-            "description": "\u5b9a\u503c1\r\n\r\n\u6d6e\u70b9\u578b\u6570\u636e"
-        }
-    },
-    {
         "pk": 4,
         "model": "indicator.indicator",
         "fields": {
@@ -143,15 +127,30 @@
     },
     {
         "pk": 1,
+        "model": "indicator.indicator",
+        "fields": {
+            "addByUser": 1,
+            "name": "\u8c37\u4e19\u8f6c\u6c28\u9176",
+            "dataType": "FL",
+            "pinyin": "gu-bing-zhuan-an-mei",
+            "helpText": "\u63a5\u53d7\u5b9a\u503c\u6570\u636e\uff0c\u5982: 45, 38.7",
+            "englishName": "Alanine Transaminase",
+            "categories": [
+                3
+            ],
+            "description": "\u8c37\u4e19\u8f6c\u6c28\u9176\r\nAlanine transaminase (ALT)\r\n\r\n\u6d6e\u70b9\u5b9a\u503c\u578b\u6570\u636e"
+        }
+    },
+    {
+        "pk": 1,
         "model": "indicator.userindicator",
         "fields": {
-            "followedHistories": [
-                4
-            ],
+            "followedHistories": [],
             "followedIndicators": [
                 3,
-                1,
-                2
+                4,
+                2,
+                1
             ],
             "user": 1
         }
@@ -166,14 +165,142 @@
         }
     },
     {
+        "pk": 18,
+        "model": "indicator.indicatorrecord",
+        "fields": {
+            "indicator": 1,
+            "notes": "\u8865\u5145\r\n\u8bb0\u5f558",
+            "created_at": "2013-08-22T06:56:08.417Z",
+            "updated_at": "2013-08-22T06:56:08.417Z",
+            "value": "45",
+            "val_min": null,
+            "user": 1,
+            "date": "2013-06-29",
+            "val_max": null,
+            "unit": 4
+        }
+    },
+    {
+        "pk": 17,
+        "model": "indicator.indicatorrecord",
+        "fields": {
+            "indicator": 1,
+            "notes": "\u8865\u5145\r\n\u8bb0\u5f557",
+            "created_at": "2013-08-22T06:48:18.864Z",
+            "updated_at": "2013-08-22T06:55:36.704Z",
+            "value": "57",
+            "val_min": null,
+            "user": 1,
+            "date": "2013-07-04",
+            "val_max": null,
+            "unit": 1
+        }
+    },
+    {
+        "pk": 15,
+        "model": "indicator.indicatorrecord",
+        "fields": {
+            "indicator": 1,
+            "notes": "\u8865\u5145\r\n\u8bb0\u5f555",
+            "created_at": "2013-08-22T06:44:43.567Z",
+            "updated_at": "2013-08-22T06:44:43.567Z",
+            "value": "81",
+            "val_min": null,
+            "user": 1,
+            "date": "2013-07-07",
+            "val_max": null,
+            "unit": 1
+        }
+    },
+    {
+        "pk": 16,
+        "model": "indicator.indicatorrecord",
+        "fields": {
+            "indicator": 1,
+            "notes": "\u8865\u5145\r\n\u8bb0\u5f556",
+            "created_at": "2013-08-22T06:45:19.971Z",
+            "updated_at": "2013-08-22T06:47:19.645Z",
+            "value": "98",
+            "val_min": null,
+            "user": 1,
+            "date": "2013-07-13",
+            "val_max": null,
+            "unit": 1
+        }
+    },
+    {
+        "pk": 12,
+        "model": "indicator.indicatorrecord",
+        "fields": {
+            "indicator": 1,
+            "notes": "\u8865\u5145\r\n\u8bb0\u5f554",
+            "created_at": "2013-08-22T06:41:28.455Z",
+            "updated_at": "2013-08-22T06:41:28.455Z",
+            "value": "31",
+            "val_min": null,
+            "user": 1,
+            "date": "2013-07-18",
+            "val_max": null,
+            "unit": 1
+        }
+    },
+    {
+        "pk": 11,
+        "model": "indicator.indicatorrecord",
+        "fields": {
+            "indicator": 1,
+            "notes": "\u8865\u5145\r\n\u8bb0\u5f553",
+            "created_at": "2013-08-22T06:40:45.950Z",
+            "updated_at": "2013-08-22T06:40:54.585Z",
+            "value": "49",
+            "val_min": null,
+            "user": 1,
+            "date": "2013-07-21",
+            "val_max": null,
+            "unit": 1
+        }
+    },
+    {
+        "pk": 10,
+        "model": "indicator.indicatorrecord",
+        "fields": {
+            "indicator": 1,
+            "notes": "\u8865\u5145\r\n\u8bb0\u5f552",
+            "created_at": "2013-08-22T06:37:16.110Z",
+            "updated_at": "2013-08-22T06:39:16.251Z",
+            "value": "78",
+            "val_min": null,
+            "user": 1,
+            "date": "2013-07-27",
+            "val_max": null,
+            "unit": 1
+        }
+    },
+    {
+        "pk": 9,
+        "model": "indicator.indicatorrecord",
+        "fields": {
+            "indicator": 1,
+            "notes": "\u8865\u5145\r\n\u8bb0\u5f551",
+            "created_at": "2013-08-22T06:36:32.924Z",
+            "updated_at": "2013-08-22T06:36:32.924Z",
+            "value": "59",
+            "val_min": null,
+            "user": 1,
+            "date": "2013-08-01",
+            "val_max": null,
+            "unit": 1
+        }
+    },
+    {
         "pk": 1,
         "model": "indicator.indicatorrecord",
         "fields": {
             "indicator": 1,
-            "notes": "\u6307\u68071\r\n\u7b2c1\u6761\u8bb0\u5f55",
+            "notes": "\u8c37\u4e19\u8f6c\u6c28\u9176\r\n\r\n\u7b2c1\u6761\u8bb0\u5f55\r\n",
             "created_at": "2013-08-05T15:48:00.035Z",
-            "updated_at": "2013-08-05T15:50:00.326Z",
-            "value": "250",
+            "updated_at": "2013-08-22T06:34:48.950Z",
+            "value": "50",
             "val_min": null,
             "user": 1,
             "date": "2013-08-05",
@@ -202,13 +329,45 @@
         "model": "indicator.indicatorrecord",
         "fields": {
             "indicator": 1,
-            "notes": "",
+            "notes": "\u8bb0\u5f553",
             "created_at": "2013-08-18T13:33:20.569Z",
-            "updated_at": "2013-08-18T13:33:20.569Z",
+            "updated_at": "2013-08-22T06:35:54.229Z",
             "value": "150",
             "val_min": null,
             "user": 1,
             "date": "2013-08-15",
+            "val_max": null,
+            "unit": 1
+        }
+    },
+    {
+        "pk": 13,
+        "model": "indicator.indicatorrecord",
+        "fields": {
+            "indicator": 1,
+            "notes": "\u8bb0\u5f554",
+            "created_at": "2013-08-22T06:42:44.782Z",
+            "updated_at": "2013-08-22T06:45:43.807Z",
+            "value": "89",
+            "val_min": null,
+            "user": 1,
+            "date": "2013-08-18",
+            "val_max": null,
+            "unit": 1
+        }
+    },
+    {
+        "pk": 14,
+        "model": "indicator.indicatorrecord",
+        "fields": {
+            "indicator": 1,
+            "notes": "\u8bb0\u5f555",
+            "created_at": "2013-08-22T06:43:32.415Z",
+            "updated_at": "2013-08-22T06:43:32.415Z",
+            "value": "56",
+            "val_min": null,
+            "user": 1,
+            "date": "2013-08-22",
             "val_max": null,
             "unit": 1
         }
@@ -246,6 +405,22 @@
         }
     },
     {
+        "pk": 7,
+        "model": "indicator.indicatorrecord",
+        "fields": {
+            "indicator": 2,
+            "notes": "range type\r\nrecord 3",
+            "created_at": "2013-08-19T11:30:26.675Z",
+            "updated_at": "2013-08-19T11:30:26.675Z",
+            "value": "",
+            "val_min": 15000.0,
+            "user": 1,
+            "date": "2013-08-17",
+            "val_max": 30000.0,
+            "unit": 3
+        }
+    },
+    {
         "pk": 3,
         "model": "indicator.indicatorrecord",
         "fields": {
@@ -259,6 +434,22 @@
             "date": "2013-08-17",
             "val_max": null,
             "unit": null
+        }
+    },
+    {
+        "pk": 8,
+        "model": "indicator.indicatorrecord",
+        "fields": {
+            "indicator": 4,
+            "notes": "\u7b2c\u4e00\u4e2a\u8bb0\u5f55",
+            "created_at": "2013-08-22T00:20:21.925Z",
+            "updated_at": "2013-08-22T00:20:21.925Z",
+            "value": "1500",
+            "val_min": null,
+            "user": 1,
+            "date": "2013-08-19",
+            "val_max": null,
+            "unit": 4
         }
     },
     {
@@ -296,12 +487,12 @@
         "model": "indicator.unit",
         "fields": {
             "indicator": 1,
-            "description": "",
-            "symbol": "unit11",
+            "description": "IU/L\r\n\r\n\u8c37\u4e19\u8f6c\u6c28\u9176\r\nAlanine transaminase (ALT)",
+            "symbol": "IU/L",
             "addByUser": 1,
             "standard": true,
             "relation": "v",
-            "name": "\u5355\u4f4d11"
+            "name": "\u62f7\u8d1d/\u5347"
         }
     },
     {
@@ -323,11 +514,11 @@
         "fields": {
             "indicator": 2,
             "description": "",
-            "symbol": "unit21",
+            "symbol": "\u62f7\u8d1d/mL",
             "addByUser": 1,
             "standard": true,
             "relation": "v",
-            "name": "\u5355\u4f4d21"
+            "name": "\u62f7\u8d1d/mL"
         }
     },
     {
@@ -347,13 +538,13 @@
         "pk": 1,
         "model": "indicator.innateconfine",
         "fields": {
-            "math_max": 800.0,
+            "math_max": 200.0,
             "indicator": 1,
-            "human_max": 500.0,
-            "description": "\u6307\u68071\r\n\u6570\u636e\u8303\u56f4",
+            "human_max": 64.0,
+            "description": "\u8c37\u4e19\u8f6c\u6c28\u9176\r\n\r\n\u6b63\u5e38\u503c\u8303\u56f4\r\n\u5141\u8bb8\u6570\u636e\u8303\u56f4",
             "val_norm": "",
             "addByUser": 1,
-            "human_min": 50.0,
+            "human_min": 10.0,
             "unit": 1,
             "math_min": 0.0
         }

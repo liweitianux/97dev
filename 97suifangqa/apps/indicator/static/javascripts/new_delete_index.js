@@ -18,7 +18,7 @@ $(document).ready(function(){
 		var index_id = $(this).attr("index_id");
 		added_indexes_id.push(index_id);
 	});
-	$(".add>.icon").live("click", function(){
+	$(".index_lines").on("click", ".add>.icon", function(){
 		var add_icon = $(this);
 		var index_id = add_icon.closest(".index_line").attr("index_id");
 		var date = new Date();
@@ -45,7 +45,7 @@ $(document).ready(function(){
 		
 		return false;
 	});
-	$(".minus>.icon").live("click", function(){
+	$(".index_lines").on("click", ".minus>.icon", function(){
 		var minus_icon = $(this);
 		var index_id = minus_icon.closest(".index_line").attr("index_id");
 		var date = new Date();

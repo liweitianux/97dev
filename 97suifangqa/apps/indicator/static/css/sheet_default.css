@@ -133,6 +133,9 @@
 	height: 24px;
 	line-height: 24px;
 }
+.detail_card_info .see_more .see_more_btn:disabled {
+	background-color: #CCCCCC;
+}
 .index_card {
 	width: 278px;
 	height: 375px;

@@ -804,7 +804,7 @@ def ajax_edit_history_data(request):
 @login_required
 def ajax_get_card_data_chart(request):
     """
-    'indicator/static/javascripts/load_card.js'
+    'indicator/static/javascripts/card_chart.js'
     get card data
     for the 'chart' within the card
     format: [[UTC_ms1, v1], [UTC_ms2, v2], [UTC_ms3, v3], ...]
@@ -815,83 +815,142 @@ def ajax_get_card_data_chart(request):
     '%Y-%m-%dT%H:%M:%S.%fZ'
     """
     # default parameters
-    data = []
-    begin_date = ""
-    end_date = ""
+    data = {'failed': True}
+    begin = None
+    end = None
+    num = None
     #
+    #if True:
     if request.is_ajax():
         # check card_id -> indicator_id
         if request.GET.get('card_id') is not None:
             card_id = request.GET.get('card_id')
             try:
                 indicator_id = int(card_id)
+                ind_obj = im.Indicator.objects.get(id=indicator_id)
             except ValueError:
                 print u'Error: Given card_id="%s" cannot convert to integer' % card_id
-                return HttpResponse(json.dumps(data),
-                        mimetype='application/json')
+                raise Http404
+            except im.Indicator.DoesNotExist:
+                print u'Error: Indicator id="%s" NOT exist' % indicator_id
+                raise Http404
         else:
-            return HttpResponse(json.dumps(data),
-                    mimetype='application/json')
+            print u'Error: No card_id provided'
+            raise Http404
+        # check 'type': num/date
+        if request.GET.get('type') == 'num':
+            # type: 'num'
+            type = request.GET.get('type')
+        elif request.GET.get('type') == 'date':
+            # type: 'date'
+            type = request.GET.get('type')
+        else:
+            print u'Error: unknown type="%s"' % request.GET.get('type')
+            raise Http404
+        # check 'num'
+        if request.GET.get('num'):
+            num = request.GET.get('num')
+        else:
+            # 'num' not given, or empty string
+            num = None
         # begin datetime
-        if request.GET.get('begin') is not None:
+        if request.GET.get('begin'):
             begin = request.GET.get('begin')
-            try:
-                begin_datetime = datetime.datetime.strptime(begin,
-                        '%Y-%m-%d')
-                begin_date = begin_datetime.date()
-            except ValueError:
-                print u'Error: Given begin="%s" invalid' % begin
-                return HttpResponse(json.dumps(data),
-                        mimetype='application/json')
+        else:
+            begin = None
         # end datetime
-        if request.GET.get('end') is not None:
+        if request.GET.get('end'):
             end = request.GET.get('end')
-            try:
-                end_datetime = datetime.datetime.strptime(end,
-                        '%Y-%m-%d')
-                end_date = end_datetime.date()
-            except ValueError:
-                print u'Error: Given end="%s" invalid' % end
-                return HttpResponse(json.dumps(data),
-                        mimetype='application/json')
-        # get records data
-        records_data = get_record_std(user_id=request.user.id,
-                indicator_id=indicator_id,
-                begin=begin_date, end=end_date)
-        # convert to list, and sort
-        rd_list = []
-        for r in records_data.values():
-            rd_list += r
-        rd_list_sorted = sorted(rd_list, key = lambda item: item['date'])
-        #
-        ind_obj = get_object_or_404(im.Indicator, id=indicator_id)
-        dataType = ind_obj.dataType
-        unix_begin = datetime.datetime(1970, 1, 1, 0, 0)
-        data = []
-        for r in rd_list_sorted:
-            dt = datetime.datetime.strptime(r['date'], '%Y-%m-%d')
-            time_ms = (dt-unix_begin).total_seconds() * 1000.0
-            if dataType == im.Indicator.INTEGER_TYPE:
-                # TODO
-                pass
-            elif dataType == im.Indicator.FLOAT_TYPE:
-                value = r['value']
-                data.append([time_ms, value])
-            elif dataType == im.Indicator.RANGE_TYPE:
-                val_min = r['val_min']
-                val_max = r['val_max']
-                data.append([time_ms, val_min, val_max])
-            elif dataType == im.Indicator.FLOAT_RANGE_TYPE:
-                # TODO
-                pass
-            elif dataType == im.Indicator.PM_TYPE:
-                # TODO
-                pass
-            else:
-                print u'Error: unknow dataType'
-                return HttpResponse(json.dumps(data),
-                        mimetype='application/json')
+        else:
+            end = None
 
+        # type 'num'
+        if type == 'num':
+            # check 'num'
+            if not num:
+                raise ValueError(u"Error: num NOT specified")
+                raise Http404
+            try:
+                num = int(num)
+            except ValueError:
+                raise ValueError(u"Error: num='%s' NOT valid" % num)
+                raise Http404
+            # check 'end'
+            if end:
+                try:
+                    end_datetime = datetime.datetime.strptime(end,
+                            '%Y-%m-%d')
+                    end_date = end_datetime.date()
+                except ValueError:
+                    raise ValueError(u'Error: Given end="%s" invalid' % end)
+                    raise Http404
+            else:
+                end_date = None
+            # get records
+            records_data = get_num_record_std(user_id=request.user.id,
+                    indicator_id=indicator_id,
+                    number=num, end=end_date)
+        else:
+            # type 'date'
+            # check 'end'
+            if begin:
+                try:
+                    begin_datetime = datetime.datetime.strptime(begin,
+                            '%Y-%m-%d')
+                    begin_date = begin_datetime.date()
+                except ValueError:
+                    raise ValueError(u'Error: Given begin="%s" invalid' % begin)
+                    raise Http404
+            else:
+                begin_date = None
+            # check 'end'
+            if end:
+                try:
+                    end_datetime = datetime.datetime.strptime(end,
+                            '%Y-%m-%d')
+                    end_date = end_datetime.date()
+                except ValueError:
+                    raise ValueError(u'Error: Given end="%s" invalid' % end)
+                    raise Http404
+            else:
+                end_date = None
+            # get records
+            records_data = get_record_std(user_id=request.user.id,
+                    indicator_id=indicator_id,
+                    begin=begin_date, end=end_date)
+
+        #
+        if not records_data['failed']:
+            # success
+            data = records_data.copy()
+            data['data'] = []
+            dataType = ind_obj.dataType
+            unix_begin = datetime.datetime(1970, 1, 1, 0, 0)
+            for r in records_data['data']:
+                dt = datetime.datetime.strptime(r['date'], '%Y-%m-%d')
+                time_ms = (dt-unix_begin).total_seconds() * 1000.0
+                if dataType == im.Indicator.INTEGER_TYPE:
+                    # TODO
+                    pass
+                elif dataType == im.Indicator.FLOAT_TYPE:
+                    value = r['value']
+                    data['data'].append([time_ms, value])
+                elif dataType == im.Indicator.RANGE_TYPE:
+                    val_min = r['val_min']
+                    val_max = r['val_max']
+                    data['data'].append([time_ms, val_min, val_max])
+                elif dataType == im.Indicator.FLOAT_RANGE_TYPE:
+                    # TODO
+                    pass
+                elif dataType == im.Indicator.PM_TYPE:
+                    # TODO
+                    pass
+                else:
+                    print u'Error: unknow dataType'
+                    data = {'failed': True}
+                    return HttpResponse(json.dumps(data),
+                            mimetype='application/json')
+    #
     return HttpResponse(json.dumps(data), mimetype='application/json')
 # }}}
 
@@ -900,32 +959,169 @@ def ajax_get_card_data_chart(request):
 @login_required
 def ajax_get_card_data_table(request):
     """
+    'indicator/static/javascripts/card_chart.js'
     get card data
-    for used in 'detail data card'
-    format:
-    <tr><td>yyyy-mm-dd</td><td>hh:mm</td><td>value unit</td></tr>
+    for used in 'detail card table'
     """
-    # TODO
-    if request.is_ajax():
-        result = """
-            <tr><td>2013-08-10</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
-            <tr><td>2013-08-09</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
-            <tr><td>2013-08-08</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
-            <tr><td>2013-08-08</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
-            <tr><td>2013-08-07</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
-            <tr><td>2013-08-06</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
-            <tr><td>2013-08-05</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
-            <tr><td>2013-08-04</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
-            <tr><td>2013-08-03</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
-            <tr><td>2013-08-02</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
-            <tr><td>2013-08-01</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
-            <tr><td>2013-07-31</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
-            <tr><td>2013-07-30</td><td>11:20</td><td>100x10^4拷贝/mL</td></tr>
-            """
-    else:
-        result = ''
-        #raise Http404
-    return HttpResponse(result)
+    # default parameters
+    data = {'failed': True}
+    begin = None
+    end = None
+    num = None
+    #
+    if True:
+    #if request.is_ajax():
+        # get parameters {{{
+        # check card_id -> indicator_id
+        if request.GET.get('card_id') is not None:
+            card_id = request.GET.get('card_id')
+            try:
+                indicator_id = int(card_id)
+                ind_obj = im.Indicator.objects.get(id=indicator_id)
+            except ValueError:
+                print u'Error: Given card_id="%s" cannot convert to integer' % card_id
+                raise Http404
+            except im.Indicator.DoesNotExist:
+                print u'Error: Indicator id="%s" NOT exist' % indicator_id
+                raise Http404
+        else:
+            print u'Error: No card_id provided'
+            raise Http404
+        # check 'type': num/date
+        if request.GET.get('type') == 'num':
+            # type: 'num'
+            type = request.GET.get('type')
+        elif request.GET.get('type') == 'date':
+            # type: 'date'
+            type = request.GET.get('type')
+        else:
+            print u'Error: unknown type="%s"' % request.GET.get('type')
+            raise Http404
+        # check 'num'
+        if request.GET.get('num'):
+            num = request.GET.get('num')
+        else:
+            # 'num' not given, or empty string
+            num = None
+        # begin datetime
+        if request.GET.get('begin'):
+            begin = request.GET.get('begin')
+        else:
+            begin = None
+        # end datetime
+        if request.GET.get('end'):
+            end = request.GET.get('end')
+        else:
+            end = None
+        # }}}
+
+        # get record data {{{
+        # type 'num'
+        if type == 'num':
+            # check 'num'
+            if not num:
+                raise ValueError(u"Error: num NOT specified")
+                raise Http404
+            try:
+                num = int(num)
+            except ValueError:
+                raise ValueError(u"Error: num='%s' NOT valid" % num)
+                raise Http404
+            # check 'end'
+            if end:
+                try:
+                    end_datetime = datetime.datetime.strptime(end,
+                            '%Y-%m-%d')
+                    end_date = end_datetime.date()
+                except ValueError:
+                    raise ValueError(u'Error: Given end="%s" invalid' % end)
+                    raise Http404
+            else:
+                end_date = None
+            # get records
+            records_data = get_num_record_std(user_id=request.user.id,
+                    indicator_id=indicator_id,
+                    number=num, end=end_date)
+        else:
+            # type 'date'
+            # check 'end'
+            if begin:
+                try:
+                    begin_datetime = datetime.datetime.strptime(begin,
+                            '%Y-%m-%d')
+                    begin_date = begin_datetime.date()
+                except ValueError:
+                    raise ValueError(u'Error: Given begin="%s" invalid' % begin)
+                    raise Http404
+            else:
+                begin_date = None
+            # check 'end'
+            if end:
+                try:
+                    end_datetime = datetime.datetime.strptime(end,
+                            '%Y-%m-%d')
+                    end_date = end_datetime.date()
+                except ValueError:
+                    raise ValueError(u'Error: Given end="%s" invalid' % end)
+                    raise Http404
+            else:
+                end_date = None
+            # get records
+            records_data = get_record_std(user_id=request.user.id,
+                    indicator_id=indicator_id,
+                    begin=begin_date, end=end_date)
+        # }}}
+
+        #
+        if not records_data['failed']:
+            # success
+            data = records_data.copy()
+            data['data'] = []   # clear original data
+            r_data = []         # store processed 'r' dicts
+            dataType = ind_obj.dataType
+            for r in records_data['data']:
+                r_id = r['id']
+                r_obj = im.IndicatorRecord.objects.get(id=r_id)
+                r['is_normal'] = r_obj.is_normal() # True|False|None
+                r['std_unit_name'] = r['unit'].get('name') # maybe None
+                r['std_unit_symbol'] = r['unit'].get('symbol')
+                # check dataType
+                if dataType == im.Indicator.INTEGER_TYPE:
+                    # TODO
+                    r['value_html'] = ""
+                    pass
+                elif dataType == im.Indicator.FLOAT_TYPE:
+                    value = r['value']
+                    r['value_html'] = format_data(ind_obj,
+                            value=value)
+                elif dataType == im.Indicator.RANGE_TYPE:
+                    val_min = r['val_min']
+                    val_max = r['val_max']
+                    r['value_html'] = format_data(ind_obj,
+                            val_min=val_min, val_max=val_max)
+                elif dataType == im.Indicator.FLOAT_RANGE_TYPE:
+                    # TODO
+                    r['value_html'] = ""
+                    pass
+                elif dataType == im.Indicator.PM_TYPE:
+                    # TODO
+                    r['value_html'] = ""
+                    pass
+                else:
+                    print u'Error: unknow dataType'
+                    data = {'failed': True}
+                    return HttpResponse(json.dumps(data),
+                            mimetype='application/json')
+                # 'r' dict updated, append to 'r_data'
+                r_data.append(r)
+            # endfor
+            # sort 'r_data' by '-date', newest comes first
+            r_data.sort(key = lambda item: item['date'])
+            r_data.reverse()
+            # update 'data'
+            data['data'] = r_data
+    #
+    return HttpResponse(json.dumps(data), mimetype='application/json')
 # }}}
 
 

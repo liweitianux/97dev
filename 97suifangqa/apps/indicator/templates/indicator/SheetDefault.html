@@ -9,18 +9,26 @@
 
 {% block css %}
   <link rel="stylesheet" type="text/css" href="{% static "css/normalize.css" %}"/>
+  <!--
   <link rel="stylesheet" type="text/css" href="{% static "plugins/datepicker/datepicker.css" %}"/>
+  -->
+  <!--
+  <link rel="stylesheet" type="text/css" href="{% static "plugins/jquery-ui/themes/base/minified/jquery.ui.core.min.css" %}"/>
+  <link rel="stylesheet" type="text/css" href="{% static "plugins/jquery-ui/themes/base/minified/jquery.ui.datepicker.min.css" %}"/>
+  -->
+  <link rel="stylesheet" type="text/css" href="{% static "plugins/jquery-ui/themes/smoothness/jquery-ui.min.css" %}"/>
   <link rel="stylesheet" type="text/css" href="{% static "plugins/thickbox/thickbox.css" %}"/>
   <link rel="stylesheet" type="text/css" href="{% static "css/sheet_default.css" %}"/>
 {% endblock %}
 
-{% block jquery %}
-  <script type="text/javascript" src="{% static "javascripts/jquery-1.6.min.js" %}"></script>
-{% endblock %}
-
 {% block scripts %}
+  <!--
   <script type="text/javascript" src="{% static "plugins/datepicker/datepicker.js" %}"></script>
   <script type="text/javascript" src="{% static "plugins/datepicker/language-zh-CN.js" %}"></script>
+  -->
+  <script type="text/javascript" src="{% static "plugins/jquery-ui/ui/minified/jquery.ui.core.min.js" %}"></script>
+  <script type="text/javascript" src="{% static "plugins/jquery-ui/ui/minified/jquery.ui.datepicker.min.js" %}"></script>
+  <script type="text/javascript" src="{% static "plugins/jquery-ui/ui/minified/i18n/jquery.ui.datepicker-zh-CN.min.js" %}"></script>
   <script type="text/javascript" src="{% static "plugins/thickbox/thickbox.js" %}"></script>
   <script type="text/javascript" src="{% static "plugins/highcharts/highcharts.js" %}"></script>
   <script type="text/javascript" src="{% static "plugins/highcharts/highcharts-more.js" %}"></script>
@@ -37,6 +45,8 @@
   <script type="text/javascript">
     var static_url = "{{ STATIC_URL }}";
     var indicator_url = "/indicator/";
+    // loading image for thickbox
+    var thickbox_loading_image = "{% static "images/loadingAnimation.gif" %}";
   </script>
 
   <!-- Highcharts related, draw records chart -->
@@ -46,10 +56,14 @@
     // default date format
     var mm_date_fmt = "YYYY-MM-DD";
     // default to show 30 days' data
-    var data_range = 30;
+    var chart_range = 30;
+    // default to get 10 data point
+    var chart_dp_num = 10;
+    // default get chart data by number
+    var chart_getdata_type = "num";
     var end_datetime = moment();
     var begin_datetime = end_datetime.clone();
-    begin_datetime.subtract('days', data_range);
+    begin_datetime.subtract('days', chart_range);
     var end_date_str = end_datetime.format(mm_date_fmt);
     var begin_date_str = begin_datetime.format(mm_date_fmt);
 
@@ -61,33 +75,55 @@
     var detail_card_id = "-1"; // track the id of card in detail (string)
     var detail_chart = null;
     var detail_chart_str = "detail_chart";
-    var detail_chart_options = null;
+    var detail_chart_options_str = "";
     var card_2_delete_id = "-1"; // track the id of card to be deleted (string)
     // regex to match float number in expoential notation
     var exp_regex = /^([+-]?)(\d\.\d+)[eE]\+?(-?)0*([1-9]+)$/;
 
     // get indicator records data and 
-    // draw the chart
-    function chart_getdata_draw(chart_str, card_id, options, begin, end) {
+    // draw the chart {{{
+    function chart_getdata_draw(chart_str, card_id, options_str, type, num, begin, end) {
+        type = type || "num";   // default get data by 'num'
+        num = num || "";
+        begin = begin || "";
+        end = end || "";
         var time = moment().valueOf();
-        $.ajax ({
+        $.ajax({
             type: 'get',
             url: indicator_url + 'ajax/get_card_data_chart',
-            data: 'card_id='+card_id + '&begin='+begin + '&end='+end + '&time='+time,
+            data: 'card_id='+card_id + '&type='+type + '&num='+num + '&begin='+begin + '&end='+end + '&time='+time,
             dataType: 'json',
             success: function (dataJson) {
-                // set data
-                var begin_dt = moment(begin);
-                var end_dt = moment(end);
-                options.xAxis.min = begin_dt.valueOf();
-                options.xAxis.max = end_dt.valueOf();
-                options.series[0].data = dataJson;
-                // draw the chart
-                // given 'chart_str' is the global var name of this chart
-                window[chart_str] = new Highcharts.Chart(options);
+                //console.log(dataJson);
+                if (dataJson.failed || dataJson.number_rsp == 0) {
+                    // getdata failed or get no data
+                    return false;
+                }
+                else {
+                    var begin_dt = moment(dataJson.begin_rsp);
+                    var end_dt = moment(dataJson.end_rsp);
+                    if (dataJson.number_rsp == 1) {
+                        // only one data point
+                        // (3days) dp_date (4days)
+                        begin_dt.subtract('days', 3);
+                        end_dt.add('days', 4);
+                    }
+                    else {
+                        var diff_days = end_dt.diff(begin_dt, 'days');
+                        var days_toadd = Math.floor(diff_days*0.10) + 1;
+                        end_dt.add('days', days_toadd);
+                    }
+                    // set data
+                    window[options_str].xAxis.min = begin_dt.valueOf();
+                    window[options_str].xAxis.max = end_dt.valueOf();
+                    window[options_str].series[0].data = dataJson.data;
+                    // draw the chart
+                    // given 'chart_str' is the global var name of this chart
+                    window[chart_str] = new Highcharts.Chart(window[options_str]);
+                }
             },
         });
-    }
+    } // }}}
 
     {% for ind in indicators %}
       {% if not ind|dict_get:"record_empty" %} {# indicator has records #}
@@ -147,8 +183,9 @@
           $(document).ready(function() {
             chart_getdata_draw("chart_{{ ind|dict_get:"id" }}",
               {{ ind|dict_get:"id" }},
-              options_chart_{{ ind|dict_get:"id" }},
-              begin_date_str, end_date_str
+              "options_chart_{{ ind|dict_get:"id" }}",
+              chart_getdata_type, chart_dp_num,
+              null, null
             );
           });
         {% elif ind|dict_get:"dataType" == DATA_TYPES|dict_get:"RANGE_TYPE" %}
@@ -202,8 +239,9 @@
           $(document).ready(function() {
             chart_getdata_draw("chart_{{ ind|dict_get:"id" }}",
               {{ ind|dict_get:"id" }},
-              options_chart_{{ ind|dict_get:"id" }},
-              begin_date_str, end_date_str
+              "options_chart_{{ ind|dict_get:"id" }}",
+              chart_getdata_type, chart_dp_num,
+              null, null
             );
           });
         {% elif ind|dict_get:"dataType" == DATA_TYPES|dict_get:"FLOAT_RANGE_TYPE" %}
@@ -320,7 +358,7 @@
           {% endif %} {# end: record_empty; vim: }}} #}
 
           <div class="card_bottom">
-            <div class="understand_index"><a class="thickbox" href="{% url indicator_indexdesc %}?card_id={{ ind|dict_get:"id" }}&TB_iframe=true&transfer_params&height=351&width=630">了解该指标</a></div>
+            <div class="understand_index"><a class="thickbox" href="{% url indicator_indexdesc %}?card_id={{ ind|dict_get:"id" }}&url_type=html&no_title=true&TB_iframe=true&height=351&width=630">了解该指标</a></div>
             <!-- TODO -->
             <div class="simulation_sheet"><a href="{% static "images/demo_sheet.png" %}" class="thickbox">仿真化验单</a></div>
             <div class="detail_history">
@@ -337,7 +375,7 @@
             width参数为弹出层页面宽度+2，
             card_id参数为 "卡片id"
           {% endcomment %}
-          <a class="card_delete_icon card_delete thickbox" href="{% url indicator_deletecardtip %}?card_id={{ ind|dict_get:"id" }}&TB_iframe=true&transfer_params&height=166&width=630"></a>
+          <a class="card_delete_icon card_delete thickbox" href="{% url indicator_deletecardtip %}?card_id={{ ind|dict_get:"id" }}&url_type=html&no_title=true&TB_iframe=true&height=166&width=630"></a>
         </div> <!-- end: index_card -->
       {% endfor %} {# end: indicators #}
 
@@ -363,11 +401,11 @@
         </div>
         <div class="chart" id="detail_chart"></div>
         <div class="table_div">
-          <table width="100%">
+          <table width="100%" id="detail_card_table">
             <tr class="first_line">
-              <td width="122px">日期</td>
-              <td width="124px">时间</td>
-              <td width="312px">记录</td>
+              <td class="date" width="124px">化验日期</td>
+              <td class="record" width="312px">数据记录</td>
+              <td class="state" width="122px">是否正常</td>
             </tr>
           </table>
         </div>

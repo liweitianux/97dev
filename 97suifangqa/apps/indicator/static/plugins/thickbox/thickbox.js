@@ -8,17 +8,35 @@
  */
 
 //on page load call TB_init
-$(document).ready(TB_init);
+$(document).ready(function() {
+    // set loadingAnimation image
+    if (typeof parent.thickbox_loading_image !== 'undefined') {
+        tb_pathToImage = parent.thickbox_loading_image;
+    }
+    else if (typeof parent.static_url !== 'undefined') {
+        tb_pathToImage = parent.static_url + "images/loadingAnimation.gif";
+    }
+    else {
+        tb_pathToImage = "images/loadingAnimation.gif";
+    }
+    //console.log("tb_pathToImage: ", tb_pathToImage);
+    imgLoader = new Image();// preload image
+    imgLoader.src = tb_pathToImage;
+    // init
+    TB_init();
+});
 
 //add thickbox to href elements that have a class of .thickbox
 function TB_init(){
-	$("a.thickbox").live("click", function(){
+	//$("a.thickbox").live("click", function(){
+	// '.live()' removed in jQuery 1.9
+	$(document).on("click", "a.thickbox", function(){
 		if(this.href == 'javascript:void(0)'){
 			return false;
 		}
 		var t = this.title || this.name || null;
 		var g = this.rel || false;
-		TB_show(t,this.href,g);
+		TB_show(t, this.href, g);
 		this.blur();
 		return false;
 	});
@@ -37,12 +55,23 @@ function TB_show(caption, url, imageGroup) {//function called when the user clic
  		
 		TB_overlaySize();
 		
-		$("body").append("<div id='TB_load' class='loadingAnimation'></div>");
+		$("body").append("<div id='TB_load' class='loadingAnimation'><img src='"+imgLoader.src+"' /></div>");
 		TB_load_position();
 		
 		var urlString = /\.jpg|\.jpeg|\.png|\.gif|\.html|\.htm|\.php|\.cfm|\.asp|\.aspx|\.jsp|\.jst|\.rb|\.txt|\.bmp/g;
 		var urlType = url.toLowerCase().match(urlString);
-		
+
+        // check 'url_type' query param
+        // django url does not have '.xxx' extensions
+        var queryString = url.replace(/^[^\?]+\??/,'');
+        var params = TB_parseQuery( queryString );
+        //console.log("params['url_type']: ", params['url_type']);
+        var _undefined_; // local undefined
+        if (params['url_type'] !== _undefined_ && params['url_type'] !== '') {
+            urlType = params['url_type'];
+        }
+        //console.log('urlType: ', urlType);
+
 		if(urlType == '.jpg' || urlType == '.jpeg' || urlType == '.png' || urlType == '.gif' || urlType == '.bmp'){//code to show images
 				
 			TB_PrevCaption = "";
@@ -155,27 +184,28 @@ function TB_show(caption, url, imageGroup) {//function called when the user clic
 			
 			//console.log(queryString);
 			//console.log(params);
-			TB_WIDTH = (params['width']*1) + 30 || 630;
-			TB_HEIGHT = (params['height']*1) + 40 || 440;
-			ajaxContentW = TB_WIDTH - 30;
-			ajaxContentH = TB_HEIGHT - 45;
+			//TB_WIDTH = (params['width']*1) + 30 || 630;
+			//TB_HEIGHT = (params['height']*1) + 40 || 440;
+			//ajaxContentW = TB_WIDTH - 30;
+			//ajaxContentH = TB_HEIGHT - 45;
 			TB_WIDTH = (params['width']*1);
 			TB_HEIGHT = (params['height']*1);
 			ajaxContentW = TB_WIDTH;
 			ajaxContentH = TB_HEIGHT;
 			
 			//console.log(url);
-			if(url.indexOf('no_title') != -1){
+			if(params['no_title'] != "true"){
 				$("#TB_window").append("<div id='TB_title'><div id='TB_ajaxWindowTitle'>"+caption+"</div><div id='TB_closeAjaxWindow'><a href='#' id='TB_closeWindowButton'>close</a></div></div>");
 				TB_HEIGHT += 27; //title height
 			}
 			if(url.indexOf('TB_iframe') != -1){
 				if(url.indexOf('transfer_params') == -1){
 					urlNoQuery = url.substr(0,TB_strpos(url, "?"));
+					urlNoTBQuery = url.split('TB_');
 				}else{
 					urlNoQuery = url;
 				}
-				$("#TB_window").append("<iframe frameborder='no' marginheight='0' marginwidth='0' border='0' src='"+urlNoQuery+"' id='TB_iframeContent' style='width:"+(ajaxContentW)+"px;height:"+(ajaxContentH)+"px;'></iframe>");
+				$("#TB_window").append("<iframe frameborder='no' marginheight='0' marginwidth='0' border='0' src='"+urlNoTBQuery[0]+"' id='TB_iframeContent' style='width:"+(ajaxContentW)+"px;height:"+(ajaxContentH)+"px;'></iframe>");
 			}else{
 				$("#TB_window").append("<div id='TB_ajaxContent' style='width:"+ajaxContentW+"px;height:"+ajaxContentH+"px;'></div>");
 			}
@@ -282,8 +312,10 @@ function TB_getPageSize(){
 }
 
 function TB_strpos(str, ch) {
-for (var i = 0; i < str.length; i++)
-if (str.substring(i, i+1) == ch) return i;
-return -1;
+    for (var i = 0; i < str.length; i++) {
+        if (str.substring(i, i+1) == ch) return i;
+    }
+    return -1;
 }
 
+// vim: set ts=4 sw=4 tw=0 fenc=utf-8 ft=javascript: //
