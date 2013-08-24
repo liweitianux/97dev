@@ -362,12 +362,14 @@ function get_card_data_table(type, num, begin, end, append){
                 $("#detail_card_table tr").not(".first_line").remove();
                 // reset to enable button
                 $(".see_more_btn").removeAttr('disabled');
+                $(".see_more_btn").attr('value', '浏览更多记录');
             }
             //console.log('data_html: ', data_html);
             $("#detail_card_table").append(data_html);
             // disable button if has no more data
             if (! dataJson.has_earlier) {
                 $(".see_more_btn").attr('disabled', 'disabled');
+                $(".see_more_btn").attr('value', '无更多记录');
             }
         }
     });

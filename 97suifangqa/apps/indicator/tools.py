@@ -509,12 +509,16 @@ def recommend_indicator(user_id, number):
 
 
 # format_data {{{
-def format_data(indicator_obj, value=None, val_max=None, val_min=None):
+def format_data(indicator_obj, value=None, val_max=None, val_min=None, type="html"):
     """
     format given data according to the dataType of given Indicator,
     make it proper for django templates
     e.g.:
     if number very big, then display in 'exponent notation'
+
+    if 'type="html"', then return the html code for displaying
+    on the web page;
+    elif 'type="text"', then return the plain text format.
 
     used in '.views.indicator_status()'
     """
@@ -526,15 +530,24 @@ def format_data(indicator_obj, value=None, val_max=None, val_min=None):
     # regex to process exponent notation
     rep = re.compile(r'^(?P<sign>[-+]?)(?P<num>\d\.\d+)[eE]\+?(?P<expminus>-?)0*(?P<exp>[1-9]+)$')
     # range symbol (range: low $symbol$ high)
-    range_sym = '&sim;'
+    range_sym_html = u'&sim;'
+    range_sym_text = u'~'
     # default return value
     value_str = u''
+
+    # check 'type'
+    if (type == "html") or (type == "text"):
+        pass
+    else:
+        print u'Error: unsupported type="%s"' % type
+        return None
 
     # check given 'indicator_obj'
     ind = indicator_obj
     if not isinstance(ind, im.Indicator):
         print u'Error: given indicator_obj NOT a instance of Indicator'
         raise ValueError(u'Given indicator_obj NOT a instance of Indicator')
+        return None
     # get dataType
     dataType = ind.dataType
 
@@ -546,24 +559,38 @@ def format_data(indicator_obj, value=None, val_max=None, val_min=None):
             value_str = u'INTEGER: %s' % value
         elif dataType == ind.PM_TYPE:
             if value == u'+':
-                value_str = u'阳性(+)'
+                if type == "html":
+                    value_str = u'阳性(+)'
+                else:
+                    value_str = u'+'
             else:
-                value_str = u'阳性(-)'
+                if type == "html":
+                    value_str = u'阳性(-)'
+                else:
+                    value_str = u'-'
         elif dataType in [ind.FLOAT_TYPE, ind.FLOAT_RANGE_TYPE]:
             # process float number
             value = float(value)
             if value <= float_threshold:
-                value_str = fix_fmt.format(value)
+                if type == "html":
+                    value_str = fix_fmt.format(value)
+                else:
+                    value_str = u"%s" % value
             else:
                 value_expstr = exp_fmt.format(value)
                 # convert to html exponent format
                 m = rep.match(value_expstr)
-                value_str = "%s%s&times;10<sup>%s%s</sup>" % (
-                        m.group('sign'), m.group('num'),
-                        m.group('expminus'), m.group('exp'))
+                if type == "html":
+                    value_str = u"%s%s&times;10<sup>%s%s</sup>" % (
+                            m.group('sign'), m.group('num'),
+                            m.group('expminus'), m.group('exp'))
+                else:
+                    value_str = u"%s%se%s%s" % (
+                            m.group('sign'), m.group('num'),
+                            m.group('expminus'), m.group('exp'))
         else:
             # unknown XXX
-            pass
+            return None
     elif (val_max is not None) and (val_min is not None):
         # a) record range data; b) confine range.
         # val_max
@@ -573,9 +600,14 @@ def format_data(indicator_obj, value=None, val_max=None, val_min=None):
             val_max_expstr = exp_fmt.format(val_max)
             # convert to html exponent format
             m = rep.match(val_max_expstr)
-            val_max_str = "%s%s&times;10<sup>%s%s</sup>" % (
-                    m.group('sign'), m.group('num'),
-                    m.group('expminus'), m.group('exp'))
+            if type == "html":
+                val_max_str = u"%s%s&times;10<sup>%s%s</sup>" % (
+                        m.group('sign'), m.group('num'),
+                        m.group('expminus'), m.group('exp'))
+            else:
+                val_max_str = u"%s%se%s%s" % (
+                        m.group('sign'), m.group('num'),
+                        m.group('expminus'), m.group('exp'))
         # val_min
         if val_min <= float_threshold:
             val_min_str = fix_fmt.format(val_min)
@@ -583,14 +615,24 @@ def format_data(indicator_obj, value=None, val_max=None, val_min=None):
             val_min_expstr = exp_fmt.format(val_min)
             # convert to html exponent format
             m = rep.match(val_min_expstr)
-            val_min_str = "%s%s&times;10<sup>%s%s</sup>" % (
-                    m.group('sign'), m.group('num'),
-                    m.group('expminus'), m.group('exp'))
+            if type == "html":
+                val_min_str = u"%s%s&times;10<sup>%s%s</sup>" % (
+                        m.group('sign'), m.group('num'),
+                        m.group('expminus'), m.group('exp'))
+            else:
+                val_min_str = u"%s%se%s%s" % (
+                        m.group('sign'), m.group('num'),
+                        m.group('expminus'), m.group('exp'))
         # value_str
-        value_str = u'%s %s %s' % (val_min_str, range_sym, val_max_str)
+        if type == "html":
+            value_str = u'%s %s %s' % (val_min_str,
+                    range_sym_html, val_max_str)
+        else:
+            value_str = u'%s %s %s' % (val_min_str,
+                    range_sym_text, val_max_str)
     else:
         # other type??
-        pass
+        return None
 
     return value_str
 # }}}

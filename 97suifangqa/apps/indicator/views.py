@@ -472,7 +472,7 @@ def indicator_status(request):
             human_max = confine.get('human_max')
             human_min = confine.get('human_min')
             ind['ref_value'] = format_data(ind_obj,
-                    val_max=human_max, val_min=human_min)
+                    val_max=human_max, val_min=human_min, type="html")
             # set 'std_unit_*'
             ind['std_unit_name'] = confine.get('unit').get('name')
             ind['std_unit_symbol'] = confine.get('unit').get('symbol')
@@ -480,7 +480,8 @@ def indicator_status(request):
             ind['ref_text'] = u"参考值"
             # ref_value
             val_norm = confine.get('val_norm')
-            ind['ref_value'] = format_data(ind_obj, value=val_norm)
+            ind['ref_value'] = format_data(ind_obj, value=val_norm,
+                    type="html")
             # std_unit
             ind['std_unit_name'] = u""
             ind['std_unit_symbol'] = u""
@@ -498,20 +499,24 @@ def indicator_status(request):
             last_record = records[0]
             if dataType in [ind_obj.INTEGER_TYPE, ind_obj.PM_TYPE,
                     ind_obj.FLOAT_TYPE]:
-                value_str = format_data(ind_obj, value=last_record.value)
+                value_str = format_data(ind_obj,
+                        value=last_record.value, type="html")
             elif dataType == ind_obj.RANGE_TYPE:
                 value_str = format_data(ind_obj,
                         val_max=last_record.val_max,
-                        val_min=last_record.val_min)
+                        val_min=last_record.val_min,
+                        type="html")
             elif dataType == ind_obj.FLOAT_RANGE_TYPE:
                 value = last_record.value
                 val_max = last_record.val_max
                 val_min = last_record.val_min
                 if value is not None:
-                    value_str = format_data(ind_obj, value=value)
+                    value_str = format_data(ind_obj, value=value,
+                            type="html")
                 elif (val_max is not None) and (val_min is not None):
                     value_str = format_data(ind_obj,
-                            val_max=val_max, val_min=val_min)
+                            val_max=val_max, val_min=val_min,
+                            type="html")
                 else:
                     value_str = u''
             else:
@@ -669,7 +674,131 @@ def indicator_edithistorydata(request):
     popup page to edit history data for an indicator
     """
     template = 'indicator/popup/EditHistoryData.html'
-    return render(request, template)
+    # check 'card_id' -> indicator_id
+    if request.GET.get('card_id') is not None:
+        card_id = request.GET.get('card_id')
+        try:
+            indicator_id = int(card_id)
+            ind_obj = im.Indicator.objects.get(id=indicator_id)
+        except ValueError:
+            print u'Error: Given card_id="%s" cannot convert to integer' % card_id
+            raise Http404
+        except im.Indicator.DoesNotExist:
+            print u'Error: Indicator id="%s" NOT exist' % indicator_id
+            raise Http404
+    else:
+        print u'Error: No card_id provided'
+        raise Http404
+    # check record 'date'
+    if request.GET.get('date'):
+        # 'date' given and not empty
+        date = request.GET.get('date')
+        try:
+            datetime_in = datetime.datetime.strptime(date, '%Y-%m-%d')
+            record_date = datetime_in.date()
+        except ValueError:
+            print u'Error: Given date="%s" invalid' % date
+            raise Http404
+    else:
+        print u'Error: "date" not given or empty'
+        raise Http404
+
+    # get indicator record
+    try:
+        record_obj = im.IndicatorRecord.objects.get(
+                indicator=ind_obj, date=record_date)
+    except im.IndicatorRecord.DoesNotExist:
+        print u'Error: no matching IndicatorRecord found'
+        raise Http404
+    except im.IndicatorRecord.MultipleObjectsReturned:
+        print u'Error: multiple matching IndicatorRecord found'
+        raise Http404
+
+    # process indicator and record data
+    # generate 'indicator_dict' and 'record_dict'           # {{{
+    # check if 'indicator.is_ready()'
+    if not ind_obj.is_ready():
+        print u"Indicator id=%s is NOT ready yet!" % ind_obj.id
+    # the indicator is ready
+    dataType = ind_obj.dataType
+    # confine
+    confine = ind_obj.get_confine()
+    val_norm = confine.get('val_norm')
+    human_min = confine.get('human_min')
+    human_max = confine.get('human_max')
+    std_unit_name = confine.get('unit').get('name')
+    std_unit_symbol = confine.get('unit').get('symbol')
+    # record data
+    record_data_std = record_obj.get_data_std()
+    record_value = record_data_std['value']
+    record_val_min = record_data_std['val_min']
+    record_val_max = record_data_std['val_max']
+    record_unit_name = record_data_std.get('unit').get('name')
+    record_unit_symbol = record_data_std.get('unit').get('symbol')
+    record_is_normal = record_obj.is_normal()
+    # check dataType
+    if dataType == im.Indicator.INTEGER_TYPE:
+        ref_text = u"参考值"
+        ref_value = format_data(ind_obj, value=val_norm, type="html")
+        # TODO
+        record_value_html = u""
+        pass
+    elif dataType == im.Indicator.FLOAT_TYPE:
+        ref_text = u"参考范围"
+        ref_value = format_data(ind_obj,
+                val_max=human_max, val_min=human_min, type="html")
+        record_value_html = format_data(ind_obj, value=record_value,
+                type="html")
+    elif dataType == im.Indicator.RANGE_TYPE:
+        ref_text = u"参考范围"
+        ref_value = format_data(ind_obj,
+                val_max=human_max, val_min=human_min, type="html")
+        record_value_html = format_data(ind_obj,
+                val_min=record_val_min, val_max=record_val_max,
+                type="html")
+    elif dataType == im.Indicator.FLOAT_RANGE_TYPE:
+        ref_text = u"参考范围"
+        ref_value = format_data(ind_obj,
+                val_max=human_max, val_min=human_min, type="html")
+        # TODO
+        record_value_html = u""
+        pass
+    elif dataType == im.Indicator.PM_TYPE:
+        ref_text = u"参考值"
+        ref_value = format_data(ind_obj, value=val_norm, type="html")
+        # TODO
+        record_value_html = u""
+        pass
+    else:
+        ref_text = u"参考"
+        ref_value = None
+        std_unit_name = None
+        std_unit_symbol = None
+        record_value_html = None
+    # }}}
+
+    # template data
+    ind_dict = {
+        'ref_text': ref_text,
+        'ref_value': ref_value,
+        'std_unit_name': std_unit_name,
+        'std_unit_symbol': std_unit_symbol,
+    }
+    record_dict = {
+        'date': record_date.isoformat(),
+        'value_html': record_value_html,
+        'unit_name': record_unit_name,
+        'unit_symbol': record_unit_symbol,
+        'is_normal': record_is_normal,
+    }
+    data = {
+        'indicator_obj': ind_obj,
+        'indicator_dict': ind_dict,
+        'record_obj': record_obj,
+        'record_dict': record_dict,
+    }
+    #
+    return render(request, template, data)
 # }}}
 
 
@@ -969,8 +1098,8 @@ def ajax_get_card_data_table(request):
     end = None
     num = None
     #
-    if True:
-    #if request.is_ajax():
+    #if True:
+    if request.is_ajax():
         # get parameters {{{
         # check card_id -> indicator_id
         if request.GET.get('card_id') is not None:
@@ -1093,12 +1222,13 @@ def ajax_get_card_data_table(request):
                 elif dataType == im.Indicator.FLOAT_TYPE:
                     value = r['value']
                     r['value_html'] = format_data(ind_obj,
-                            value=value)
+                            value=value, type="html")
                 elif dataType == im.Indicator.RANGE_TYPE:
                     val_min = r['val_min']
                     val_max = r['val_max']
                     r['value_html'] = format_data(ind_obj,
-                            val_min=val_min, val_max=val_max)
+                            val_min=val_min, val_max=val_max,
+                            type="html")
                 elif dataType == im.Indicator.FLOAT_RANGE_TYPE:
                     # TODO
                     r['value_html'] = ""
@@ -1169,11 +1299,14 @@ def test_view(request, **kwargs):
 
     list = []
 
+    boolvar = False
+
     data = {
         'all_letters': all_letters,
         'all_indicators': all_indicators,
         'followed_indicators': followed_indicators,
         'list': list,
+        'boolvar': boolvar,
     }
     return render(request, template, data)
 

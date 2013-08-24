@@ -39,6 +39,15 @@
       <li>i</li>
     {% endfor %}
   </ul>
+
+  <h3>templates 'if' statement</h3>
+  {% if boolvar == None %}
+  None
+  {% elif not boolvar %}
+  False
+  {% else %}
+  True
+  {% endif %}
 </body>
 </html>
 

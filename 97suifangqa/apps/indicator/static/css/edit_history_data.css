@@ -1,6 +1,6 @@
 #edit_history_data_container {
 	width: 588px;
-	height: 164px;
+	height: 180px;
 	background-color: #FFFFFF;
 	border: 1px solid #94C721;
 	padding: 0 20px 0 20px;
@@ -29,34 +29,141 @@
 	color: #4A4A4A;
 	font-size: 14px;
 }
-.edit_history_data_content .date_time {
-	height: 55px;
-	line-height: 55px;
-}
-.edit_history_data_content .date_time .time {
-	margin-left: 27px;
-}
 .edit_history_data_content .refer_range {
-	height: 38px;
-	line-height: 38px;
-	margin-top: -6px;
+	height: 26px;
+	line-height: 26px;
+	margin-top: 6px;
+	margin-bottom: 10px;
+}
+.edit_history_data_content .refer_range .refer_text {
+	margin-right: 8px;
+}
+.edit_history_data_content .refer_range .refer_value {
+	margin-right: 8px;
+}
+.edit_history_data_content .edit_data {
+	line-height: 26px;
+}
+.edit_history_data_content .edit_data .date {
+	height: 26px;
+	line-height: 26px;
+}
+.edit_history_data_content .edit_data .date .date_text {
+	margin-right: 8px;
+}
+.edit_history_data_content .edit_data .data {
+	height: 26px;
+	line-height: 26px;
+}
+.edit_history_data_content .edit_data .data .prompt {
+	margin-right: 8px;
+}
+.edit_history_data_content .edit_data .state {
+	height: 26px;
+	line-height: 26px;
+	float: left;
+}
+.edit_history_data_content .edit_data .state .prompt {
+	margin-right: 8px;
+}
+.edit_history_data_content .edit_data .state .text {
+	font-weight: bold;
+}
+.edit_history_data_content .edit_data .state .normal {
+	background-color: #B8DB70;
+}
+.edit_history_data_content .edit_data .state .abnormal {
+	background-color: #FFB3B3;
+}
+.edit_history_data_content .edit_data .state .unknown {
+	background-color: #B3D9FF;
 }
 .edit_history_data_content .edit_data #edit_btn, .edit_history_data_content .editing_data #save_btn {
 	float: right;
-	height: 24px;
+	height: 26px;
 	line-height: 22px;
 	padding: 1px 26px;
 }
 .edit_history_data_content .editing_data {
-	height: 25px;
+	line-height: 26px;
 	display: none;
 }
-.edit_history_data_content .editing_data .input_container {
+.edit_history_data_content .editing_data .date {
+	height: 26px;
+	line-height: 26px;
+	position: relative;
+	margin-bottom: 2px;
+}
+.edit_history_data_content .editing_data .date .date_text {
+	margin-right: 8px;
 	float: left;
 }
-.edit_history_data_content .editing_data .input_container label {
+.edit_history_data_content .editing_data .date .datepicker_container {
+	width: 148px;
+	float: left;
 	position: relative;
-	top: -1px;
+}
+.edit_history_data_content .editing_data .date .datepicker_container .valid {
+	border: 2px solid green;
+}
+.edit_history_data_content .editing_data .date .datepicker_container .invalid {
+	border: 2px solid red;
+}
+.edit_history_data_content .editing_data .date .datepicker {
+	background: #FFFFFF;
+	border: 1px solid #9C9C9C;
+	color: #B9B9B9;
+	width: 131px;
+	height: 17px;
+	line-height: 17px;
+	position: relative;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.edit_history_data_content .editing_data .date .ui-datepicker-trigger {
+	position: absolute;
+	top: 4px;
+	right: 8px;
+	cursor: pointer;
+}
+.edit_history_data_content .editing_data .data  {
+	height: 26px;
+	line-height: 26px;
+	float: left;
+	top: 1px;
+}
+.edit_history_data_content .editing_data .data .prompt {
+	margin-right: 8px;
+	float: left;
+}
+.edit_history_data_content .editing_data .data input {
+	color: #5C5C5C;
+	background-color: #FFFFFF;
+	border: 1px solid #9C9C9C;
+}
+.edit_history_data_content .editing_data .data .valid {
+	border: 2px solid green;
+}
+.edit_history_data_content .editing_data .data .invalid {
+	border: 2px solid red;
+}
+.edit_history_data_content .editing_data .data .data_input {
+	width: 200px;
+	height: 17px;
+	line-height: 17px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	margin-right: 8px;
+}
+.edit_history_data_content .editing_data .input_container {
+	height: 26px;
+	line-height: 26px;
+	float: left;
+	top: 1px;
+}
+.edit_history_data_content .editing_data .input_container .prompt {
+	margin-right: 8px;
+	float: left;
 }
 .edit_history_data_content .editing_data .input_container input {
 	color: #5C5C5C;
@@ -64,7 +171,7 @@
 	border: 1px solid #9C9C9C;
 }
 .edit_history_data_content .editing_data .input_container .error {
-	border: 1px solid red;
+	border: 2px solid red;
 }
 .edit_history_data_content .editing_data .input_container .edit_input_main {
 	width: 42px;
@@ -81,7 +188,11 @@
 	padding-bottom: 2px;
 }
 .edit_history_data_content .editing_data .add_minus_icon {
+	height: 26px;
+	line-height: 26px;
 	float: left;
+	padding-top: 1px;
+	padding-bottom: 1px;
 	margin-right: 8px;
 }
 .edit_history_data_content .editing_data .add_minus_icon .add_icon {
@@ -99,4 +210,36 @@
 	border-right: 1px solid #9C9C9C;
 	margin-top: 1px;
 	cursor: pointer;
+}
+.edit_history_data_content .editing_data .data_unit {
+	height: 26px;
+	line-height: 26px;
+	margin-right: 8px;
+}
+.edit_history_data_content .editing_data .reason {
+	height: 26px;
+	line-height: 26px;
+	float: left;
+}
+.edit_history_data_content .editing_data .reason .prompt {
+	margin-right: 8px;
+	float: left;
+}
+.edit_history_data_content .editing_data .reason input {
+	color: #5C5C5C;
+	background-color: #FFFFFF;
+	border: 1px solid #9C9C9C;
+}
+.edit_history_data_content .editing_data .reason .valid {
+	border: 2px solid green;
+}
+.edit_history_data_content .editing_data .reason .invalid {
+	border: 2px solid red;
+}
+.edit_history_data_content .editing_data .reason .reason_input {
+	width: 330px;
+	height: 17px;
+	line-height: 17px;
+	padding-top: 2px;
+	padding-bottom: 2px;
 }

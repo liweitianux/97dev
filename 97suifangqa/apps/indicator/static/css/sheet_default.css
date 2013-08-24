@@ -105,6 +105,7 @@
 	position: absolute;
 	top: 2px;
 	right: 8px;
+	cursor: pointer;
 }
 .detail_card_info .chart {
 	height: 400px;
@@ -287,6 +288,7 @@
 	position: absolute;
 	top: 2px;
 	right: 8px;
+	cursor: pointer;
 }
 .index_card .edit_icon_container .edit_icon {
 	background: url("../images/pen_large.png") no-repeat;
