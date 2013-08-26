@@ -8,7 +8,8 @@
 
 {% block css %}
 	<link rel="stylesheet" type="text/css" href="{% static "css/normalize.css" %}" />
-	<link rel="stylesheet" type="text/css" href="{% static "plugins/jquery-ui/themes/smoothness/jquery-ui.min.css" %}"/>
+	<link rel="stylesheet" type="text/css" href="{% static "plugins/jquery-ui/themes/smoothness/jquery-ui.min.css" %}" />
+	<link rel="stylesheet" type="text/css" href="{% static "plugins/qtip2/jquery.qtip.min.css" %}" />
 	<link rel="stylesheet" type="text/css" href="{% static "css/edit_history_data.css" %}" />
 {% endblock %}
 
@@ -18,6 +19,7 @@
   <script type="text/javascript" src="{% static "plugins/jquery-ui/ui/minified/jquery.ui.core.min.js" %}"></script>
   <script type="text/javascript" src="{% static "plugins/jquery-ui/ui/minified/jquery.ui.datepicker.min.js" %}"></script>
   <script type="text/javascript" src="{% static "plugins/jquery-ui/ui/minified/i18n/jquery.ui.datepicker-zh-CN.min.js" %}"></script>
+  <script type="text/javascript" src="{% static "plugins/qtip2/jquery.qtip.min.js" %}"></script>
 	<script type="text/javascript" src="{% static "javascripts/edit_history_data.js" %}"></script>
 
   <script type="text/javascript">
@@ -31,6 +33,8 @@
     // default date format
     var mm_date_fmt = "YYYY-MM-DD";
     
+    // record id
+    var record_id = {{ record_obj.id }};
     // indicator DATA_TYPES
     var DATA_TYPES = {
         'INTEGER_TYPE': '{{ indicator_obj.INTEGER_TYPE }}',
@@ -38,7 +42,20 @@
         'RANGE_TYPE': '{{ indicator_obj.RANGE_TYPE }}',
         'FLOAT_RANGE_TYPE': '{{ indicator_obj.FLOAT_RANGE_TYPE }}',
         'PM_TYPE': '{{ indicator_obj.PM_TYPE }}'
-    }; 
+    };
+    var data_type = '{{ indicator_obj.dataType }}';
+    // indicator confine
+    var confine = {
+        'val_norm': '{{ confine_dict|dict_get:"val_norm" }}',
+        'human_min': {{ confine_dict|dict_get:"human_min" }},
+        'human_max': {{ confine_dict|dict_get:"human_max" }},
+        'math_min': {{ confine_dict|dict_get:"math_min" }},
+        'math_max': {{ confine_dict|dict_get:"math_max" }},
+        'math_range_html': '{{ confine_dict|dict_get:"math_range_html" }}'
+    };
+    
+    // range symbol: <low_num> <symbol> <high_num>
+    var range_symbol = '~';
   </script>
 {% endblock %}
 
@@ -80,11 +97,12 @@
         <input type="button" id="edit_btn" value="修改记录" />
       </div>
       <div class="editing_data">
+        {% csrf_token %}
         <div class="date">
           <div class="date_text">化验日期</div>
           <div class="datepicker_container">
             <!-- jquery-ui: datepicker -->
-            <input class="datepicker date_input" id="editing_date_picker" type="text" value="{{ record_dict|dict_get:"date" }}" />
+            <input class="datepicker date_input to_validate" id="editing_date_picker" type="text" value="{{ record_dict|dict_get:"date" }}" />
           </div>
         </div>
         <!--
@@ -106,16 +124,23 @@
           TODO
           {% elif indicator_obj.dataType == indicator_obj.FLOAT_TYPE %}
           {# FLOAT_TYPE #}
-          <input class="data_input" type="text" value="" autocomplete="off" />
+          <input class="data_input to_validate" type="text" value="{{ record_dict|dict_get:"value_text" }}" autocomplete="off" />
           {% elif indicator_obj.dataType == indicator_obj.RANGE_TYPE %}
           {# RANGE_TYPE #}
-          <input class="data_input" type="text" value="" autocomplete="off" />
+          <input class="data_input to_validate" type="text" value="{{ record_dict|dict_get:"value_text" }}" autocomplete="off" />
           {% elif indicator_obj.dataType == indicator_obj.FLOAT_RANGE_TYPE %}
           {# FLOAT_RANGE_TYPE #}
-          <input class="data_input" type="text" value="" autocomplete="off" />
+          <input class="data_input to_validate" type="text" value="{{ record_dict|dict_get:"value_text" }}" autocomplete="off" />
           {% elif indicator_obj.dataType == indicator_obj.PM_TYPE %}
           {# PM_TYPE #}
-          TODO
+          <div class="radio_button">
+            <span class="button"><input class="data_input to_validate" type="radio" name="pm_data" value="minus" /></span>
+            <span class="text">阴性(-)</span>
+          </div>
+          <div class="radio_button">
+            <span class="button"><input class="data_input to_validate" type="radio" name="pm_data" value="plus" /></span>
+            <span class="text">阳性(+)</span>
+          </div>
           {% else %}
           {# UNKNOWN TYPE #}
           ERROR: unknown data type
@@ -124,7 +149,7 @@
         <div class="data_unit">{% if record_dict|dict_get:"unit_symbol" %}({{ record_dict|dict_get:"unit_symbol" }}){% endif %}</div>
         <div class="reason">
           <div class="prompt">修改原因</div>
-          <input class="reason_input" type="text" value="" />
+          <input class="reason_input to_validate" type="text" value="" />
         </div>
         <input type="button" id="save_btn" value="提交修改" />
       </div> <!-- end: edting_data -->

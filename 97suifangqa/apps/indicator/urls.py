@@ -82,10 +82,6 @@ urlpatterns += patterns('indicator.views',
     url(r'^ajax/close_sub_title/$',
         'ajax_close_sub_title',
         name='indicator_ajax_closesubtitle'),
-    # edit_history_data
-    url(r'^ajax/edit_history_data/$',
-        'ajax_edit_history_data',
-        name='indicator_ajax_edithistorydata'),
     # get_card_data_chart
     url(r'^ajax/get_card_data_chart/$',
         'ajax_get_card_data_chart',
@@ -94,6 +90,10 @@ urlpatterns += patterns('indicator.views',
     url(r'^ajax/get_card_data_table/$',
         'ajax_get_card_data_table',
         name='indicator_ajax_getcarddatatable'),
+    # modify_record
+    url(r'^ajax/modify_record/$',
+        'ajax_modify_record',
+        name='indicator_ajax_modifyrecord'),
     # unfollow_indicator
     url(r'^ajax/unfollow_indicator/$',
         'ajax_unfollow_indicator',
@@ -172,10 +172,9 @@ urlpatterns += patterns('indicator.views',
     url(r'^edit/record/(?P<record_id>\d+)/$', 'add_edit_record',
         name='edit_record'),
     ## add record history (modify history NOT allowed)
-    url(r'^add/recordhistory/$', 'add_recordhistory',
-        name='add_recordhistory'),
-    url(r'^add/recordhistory/(?P<record_id>\d+)/$', 'add_recordhistory',
-        name='add_recordhistory'),
+    url(r'^add/recordhistory/(?P<record_id>\d+)/$',
+        'add_recordhistory_view',
+        name='add_recordhistory_view'),
 )
 
 

@@ -6,6 +6,7 @@ utils for apps/indicator
 
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+from django.utils.timezone import utc
 
 from indicator import models as im
 from sciblog import models as sciblogm
@@ -403,6 +404,44 @@ def get_num_record_std(**kwargs):
     return get_num_record(std=True, **kwargs)
 # }}}
 
+
+# add_recordhistory {{{
+def add_recordhistory(user_id, record_id, reason, created_at=None):
+    """
+    add 'RecordHistory' for the given record
+    """
+    user = get_object_or_404(User, id=user_id)
+    record = get_object_or_404(im.IndicatorRecord, id=record_id)
+    # check user
+    if user.is_staff or user == record.user:
+        pass
+    else:
+        print u'Error: User id="%s" has no permission' % user_id
+        return False
+
+    # check reason
+    if (reason is None or not reason.strip()):
+        print u'Error: reason="%s" blank' % reason
+        return False
+
+    # check datetime_utc
+    dt_created_at = None
+    if created_at:
+        if isinstance(created_at, datetime.datetime):
+            # specified 'created_at'
+            dt_created_at = created_at.replace(tzinfo=utc)
+        else:
+            print u'Error: given created_at="%s" not python datetime' % created_at
+            return False
+
+    # create new RecordHistory
+    new_rh = im.RecordHistory(indicatorRecord=record, reason=reason)
+    if created_at:
+        new_rh.created_at = dt_created_at
+    #
+    new_rh.save()
+    return True
+# }}}
 
 # types of recommended indicators, and weights {{{
 RI_TYPES = {

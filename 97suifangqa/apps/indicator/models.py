@@ -253,6 +253,8 @@ class UserIndicator(models.Model):                          # {{{
             verbose_name=u"历史关注指标",
             related_name="followed_histories",
             null=True, blank=True)
+    # TODO
+    # last_recommend_time
 
     class Meta:
         verbose_name_plural = u"用户指标信息"
@@ -728,8 +730,8 @@ class RecordHistory(models.Model):                          # {{{
         ordering = ['indicatorRecord__id', 'created_at']
 
     def __unicode__(self):
-        return u"< RecordHistory: for Record #%s, %s >"\
-                % (self.indicatorRecord.id, self.created_at)
+        return u"< RecordHistory: #%s, for Record #%s, %s >"\
+                % (self.id, self.indicatorRecord.id, self.created_at)
 
     def save(self, **kwargs):
         sr = self.indicatorRecord

@@ -8,6 +8,7 @@ apps/indicator views
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden, Http404
 from django.shortcuts import render, get_object_or_404
+from django.utils.timezone import utc
 # CRSF
 from django.template import RequestContext
 
@@ -354,9 +355,9 @@ def modify_record(request, record_id=None, template='indicator/simple.html'):
 ## }}}
 
 
-## add_recordhistory {{{
+## add_recordhistory_view {{{
 @login_required
-def add_recordhistory(request, record_id, template='indicator/simple.html'):
+def add_recordhistory_view(request, record_id, template='indicator/simple.html'):
     """
     add 'RecordHistory' for a record by given
 
@@ -723,9 +724,11 @@ def indicator_edithistorydata(request):
     dataType = ind_obj.dataType
     # confine
     confine = ind_obj.get_confine()
-    val_norm = confine.get('val_norm')
-    human_min = confine.get('human_min')
-    human_max = confine.get('human_max')
+    confine_val_norm = confine.get('val_norm')
+    confine_human_min = confine.get('human_min')
+    confine_human_max = confine.get('human_max')
+    confine_math_min = confine.get('math_min')
+    confine_math_max = confine.get('math_max')
     std_unit_name = confine.get('unit').get('name')
     std_unit_symbol = confine.get('unit').get('symbol')
     # record data
@@ -739,45 +742,78 @@ def indicator_edithistorydata(request):
     # check dataType
     if dataType == im.Indicator.INTEGER_TYPE:
         ref_text = u"参考值"
-        ref_value = format_data(ind_obj, value=val_norm, type="html")
+        ref_value = format_data(ind_obj, value=confine_val_norm,
+                type="html")
+        confine_math_range_html = None
         # TODO
-        record_value_html = u""
+        record_value_html = format_data(ind_obj, value=record_value,
+                type="html")
+        record_value_text = format_data(ind_obj, value=record_value,
+                type="text")
         pass
     elif dataType == im.Indicator.FLOAT_TYPE:
         ref_text = u"参考范围"
-        ref_value = format_data(ind_obj,
-                val_max=human_max, val_min=human_min, type="html")
+        ref_value = format_data(ind_obj, val_max=confine_human_max,
+                val_min=confine_human_min, type="html")
+        confine_math_range_html = format_data(ind_obj,
+                val_max=confine_math_max,
+                val_min=confine_math_min, type="html")
         record_value_html = format_data(ind_obj, value=record_value,
                 type="html")
+        record_value_text = format_data(ind_obj, value=record_value,
+                type="text")
     elif dataType == im.Indicator.RANGE_TYPE:
         ref_text = u"参考范围"
-        ref_value = format_data(ind_obj,
-                val_max=human_max, val_min=human_min, type="html")
+        ref_value = format_data(ind_obj, val_max=confine_human_max,
+                val_min=confine_human_min, type="html")
+        confine_math_range_html = format_data(ind_obj,
+                val_max=confine_math_max,
+                val_min=confine_math_min, type="html")
         record_value_html = format_data(ind_obj,
                 val_min=record_val_min, val_max=record_val_max,
                 type="html")
+        record_value_text = format_data(ind_obj,
+                val_min=record_val_min, val_max=record_val_max,
+                type="text")
     elif dataType == im.Indicator.FLOAT_RANGE_TYPE:
         ref_text = u"参考范围"
-        ref_value = format_data(ind_obj,
-                val_max=human_max, val_min=human_min, type="html")
+        ref_value = format_data(ind_obj, val_max=confine_human_max,
+                val_min=confine_human_min, type="html")
+        confine_math_range_html = format_data(ind_obj,
+                val_max=confine_math_max,
+                val_min=confine_math_min, type="html")
         # TODO
-        record_value_html = u""
+        record_value_html = u"TODO"
+        record_value_text = u"TODO"
         pass
     elif dataType == im.Indicator.PM_TYPE:
         ref_text = u"参考值"
-        ref_value = format_data(ind_obj, value=val_norm, type="html")
-        # TODO
-        record_value_html = u""
-        pass
+        ref_value = format_data(ind_obj, value=confine_val_norm,
+                type="html")
+        confine_math_range_html = None
+        record_value_html = format_data(ind_obj, value=record_value,
+                type="html")
+        record_value_text = format_data(ind_obj, value=record_value,
+                type="text")
     else:
         ref_text = u"参考"
         ref_value = None
+        confine_math_range_html = None
         std_unit_name = None
         std_unit_symbol = None
         record_value_html = None
+        record_value_text = None
     # }}}
 
     # template data
+    confine_dict = {
+        'human_min': confine_human_min,
+        'human_max': confine_human_max,
+        'math_min': confine_math_min,
+        'math_max': confine_math_max,
+        'val_norm': confine_val_norm,
+        'math_range_html': confine_math_range_html,
+    }
     ind_dict = {
         'ref_text': ref_text,
         'ref_value': ref_value,
@@ -787,11 +823,13 @@ def indicator_edithistorydata(request):
     record_dict = {
         'date': record_date.isoformat(),
         'value_html': record_value_html,
+        'value_text': record_value_text,
         'unit_name': record_unit_name,
         'unit_symbol': record_unit_symbol,
         'is_normal': record_is_normal,
     }
     data = {
+        'confine_dict': confine_dict,
         'indicator_obj': ind_obj,
         'indicator_dict': ind_dict,
         'record_obj': record_obj,
@@ -903,22 +941,6 @@ def ajax_close_sub_title(request):
     close the small prompt banner above the indicator cards
 
     'indicator/static/javascripts/sheetdefault.js'
-    """
-    if request.is_ajax():
-        result = 'success'
-    else:
-        result = 'fail'
-        #raise Http404
-    return HttpResponse(result)
-# }}}
-
-
-# ajax_edit_history_data {{{
-@login_required
-def ajax_edit_history_data(request):
-    """
-    edit history data
-    used in 'detail history' view card
     """
     if request.is_ajax():
         result = 'success'
@@ -1277,6 +1299,83 @@ def ajax_unfollow_indicator(request):
 
     # return result
     return HttpResponse(result)
+# }}}
+
+
+# ajax_modify_record {{{
+@login_required
+def ajax_modify_record(request):
+    """
+    modify the existing record using the POSTed data
+    and add a 'RecordHistory' for the record
+    """
+    data = {'failed': True, 'error_code': 1, 'error_string': 'unknown'}
+    if request.method == 'POST':
+    #if request.is_ajax() and request.method == 'POST':
+        print request.POST.dict()
+        record_id = request.POST.get('record_id')
+        date_str = request.POST.get('date')
+        value = request.POST.get('value')
+        val_min_str = request.POST.get('val_min')
+        val_max_str = request.POST.get('val_max')
+        reason = request.POST.get('reason')
+        created_at_str = request.POST.get('created_at')
+        # get record object
+        try:
+            record_id = int(record_id)
+            record_obj = get_object_or_404(im.IndicatorRecord,
+                    id=record_id)
+        except ValueError:
+            data = {
+                'failed': True,
+                'error_code': 10,
+                'error_string': 'record_id'
+            }
+            return HttpResponse(json.dumps(data),
+                    mimetype='application/json')
+        # add RecordHistory
+        created_at = datetime.datetime.strptime(created_at_str,
+                '%Y-%m-%dT%H:%M:%S.%fZ')
+        rh_flag = add_recordhistory(user_id=request.user.id,
+                record_id=record_id, reason=reason,
+                created_at=created_at)
+        if rh_flag == False:
+            data = {
+                'failed': True,
+                'error_code': 20,
+                'error_string': 'recordhistory'
+            }
+            return HttpResponse(json.dumps(data),
+                    mimetype='application/json')
+        # record
+        updated_at = created_at.replace(tzinfo=utc)
+        date_dt = datetime.datetime.strptime(date_str, '%Y-%m-%d')
+        date_d = date_dt.date()
+        # val_min
+        if val_min_str:
+            val_min = float(val_min_str)
+        else:
+            val_min = None
+        # val_max
+        if val_max_str:
+            val_max = float(val_max_str)
+        else:
+            val_max = None
+        # update record
+        record_obj.updated_at = updated_at
+        record_obj.date = date_d
+        record_obj.value = value
+        record_obj.val_min = val_min
+        record_obj.val_max = val_max
+        r_flag = record_obj.is_valid()
+        if r_flag:
+            record_obj.save()
+            data = { 'failed': False }
+        else:
+            data = { 'failed': True, 'error_code': 30,
+                    'error_string': 'record_valid' }
+
+    return HttpResponse(json.dumps(data), mimetype='application/json')
 # }}}
 
 

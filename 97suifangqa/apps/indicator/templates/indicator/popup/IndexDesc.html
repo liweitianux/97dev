@@ -34,7 +34,7 @@
       $("#collection_btn").bind("click", function() {
         var obj = $(this)
         obj.data('id', {{ annotation.id }});
-        var url = '/blog/annotation/'+$(this).data('id')+'/collect';
+        var url = '/blog/annotation/'+$(this).data('id')+'/collect/';
         $.ajax({
             url: url,
             dataType: 'json',
