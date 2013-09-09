@@ -396,15 +396,16 @@ class IndicatorRecord(models.Model):                        # {{{
         NOTE: convert record data to 'standard unit' before comparison
         """
         sind = self.indicator
-        # unit relation
-        unit_rel = self.unit.relation
-        v = sympy.symbols('v')
-        rel_sym = sympy.sympify(unit_rel)
-        # error message
-        errmsg = u"'%s' 求值错误，请检查只含有变量 'v'" % unit_rel
         # check
         if sind.dataType in [sind.FLOAT_TYPE, sind.RANGE_TYPE,
                 sind.FLOAT_RANGE_TYPE]:
+            # unit relation
+            unit_rel = self.unit.relation
+            v = sympy.symbols('v')
+            rel_sym = sympy.sympify(unit_rel)
+            # error message
+            errmsg = u"'%s' 求值错误，请检查只含有变量 'v'" % unit_rel
+            # check InnateConfine for the Indicator first
             if not sind.check_confine():
                 return False
             # InnateConfine is ok

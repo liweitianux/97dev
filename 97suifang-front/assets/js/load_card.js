@@ -93,7 +93,7 @@ $(document).ready(function(){
 			renderTo: 'detail_chart',
 			type: 'area',
 			marginLeft: 25,
-			width: 562,
+			width: 672,
     		height: 303,
     		spacingTop: 10,
     		spacingBottom: 0,
@@ -177,9 +177,10 @@ $(document).ready(function(){
                 point: {
 	                events: {
 						click: function() {
-							alert(this.x);
-							alert(this.y);
-							TB_show(false, '../pages/popup/EditHistoryData.html?TB_iframe=true&no1_title&transfer_params&height=351&width=630&card_id=3', false);
+							alert("This is x-axis timestamp: "+this.x);
+							alert("This is y-axis date: "+this.y);
+							alert("Above parameters will be send in the popup layer, please get the paremeters and apply it");
+							TB_show(false, '../pages/popup/EditHistoryData.html?TB_iframe=true&no1_title&transfer_params&height=351&width=630&card_id=3&time='+this.x+'&data='+this.y, false);
 						}
 					}
 				}

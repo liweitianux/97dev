@@ -1,6 +1,21 @@
 var card_2_delete_id;
 var card_detail_id;
 $(document).ready(function(){
+	/************************ 登录控件交互 Start ********************************/
+	$(".drop-down-area").bind("click", function(){
+		var drop_down_menu = $(".drop-down-menu");
+		if(drop_down_menu.hasClass("open")){
+			drop_down_menu.removeClass("open");
+		}else{
+			drop_down_menu.addClass("open");
+		}
+		return false;
+	});
+	$("body").bind("click", function(){
+		$(".drop-down-menu").removeClass("open");
+	});
+	/************************ 登录控件交互 Start ********************************/
+	
 	//不允许input框复制，减少验证粘帖的交互
 	$("input[type='text']").bind("paste", function(){
 		return false;
@@ -160,6 +175,9 @@ $(document).ready(function(){
 		}
 	});
 	$("#search_end_date").datepicker({
+		showOn: "both",
+		buttonImage: "../plugins/datepicker/images/calendar.png",
+		buttonImageOnly: true,
 		onClose: function( selectedDate ) {
 			$("#search_start_date").datepicker("option", "maxDate", selectedDate);
 		}

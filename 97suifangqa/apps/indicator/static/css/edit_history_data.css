@@ -1,3 +1,26 @@
+/*
+ * How To Change Radio Button Checkbox Style in CSS:
+ * http://viralpatel.net/blogs/css-radio-button-checkbox-background/
+ */
+input[type="radio"] {
+	display: none;
+	margin: 4px;
+	vertical-align: middle;
+}
+input[type="radio"] + label {
+	display: inline-block;
+	height: 17px;
+	line-height: 17px;
+	margin-right: 2px;
+	padding: 2px 7px;
+	background-color: #F3F3F1;
+	border: 1px solid #9C9C9C;
+}
+input[type="radio"]:checked + label {
+	background-image: none;
+	background-color: #99CC33;
+}
+
 #edit_history_data_container {
 	width: 588px;
 	height: 180px;
@@ -146,6 +169,10 @@
 }
 .edit_history_data_content .editing_data .data .invalid {
 	border: 2px solid red;
+}
+.edit_history_data_content .editing_data .data .radio_input {
+	margin-right: 8px;
+	float: left;
 }
 .edit_history_data_content .editing_data .data .data_input {
 	width: 200px;

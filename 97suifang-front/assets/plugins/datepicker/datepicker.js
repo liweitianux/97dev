@@ -2831,7 +2831,7 @@
         return a
     }
     function bindHover(a) {
-        var b = "button, .ui-datepicker-prev, .ui-datepicker-next, .ui-datepicker-calendar td a";
+        var b = "button, .ui-datepicker-calendar td a";
         return a.bind("mouseout",
         function(a) {
             var c = $(a.target).closest(b); ! c.length || c.removeClass("ui-state-hover ui-datepicker-prev-hover ui-datepicker-next-hover")

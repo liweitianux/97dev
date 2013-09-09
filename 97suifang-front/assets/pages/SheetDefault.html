@@ -17,7 +17,25 @@
 	<script type="text/javascript" src="../js/load_card.js"></script>
 </head>
 <body>
-	<iframe align="left" width="420" height="720" src="SideBar.html" style="position:fixed;left:0;top:0" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+	<iframe align="left" width="420" height="1020" src="SideBar.html" style="position:fixed;left:0;top:0;z-index:99;" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+	<div id="login_container">
+		<div class="logged-in" id="login">
+			<img class="user-photo" alt="" src="../images/userPhoto.jpg">
+			<span class="number-block green-block user-level">6</span>
+			<span class="drop-down-area">
+			  <span class="user-name">mjymjydark</span>
+				<img class="drop-down-menu-button" alt="" src="../images/icon_down.png">
+			</span>
+			<div class="drop-down-menu" tabindex="0" onblur="javascript:alert('blur');" onfocus="javascript:alert('focus')">
+				<div class="text-pointer"></div>
+				<ul class="links">
+					<li><a href="javascript:void(0)">修改密码</a></li>
+					<li><a href="javascript:void(0)">完善信息</a></li>
+					<li class="last"><a href="javascript:void(0)">退出</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
 	<div id="right_container">
 		<div id="index_status_container">
 			<div class="index_title">指标状态</div>
@@ -172,8 +190,8 @@
 					<table width="100%">
 						<tr class="first_line">
 							<td width="122px">日期</td>
-							<td width="124px">时间</td>
 							<td width="312px">记录</td>
+							<td width="124px">状态</td>
 						</tr>
 					</table>
 				</div>

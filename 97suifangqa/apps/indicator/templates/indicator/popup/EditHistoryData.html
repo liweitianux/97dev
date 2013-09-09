@@ -44,15 +44,10 @@
         'PM_TYPE': '{{ indicator_obj.PM_TYPE }}'
     };
     var data_type = '{{ indicator_obj.dataType }}';
+    // indicator record
+    var record = $.parseJSON('{{ record_json|safe }}');
     // indicator confine
-    var confine = {
-        'val_norm': '{{ confine_dict|dict_get:"val_norm" }}',
-        'human_min': {{ confine_dict|dict_get:"human_min" }},
-        'human_max': {{ confine_dict|dict_get:"human_max" }},
-        'math_min': {{ confine_dict|dict_get:"math_min" }},
-        'math_max': {{ confine_dict|dict_get:"math_max" }},
-        'math_range_html': '{{ confine_dict|dict_get:"math_range_html" }}'
-    };
+    var confine = $.parseJSON('{{ confine_json|safe }}');
     
     // range symbol: <low_num> <symbol> <high_num>
     var range_symbol = '~';
@@ -133,14 +128,22 @@
           <input class="data_input to_validate" type="text" value="{{ record_dict|dict_get:"value_text" }}" autocomplete="off" />
           {% elif indicator_obj.dataType == indicator_obj.PM_TYPE %}
           {# PM_TYPE #}
-          <div class="radio_button">
-            <span class="button"><input class="data_input to_validate" type="radio" name="pm_data" value="minus" /></span>
-            <span class="text">阴性(-)</span>
+          <div class="radio_input to_validate">
+            <input type="radio" id="minus_r" name="pm_data" value="-" />
+            <label for="minus_r">阴性(-)</label>
+            <input type="radio" id="plus_r" name="pm_data" value="+" />
+            <label for="plus_r">阳性(+)</label>
           </div>
-          <div class="radio_button">
-            <span class="button"><input class="data_input to_validate" type="radio" name="pm_data" value="plus" /></span>
-            <span class="text">阳性(+)</span>
+          <!--
+          <div class="radio_input">
+            <span class="radio_s"><input class="to_validate" type="radio" name="pm_data" value="minus" /></span>
+            <span class="radio_text">阴性(-)</span>
           </div>
+          <div class="radio_input">
+            <span class="radio_s"><input class="to_validate" type="radio" name="pm_data" value="plus" /></span>
+            <span class="radio_text">阳性(+)</span>
+          </div>
+          -->
           {% else %}
           {# UNKNOWN TYPE #}
           ERROR: unknown data type

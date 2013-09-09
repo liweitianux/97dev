@@ -80,4 +80,9 @@ $(document).ready(function(){
 		
 		return false;
 	});
+	
+	$(".edit_history_data_close").bind("click", function(){
+		parent.TB_remove();
+		return false;
+	});
 });

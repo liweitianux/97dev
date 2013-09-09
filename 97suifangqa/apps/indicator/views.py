@@ -824,16 +824,21 @@ def indicator_edithistorydata(request):
         'date': record_date.isoformat(),
         'value_html': record_value_html,
         'value_text': record_value_text,
+        'value': record_value,
+        'val_min': record_val_min,
+        'val_max': record_val_max,
         'unit_name': record_unit_name,
         'unit_symbol': record_unit_symbol,
         'is_normal': record_is_normal,
     }
     data = {
         'confine_dict': confine_dict,
+        'confine_json': json.dumps(confine_dict),
         'indicator_obj': ind_obj,
         'indicator_dict': ind_dict,
         'record_obj': record_obj,
         'record_dict': record_dict,
+        'record_json': json.dumps(record_dict),
     }
     #
     return render(request, template, data)
@@ -1310,8 +1315,8 @@ def ajax_modify_record(request):
     and add a 'RecordHistory' for the record
     """
     data = {'failed': True, 'error_code': 1, 'error_string': 'unknown'}
-    if request.method == 'POST':
-    #if request.is_ajax() and request.method == 'POST':
+    #if request.method == 'POST':
+    if request.is_ajax() and request.method == 'POST':
         print request.POST.dict()
         record_id = request.POST.get('record_id')
         date_str = request.POST.get('date')

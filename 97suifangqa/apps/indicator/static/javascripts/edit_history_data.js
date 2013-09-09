@@ -74,10 +74,21 @@ $(document).ready(function(){
     });
     // }}}
 
+    // initalize
     // set datepicker 'date_input' value
     var date_init = $.datepicker.parseDate('yy-mm-dd',
             $(".date_input").attr('value'));
     $(".date_input").datepicker("setDate", date_init);
+    // select radio button according to the original value
+    if ($(".editing_data .radio_input").length) {
+        $(".radio_input input:radio").prop("checked", false);
+    }
+    if (record.value === '-') {
+        $(".radio_input #minus_r").prop("checked", true);
+    }
+    else {
+        $(".radio_input #plus_r").prop("checked", true);
+    }
 
     // record data validate {{{
     // date {{{
@@ -314,9 +325,41 @@ $(document).ready(function(){
     else if (data_type == DATA_TYPES.FLOAT_RANGE_TYPE) {
         // TODO
     }
-    else if (data_type == DATA_TYPES.PM_TYPE) {
+    else if (data_type == DATA_TYPES.PM_TYPE) {             // {{{
         // TODO
-    }
+        var radioinput_help = '<p>请直接点击选择</p>';
+        // tooltip
+        $(".radio_input").qtip({
+            id: 'radioinput',
+            prerender: false,
+            content: {
+                text: radioinput_help
+            },
+            position: {
+                my: 'bottom left',
+                at: 'top right'
+            },
+            show: {
+                event: 'mouseenter'
+            },
+            hide: {
+                event: 'mouseleave unfocus'
+            }
+        });
+        // validate
+        $(".radio_input").on('validate', null, function() {
+            if ($(".radio_input input:radio:checked").length != 1) {
+                var qtip_content = '<p>请选择化验结果</p>';
+                $(this).qtip('api').set('content.text',
+                    qtip_content);
+                $(this).qtip('api').show();
+            }
+            else {
+                // valid
+                record_data.value = $(".radio_input input:radio:checked").val();
+            }
+        });
+    } // }}}
     else {
         // unknown
         return false;
