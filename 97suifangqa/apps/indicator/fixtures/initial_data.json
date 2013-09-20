@@ -165,6 +165,24 @@
         }
     },
     {
+        "pk": 3,
+        "model": "indicator.userindicator",
+        "fields": {
+            "followedHistories": [],
+            "followedIndicators": [],
+            "user": 3
+        }
+    },
+    {
+        "pk": 4,
+        "model": "indicator.userindicator",
+        "fields": {
+            "followedHistories": [],
+            "followedIndicators": [],
+            "user": 4
+        }
+    },
+    {
         "pk": 18,
         "model": "indicator.indicatorrecord",
         "fields": {
@@ -297,9 +315,9 @@
         "model": "indicator.indicatorrecord",
         "fields": {
             "indicator": 1,
-            "notes": "\u8c37\u4e19\u8f6c\u6c28\u9176\r\n\r\n\u7b2c1\u6761\u8bb0\u5f55\r\n",
+            "notes": "\u8c37\u4e19\u8f6c\u6c28\u9176\r\n\r\n\u7b2c1\u6761\u8bb0\u5f55\r\nmodified",
             "created_at": "2013-08-05T15:48:00.035Z",
-            "updated_at": "2013-08-22T06:34:48.950Z",
+            "updated_at": "2013-08-26T12:13:14.102Z",
             "value": "50",
             "val_min": null,
             "user": 1,
@@ -315,7 +333,7 @@
             "indicator": 1,
             "notes": "\u8bb0\u5f552",
             "created_at": "2013-08-09T10:53:15.927Z",
-            "updated_at": "2013-08-18T13:35:03.065Z",
+            "updated_at": "2013-08-26T12:12:42.041Z",
             "value": "100",
             "val_min": null,
             "user": 1,
@@ -331,8 +349,8 @@
             "indicator": 1,
             "notes": "\u8bb0\u5f553",
             "created_at": "2013-08-18T13:33:20.569Z",
-            "updated_at": "2013-08-22T06:35:54.229Z",
-            "value": "150",
+            "updated_at": "2013-09-12T07:11:09.763Z",
+            "value": "78.3",
             "val_min": null,
             "user": 1,
             "date": "2013-08-15",
@@ -395,12 +413,12 @@
             "indicator": 2,
             "notes": "",
             "created_at": "2013-08-18T13:37:41.124Z",
-            "updated_at": "2013-08-18T13:37:41.125Z",
+            "updated_at": "2013-08-26T16:04:54.703Z",
             "value": "",
             "val_min": 15000.0,
             "user": 1,
             "date": "2013-08-10",
-            "val_max": 25000.0,
+            "val_max": 20000.0,
             "unit": 3
         }
     },
@@ -421,33 +439,65 @@
         }
     },
     {
+        "pk": 21,
+        "model": "indicator.indicatorrecord",
+        "fields": {
+            "indicator": 2,
+            "notes": "",
+            "created_at": "2013-09-12T07:21:24.976Z",
+            "updated_at": "2013-09-12T07:21:24.977Z",
+            "value": "",
+            "val_min": 50000.0,
+            "user": 1,
+            "date": "2013-09-01",
+            "val_max": 80000.0,
+            "unit": 3
+        }
+    },
+    {
         "pk": 3,
         "model": "indicator.indicatorrecord",
         "fields": {
             "indicator": 3,
             "notes": "pm type\r\nrecord 1",
             "created_at": "2013-08-16T16:07:00.547Z",
-            "updated_at": "2013-08-16T16:07:00.547Z",
+            "updated_at": "2013-09-09T01:56:20.103Z",
             "value": "+",
             "val_min": null,
             "user": 1,
-            "date": "2013-08-17",
+            "date": "2013-08-16",
             "val_max": null,
             "unit": null
         }
     },
     {
-        "pk": 8,
+        "pk": 20,
         "model": "indicator.indicatorrecord",
         "fields": {
             "indicator": 4,
-            "notes": "\u7b2c\u4e00\u4e2a\u8bb0\u5f55",
-            "created_at": "2013-08-22T00:20:21.925Z",
-            "updated_at": "2013-08-22T00:20:21.925Z",
-            "value": "1500",
+            "notes": "",
+            "created_at": "2013-09-12T07:12:42.394Z",
+            "updated_at": "2013-09-12T07:12:42.394Z",
+            "value": "600",
             "val_min": null,
             "user": 1,
-            "date": "2013-08-19",
+            "date": "2013-09-02",
+            "val_max": null,
+            "unit": 4
+        }
+    },
+    {
+        "pk": 19,
+        "model": "indicator.indicatorrecord",
+        "fields": {
+            "indicator": 4,
+            "notes": "",
+            "created_at": "2013-09-11T16:35:15.307Z",
+            "updated_at": "2013-09-11T16:35:15.307Z",
+            "value": "710",
+            "val_min": null,
+            "user": 1,
+            "date": "2013-09-12",
             "val_max": null,
             "unit": 4
         }
@@ -480,6 +530,156 @@
             "value_bak": "250",
             "date_bak": "2013-08-05",
             "notes_bak": "\u6307\u68071\r\n\u7b2c1\u6761\u8bb0\u5f55"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "indicator.recordhistory",
+        "fields": {
+            "val_min_bak": null,
+            "created_at": "2013-08-26T08:08:16.911Z",
+            "indicatorRecord": 1,
+            "reason": "test reason",
+            "unit_bak": 1,
+            "val_max_bak": null,
+            "value_bak": "50",
+            "date_bak": "2013-08-05",
+            "notes_bak": "\u8c37\u4e19\u8f6c\u6c28\u9176\r\n\r\n\u7b2c1\u6761\u8bb0\u5f55\r\n"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "indicator.recordhistory",
+        "fields": {
+            "val_min_bak": null,
+            "created_at": "2013-08-26T12:11:29.572Z",
+            "indicatorRecord": 1,
+            "reason": "test",
+            "unit_bak": 1,
+            "val_max_bak": null,
+            "value_bak": "50",
+            "date_bak": "2013-08-05",
+            "notes_bak": "\u8c37\u4e19\u8f6c\u6c28\u9176\r\n\r\n\u7b2c1\u6761\u8bb0\u5f55\r\nmodified"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "indicator.recordhistory",
+        "fields": {
+            "val_min_bak": null,
+            "created_at": "2013-08-26T12:20:54.790Z",
+            "indicatorRecord": 1,
+            "reason": "test",
+            "unit_bak": 1,
+            "val_max_bak": null,
+            "value_bak": "50",
+            "date_bak": "2013-08-05",
+            "notes_bak": "\u8c37\u4e19\u8f6c\u6c28\u9176\r\n\r\n\u7b2c1\u6761\u8bb0\u5f55\r\nmodified"
+        }
+    },
+    {
+        "pk": 13,
+        "model": "indicator.recordhistory",
+        "fields": {
+            "val_min_bak": null,
+            "created_at": "2013-09-09T01:53:47.362Z",
+            "indicatorRecord": 3,
+            "reason": "test to modify pm_data 1",
+            "unit_bak": null,
+            "val_max_bak": null,
+            "value_bak": "+",
+            "date_bak": "2013-08-17",
+            "notes_bak": "pm type\r\nrecord 1"
+        }
+    },
+    {
+        "pk": 14,
+        "model": "indicator.recordhistory",
+        "fields": {
+            "val_min_bak": null,
+            "created_at": "2013-09-09T01:54:44.215Z",
+            "indicatorRecord": 3,
+            "reason": "test to modify pm_data 2, modified date",
+            "unit_bak": null,
+            "val_max_bak": null,
+            "value_bak": "-",
+            "date_bak": "2013-08-17",
+            "notes_bak": "pm type\r\nrecord 1"
+        }
+    },
+    {
+        "pk": 15,
+        "model": "indicator.recordhistory",
+        "fields": {
+            "val_min_bak": null,
+            "created_at": "2013-09-09T01:56:19.906Z",
+            "indicatorRecord": 3,
+            "reason": "test 3, modified date & value",
+            "unit_bak": null,
+            "val_max_bak": null,
+            "value_bak": "-",
+            "date_bak": "2013-08-18",
+            "notes_bak": "pm type\r\nrecord 1"
+        }
+    },
+    {
+        "pk": 7,
+        "model": "indicator.recordhistory",
+        "fields": {
+            "val_min_bak": null,
+            "created_at": "2013-08-26T12:24:26.681Z",
+            "indicatorRecord": 4,
+            "reason": "modification test1",
+            "unit_bak": 1,
+            "val_max_bak": null,
+            "value_bak": "150",
+            "date_bak": "2013-08-15",
+            "notes_bak": "\u8bb0\u5f553"
+        }
+    },
+    {
+        "pk": 8,
+        "model": "indicator.recordhistory",
+        "fields": {
+            "val_min_bak": null,
+            "created_at": "2013-08-26T12:29:57.344Z",
+            "indicatorRecord": 4,
+            "reason": "modification test2",
+            "unit_bak": 1,
+            "val_max_bak": null,
+            "value_bak": "0",
+            "date_bak": "2013-08-15",
+            "notes_bak": "\u8bb0\u5f553"
+        }
+    },
+    {
+        "pk": 16,
+        "model": "indicator.recordhistory",
+        "fields": {
+            "val_min_bak": null,
+            "created_at": "2013-09-12T07:11:09.554Z",
+            "indicatorRecord": 4,
+            "reason": "test",
+            "unit_bak": 1,
+            "val_max_bak": null,
+            "value_bak": "81.3",
+            "date_bak": "2013-08-14",
+            "notes_bak": "\u8bb0\u5f553"
+        }
+    },
+    {
+        "pk": 9,
+        "model": "indicator.recordhistory",
+        "fields": {
+            "val_min_bak": 15000.0,
+            "created_at": "2013-08-26T16:04:54.516Z",
+            "indicatorRecord": 5,
+            "reason": "modify1(popup)",
+            "unit_bak": 3,
+            "val_max_bak": 25000.0,
+            "value_bak": "",
+            "date_bak": "2013-08-10",
+            "notes_bak": ""
         }
     },
     {

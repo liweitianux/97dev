@@ -1,9 +1,111 @@
+/* login {{{ */
+#login_container {
+	float: left;
+	position: relative;
+	z-index: 999;
+	width: 865px;
+	height: 85px;
+	margin-left: 457px;
+}
+#login_container .logged-in {
+	float: right;
+	margin-top: 26px;
+	right: 16px;
+	width: 160px;
+}
+#login.logged-in .user-name, #login.logged-in .user-level, #login.logged-in .user-photo, #login.logged-in .drop-down-menu-button {
+    vertical-align: bottom;
+}
+#login.logged-in .user-photo {
+	position: relative;
+	top: 2px;
+	/* display: none; */
+}
+#login.logged-in .user-level {
+    font-size: 1em;
+    line-height: 1em;
+    padding: 0.05em 0.25em 0.05em 0.2em;
+    /* display: none; */
+}
+.green-block {
+    background-color: #7BB81B;
+    color: #FFFFFF;
+}
+.number-block {
+    border-radius: 3px 3px 3px 3px;
+    font-family: "Courier New","DejaVu Sans Mono",monospace,sans-serif,"STHeiti","WenQuanYi Micro Hei","Microsoft YaHei",SimSun,sans-serif;
+    text-align: center;
+    width: 1.3em;
+}
+#login.logged-in .drop-down-area {
+    cursor: pointer;
+}
+#login.logged-in .user-name {
+    font-size: 1.14286em;
+    font-weight: bold;
+    line-height: 1em;
+}
+#login.logged-in .drop-down-menu {
+    background-color: #FFFFFF;
+    border: 1px solid #C9C9C9;
+    border-radius: 2px 2px 2px 2px;
+    box-shadow: 0 0 10px rgba(85, 85, 85, 0.5);
+    color: #000000;
+    display: none;
+    margin-top: 10px;
+    position: absolute;
+    z-index: 999;
+    width: 168px;
+    height: 91px;
+}
+#login.logged-in .drop-down-menu .text-pointer {
+    background: url("../images/login-menu-popup-pointer.png") no-repeat scroll 0 0 transparent;
+    height: 8px;
+    left: 100px;
+    margin-left: -10px;
+    position: absolute;
+    top: -8px;
+    width: 20px;
+}
+#login.logged-in .drop-down-menu ul {
+    margin: 0;
+    padding: 0;
+    list-style: none outside none;
+}
+#login.logged-in .drop-down-menu ul li {
+    border-bottom: 1px solid #EFEFEF;
+    padding: 2px;
+}
+#login.logged-in .drop-down-menu ul li a {
+    border-radius: 2px 2px 2px 2px;
+    color: inherit;
+    display: block;
+    padding-bottom: 0.2em;
+    padding-left: 1em;
+    padding-top: 0.2em;
+    text-decoration: none;
+    width: 150px;
+}
+#login.logged-in .drop-down-menu ul li.last {
+    border-bottom: medium none;
+}
+#login.logged-in .drop-down-menu.open {
+    display: block;
+}
+/* login: }}} */
+
+
 #new_delete_container {
 	float: left;
-	margin-left: 37px;
+	margin-left: 457px;
+	position: relative;
+	/*
+	position: absolute;
+	margin-top: 85px;
+	*/
 }
 .new_delete_title {
-	width: 596px;
+	width: 696px;
 	height: 26px;
 }
 .new_delete_title .content {
@@ -19,10 +121,12 @@
 	height: 26px;
 	line-height: 26px;
 	position: relative;
+	width: 158px;
 }
 .new_delete_title .search input {
 	float: left;
 	height: 20px;
+	line-height: normal;
 	width: 127px;
 	border: 1px solid #CACACA;
 	background-color: #FFFFFF;
@@ -48,21 +152,26 @@
 }
 .index_navigation .index_type {
 	float: left;
-	width: 63px;
-	height: 20px;
+	width: 77px;
+	height: 22px;
+	line-height: 22px;
 	text-align: center;
 	border: 1px solid #B5B5B5;
 	border-radius: 2px;
-	margin-right: 11px;
+	margin-right: 9px;
 }
-.index_navigation .index_type a{
+.index_navigation .index_type a {
 	color: #7E7E7E;
 	cursor: pointer;
 	text-decoration: none;
 }
+/*
 .index_navigation #index_all {
 	margin-right: 11px;
+	float: right;
+	width: 71px;
 }
+*/
 .index_navigation .selected {
 	background-color: #99CC33;
 	border: 1px solid #CCE69C;
@@ -75,13 +184,12 @@
 }
 .show_indexes .index_container {
 	float: left;
-	width: 252px;
+	width: 302px;
 	height: 437px;
 	border: 1px solid #b6b6b6;
 	z-index: 1;
 	position: relative;
 	padding: 6px 12px 0 12px;
-	overflow: hidden;
 }
 .show_indexes .add_concerned_icon {
 	float: left;
@@ -108,10 +216,12 @@
 	color: #4A4A4A;
 	float: left;
 }
-.show_indexes .index_container .index_title_container .example_sheet {
+.show_indexes .index_container .index_title_container .example_sheet a {
 	float: right;
 	color: #4A4A4A;
 	margin-top: 4px;
+	cursor: pointer;
+	text-decoration: none;
 }
 .show_indexes .index_container .index_title_container .index_btn {
 	float: right;
@@ -128,6 +238,7 @@
 .index_line .index_name, .index_line .index_category {
 	float: left;
 	font-size: 14px;
+	width: 45px;
 	height: 20px;
 	line-height: 20px;
 	color: #4A4A4A;
@@ -137,10 +248,10 @@
 .index_lines .add .icon {
 	width: 20px;
 	height: 20px;
-	float: right;
 	background: url("../images/addicon.png");
-	margin-right: 2px;
 	cursor: pointer;
+	position: absolute;
+	left: 260px;
 }
 .index_lines .add .index_name, .index_lines .add .index_category, .index_lines .minus .index_name {
 	color: #FFFFFF;
@@ -148,10 +259,10 @@
 .index_lines .minus .icon {
 	width: 20px;
 	height: 20px;
-	float: right;
 	background: url("../images/minusicon.png");
-	margin-right: 2px;
 	cursor: pointer;
+	position: absolute;
+	left: 260px;
 }
 .index_lines .add, .index_lines .minus {
 	background: #8FC31F;
@@ -189,28 +300,50 @@
 	float: left;
 	color: #8F8F8F;
 	font-size: 15px;
-	margin-right: 4px;
+	margin-right: 7px;
 	cursor: pointer;
+}
+.all_condition .index_all_letter .letter_selected{
+	color: #99CC33;
+}
+.index_letter_container {
+	height: 360px;
+	position: relative;
+	overflow: auto;
 }
 .index_letter_container .index_lines {
 	margin-bottom: 46px;
 }
 .index_letter_container .index_lines .letter_title {
+	height: 32px;
+	line-height: 32px;
 	font-weight: bold;
 	font-size: 32px;
 	color: #4A4A4A;
 	border-bottom: 1px solid #BFBFBF;
-	height: 24px;
+}
+.show_indexes .index_container .right {
+	position: relative;
+	height: 405px;
+	overflow: auto;
+}
+.show_indexes .index_container .left {
+	position: relative;
+	height: 405px;
+	overflow: auto;
 }
 
 .link_container {
-    width: 596px;
+    width: 696px;
     height: 39px;
-    margin: 10px 0;     /* top/bottom: 10px; left/right: 0 */
+    position: relative;
+    float: left;
+    margin-left: 457px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
-
 .link_container .status_link {
-    width: 594px;
+    width: 694px;
     height: 37px;
     line-height: 37px;
     border: 1px solid #B5B5B5;
@@ -219,7 +352,6 @@
     background-color: #F3F3F1;
     text-align: center;
 }
-
 .link_container .status_link a {
     color: #4A4A4A;
     text-decoration: none;
@@ -229,3 +361,4 @@
     cursor: pointer;
 }
 
+/* vim: set ts=4 sw=4 tw=0 fenc=utf-8 ft=css: */

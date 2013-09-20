@@ -77,6 +77,10 @@ urlpatterns += patterns('indicator.views',
     url(r'^ajax/act_index/$',
         'ajax_act_index',
         name='indicator_ajax_actindex'),
+    # add_record
+    url(r'^ajax/add_record/$',
+        'ajax_add_record',
+        name='indicator_ajax_addrecord'),
     # close_sub_title
     # close the small prompt banner above the indicator cards
     url(r'^ajax/close_sub_title/$',
@@ -94,6 +98,10 @@ urlpatterns += patterns('indicator.views',
     url(r'^ajax/modify_record/$',
         'ajax_modify_record',
         name='indicator_ajax_modifyrecord'),
+    # search_indicators
+    url(r'^ajax/search_indicators/$',
+        'ajax_search_indicators',
+        name='indicator_ajax_searchindicators'),
     # unfollow_indicator
     url(r'^ajax/unfollow_indicator/$',
         'ajax_unfollow_indicator',

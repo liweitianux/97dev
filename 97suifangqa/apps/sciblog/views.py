@@ -1,15 +1,19 @@
 # -*- coding: utf-8 -*-
 
-import json
 from django.http import HttpResponse, HttpResponseNotFound
 from django.views.generic.list_detail import object_detail
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.utils.timezone import utc
 
-from .models import SciBlog, ResultContent
-from .forms import SciBlogSearchForm, ProperNounSearchForm
+from sciblog import models as sm
+from sciblog.forms import SciBlogSearchForm, ProperNounSearchForm
 from info.forms import QuerySearchForm
+
+import datetime
 import itertools
+import json
+
 
 def blog_detail(request, blogid, block):
     u'''
@@ -18,10 +22,10 @@ def blog_detail(request, blogid, block):
     '''
     block = block or "source"
     template = 'sciblog/blog_detail_%s.html' % block
-    blog = get_object_or_404(SciBlog, id=blogid)
+    blog = get_object_or_404(sm.SciBlog, id=blogid)
 
     blockid = block
-    
+
     # 用户已经收藏？
     collected = request.user.is_authenticated() and blog.collected_by.filter(id=request.user.id)
 
@@ -94,7 +98,7 @@ def query(request):
         (hasppnouns, ppnouns) = generator_has_content(limit(objects_of_sqs(ppnounsqs),10))
         return render(request, 'sciblog/blog_list.html', locals())
     else:
-        (has_blogs, blogs) = generator_has_content(limit(SciBlog.objects.all(),10))
+        (has_blogs, blogs) = generator_has_content(limit(sm.SciBlog.objects.all(),10))
         return render(request, 'sciblog/blog_list.html', locals())
 
 
@@ -109,34 +113,50 @@ def blog_collection(request):
 
 
 @login_required
-def add_user_to_m2m(request, objid, m2m ='collected_by', model = SciBlog):
+def add_user_to_m2m(request, objid, m2m='collected_by', model=sm.SciBlog):
     u'''
     响应收藏按钮和'懂了'按钮的点击
     '''
-    
+
     result = {"error":False, 'added':True}
     result['id'] = objid 
     result['model'] = model._meta.verbose_name_plural
+    model_name = model.__name__
     user = request.user
     try:
-        obj  = model.objects.get(id=objid)
-        m2m  = getattr(obj, m2m)
-        if not m2m.filter(id = user.id):
+        obj = model.objects.get(id=objid)
+        model_m2m = getattr(obj, m2m)
+        if not model_m2m.filter(id=user.id):
             # 还没有收藏或点击懂了
-            m2m.add(user)
+            model_m2m.add(user)
+            result['added'] = True
+            # utc time
+            now_utc = datetime.datetime.utcnow().replace(tzinfo=utc)
+            # UserCollection
+            uc, created = sm.UserCollection.objects.get_or_create(user=user)
+            if model_name == 'SciBlog':
+                if m2m == 'collected_by':
+                    uc.lastCollectBlogTime = now_utc
+                elif m2m == 'catched_by':
+                    uc.lastCatchBlogTime = now_utc
+            elif model_name == 'BlogAnnotation':
+                if m2m == 'collected_by':
+                    uc.lastCollectAnnotationTime = now_utc
+            # save
+            uc.save()
         else:
             # 已经收藏或点击了懂了
-            m2m.remove(user)
+            model_m2m.remove(user)
             result['added'] = False
-        result['times'] = m2m.count()
+        result['times'] = model_m2m.count()
     except:
         result['error'] = True
         result['added'] = False
 
     return HttpResponse(json.dumps(result),
-                       mimetype = 'application/json')
+            mimetype = 'application/json')
 
 def show_result(request, resultid):
-    result  = get_object_or_404(ResultContent, id=resultid)
+    result  = get_object_or_404(sm.ResultContent, id=resultid)
     blog = result.blog
     return render(request, 'sciblog/blog_detail_results-detail.html', locals())

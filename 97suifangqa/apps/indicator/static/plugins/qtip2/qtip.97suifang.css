@@ -1,0 +1,12 @@
+/*
+ * 97suifang style customizations
+ * for qtip2 plugin
+ */
+
+.qtip-sf .qtip-close {
+    border-radius: 0;
+    border-width: 0;
+    border-style: none;
+    border-color: transparent;
+}
+

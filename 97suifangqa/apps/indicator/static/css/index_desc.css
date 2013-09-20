@@ -1,6 +1,6 @@
 #index_desc_container {
 	width: 588px;
-	height: 349px;
+	height: 365px;
 	background-color: #FFFFFF;
 	border: 1px solid #94C721;
 	padding: 0 20px 0 20px;
@@ -39,6 +39,7 @@
 	font-size: 16px;
 	text-align: left;
 }
+
 .collection {
 	background-color: #F7F7F7;
 	height: 38px;
@@ -53,8 +54,13 @@
 .collection:hover {
 	background-color: #EAEAEA;
 }
+/* style for annotation_not_found */
+.collection_no_annotation {
+	height: 40px;
+}
+
 .go_library {
-	padding-top: 8px;
+	margin-top: 12px;
 	height: 28px;
 }
 .go_library .go_library_btn {
@@ -65,4 +71,7 @@
 	padding-right: 5px;
 	padding-bottom: 2px;
 	padding-top: 2px;
+}
+.go_library .go_library_btn:disabled {
+	background-color: #CCCCCC;
 }

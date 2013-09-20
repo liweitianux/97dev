@@ -74,7 +74,7 @@ $(document).ready(function(){
     });
     // }}}
 
-    // initalize
+    // initialize
     // set datepicker 'date_input' value
     var date_init = $.datepicker.parseDate('yy-mm-dd',
             $(".date_input").attr('value'));
@@ -105,11 +105,10 @@ $(document).ready(function(){
             at: 'top right'
         },
         show: {
-            event: false
+            event: 'mouseenter'
         },
         hide: {
-            //event: 'click'
-            event: false
+            event: 'mouseleave unfocus'
         }
     });
     $(".date_input").focus(function() {
@@ -128,6 +127,8 @@ $(document).ready(function(){
         if (date_mm.isValid() && !date_mm.isAfter(today_mm)) {
             $(this).removeClass("invalid");
             $(this).addClass("valid");
+            var qtip_content = dateinput_help;
+            $(this).qtip('api').set('content.text', qtip_content);
             $(this).qtip('api').hide();
             // update data
             record_data.date = date_str;
@@ -147,11 +148,11 @@ $(document).ready(function(){
     // }}}
 
     // validate data
-    if (data_type == DATA_TYPES.INTEGER_TYPE) {
+    if (data_type == DATA_TYPES_JS.INTEGER_TYPE) {
         // INTEGER_TYPE
         // TODO
     }
-    else if (data_type == DATA_TYPES.FLOAT_TYPE) {          // {{{
+    else if (data_type == DATA_TYPES_JS.FLOAT_TYPE) {          // {{{
         // FLOAT_TYPE
         var datainput_help = '<p>定值型</p><p>数据格式示例：123.7; 1.23e4; 3.5e-2</p>';
         // tooltip
@@ -166,11 +167,10 @@ $(document).ready(function(){
                 at: 'top right'
             },
             show: {
-                event: false
+                event: 'mouseenter'
             },
             hide: {
-                //event: 'click'
-                event: false
+                event: 'mouseleave unfocus'
             }
         });
         $(".data_input").focus(function() {
@@ -200,6 +200,9 @@ $(document).ready(function(){
                     // confine valid
                     $(this).removeClass("invalid");
                     $(this).addClass("valid");
+                    var qtip_content = datainput_help;
+                    $(this).qtip('api').set('content.text',
+                            qtip_content);
                     $(this).qtip('api').hide();
                     // update data
                     record_data.value = value;
@@ -219,7 +222,7 @@ $(document).ready(function(){
             $(this).trigger('validate');
         });
     } // }}}
-    else if (data_type == DATA_TYPES.RANGE_TYPE) {          // {{{
+    else if (data_type == DATA_TYPES_JS.RANGE_TYPE) {          // {{{
         // RANGE_TYPE
         var datainput_help = '<p>范围型</p><p>数据格式示例：&bullet; <123.7; &bullet; >1.3e3; &bullet; 1.5e3 ~ 3.7e3</p>';
         // tooltip
@@ -234,11 +237,10 @@ $(document).ready(function(){
                 at: 'top right'
             },
             show: {
-                event: false
+                event: 'mouseenter'
             },
             hide: {
-                //event: 'click'
-                event: false
+                event: 'mouseleave unfocus'
             }
         });
         $(".data_input").focus(function() {
@@ -302,6 +304,9 @@ $(document).ready(function(){
                 if (confine_valid === true) {
                     $(this).removeClass("invalid");
                     $(this).addClass("valid");
+                    var qtip_content = datainput_help;
+                    $(this).qtip('api').set('content.text',
+                            qtip_content);
                     $(this).qtip('api').hide();
                     // update data
                     record_data.val_min = val_min;
@@ -322,10 +327,10 @@ $(document).ready(function(){
             $(this).trigger('validate');
         });
     } // RANGE_TYPE }}}
-    else if (data_type == DATA_TYPES.FLOAT_RANGE_TYPE) {
+    else if (data_type == DATA_TYPES_JS.FLOAT_RANGE_TYPE) {
         // TODO
     }
-    else if (data_type == DATA_TYPES.PM_TYPE) {             // {{{
+    else if (data_type == DATA_TYPES_JS.PM_TYPE) {             // {{{
         // TODO
         var radioinput_help = '<p>请直接点击选择</p>';
         // tooltip
@@ -356,6 +361,11 @@ $(document).ready(function(){
             }
             else {
                 // valid
+                var qtip_content = radioinput_help;
+                $(this).qtip('api').set('content.text',
+                    qtip_content);
+                $(this).qtip('api').hide();
+                // update data
                 record_data.value = $(".radio_input input:radio:checked").val();
             }
         });
@@ -365,8 +375,8 @@ $(document).ready(function(){
         return false;
     }
 
-    // validate reason
-    var reasoninput_help = '<p><strong>必填</strong></p>';
+    // validate reason {{{
+    var reasoninput_help = '<p>解释修改记录的原因</p><p><strong>必填</strong></p>';
     $(".reason_input").qtip({
         id: 'reasoninput',
         prerender: false,
@@ -378,11 +388,10 @@ $(document).ready(function(){
             at: 'top right'
         },
         show: {
-            event: false
+            event: 'mouseenter'
         },
         hide: {
-            //event: 'click'
-            event: false
+            event: 'mouseleave unfocus'
         }
     });
     $(".reason_input").focus(function() {
@@ -406,6 +415,8 @@ $(document).ready(function(){
             // valid
             $(this).removeClass("invalid");
             $(this).addClass("valid");
+            var qtip_content = reasoninput_help;
+            $(this).qtip('api').set('content.text', qtip_content);
             $(this).qtip('api').hide();
             // update data
             record_data.reason = reason_str;
@@ -414,6 +425,7 @@ $(document).ready(function(){
     $(".reason_input").on('blur', null, function() {
         $(this).trigger('validate');
     });
+    // }}}
     // }}}
 });
 

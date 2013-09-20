@@ -8,17 +8,19 @@
 {% endblock %}
 
 {% block css %}
-  <link rel="stylesheet" type="text/css" href="{% static "css/normalize.css" %}"/>
+  <link rel="stylesheet" type="text/css" href="{% static "css/normalize.css" %}" />
   <!--
-  <link rel="stylesheet" type="text/css" href="{% static "plugins/datepicker/datepicker.css" %}"/>
+  <link rel="stylesheet" type="text/css" href="{% static "plugins/datepicker/datepicker.css" %}" />
   -->
   <!--
-  <link rel="stylesheet" type="text/css" href="{% static "plugins/jquery-ui/themes/base/minified/jquery.ui.core.min.css" %}"/>
-  <link rel="stylesheet" type="text/css" href="{% static "plugins/jquery-ui/themes/base/minified/jquery.ui.datepicker.min.css" %}"/>
+  <link rel="stylesheet" type="text/css" href="{% static "plugins/jquery-ui/themes/base/minified/jquery.ui.core.min.css" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static "plugins/jquery-ui/themes/base/minified/jquery.ui.datepicker.min.css" %}" />
   -->
-  <link rel="stylesheet" type="text/css" href="{% static "plugins/jquery-ui/themes/smoothness/jquery-ui.min.css" %}"/>
-  <link rel="stylesheet" type="text/css" href="{% static "plugins/thickbox/thickbox.css" %}"/>
-  <link rel="stylesheet" type="text/css" href="{% static "css/sheet_default.css" %}"/>
+  <link rel="stylesheet" type="text/css" href="{% static "plugins/jquery-ui/themes/97suifang/jquery-ui.css" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static "plugins/thickbox/thickbox.css" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static "plugins/qtip2/jquery.qtip.min.css" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static "plugins/qtip2/qtip.97suifang.css" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static "css/sheet_default.css" %}" />
 {% endblock %}
 
 {% block scripts %}
@@ -35,7 +37,8 @@
   <!-- library for parsing, validating, manipulating, and formatting dates -->
   <script type="text/javascript" src="{% static "plugins/moment/moment.min.js" %}"></script>
   <script type="text/javascript" src="{% static "plugins/moment/lang/zh-cn.js" %}"></script>
-  <script type="text/javascript" src="{% static "javascripts/sheetdefault.js" %}"></script>
+  <script type="text/javascript" src="{% static "plugins/qtip2/jquery.qtip.min.js" %}"></script>
+  <script type="text/javascript" src="{% static "javascripts/sheet_default.js" %}"></script>
   <script type="text/javascript" src="{% static "javascripts/card_chart.js" %}"></script>
 
   <!-- global variables
@@ -79,6 +82,17 @@
     var card_2_delete_id = "-1"; // track the id of card to be deleted (string)
     // regex to match float number in expoential notation
     var exp_regex = /^([+-]?)(\d\.\d+)[eE]\+?(-?)0*([1-9]+)$/;
+    // range symbol: <low_num> <symbol> <high_num>
+    var range_symbol = '~';
+
+    // indicator DATA_TYPES
+    var DATA_TYPES_JS = $.parseJSON('{{ DATA_TYPES_json|safe }}');
+    // dataTypes of indicators
+    var datatypes = $.parseJSON('{{ datatypes_json|safe }}');
+    // recordempty of indicators
+    var recordempty = $.parseJSON('{{ recordempty_json|safe }}');
+    // confines of indicators
+    var confines = $.parseJSON('{{ confines_json|safe }}');
 
     // get indicator records data and 
     // draw the chart {{{
@@ -259,12 +273,35 @@
 {% endblock %}
 
 {% block page %}
-  <iframe align="left" width="420" height="720" src="{% url indicator_sidebar %}" style="position:fixed;left:0;top:0" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+  {% csrf_token %}
+
+  <iframe align="left" width="420" height="1020" src="{% url indicator_sidebar %}" style="position:fixed;left:0;top:0;z-index:99;" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+
+  <!-- TODO -->
+  <div id="login_container">
+    <div class="logged-in" id="login">
+      <img class="user-photo" alt="" src="{% static "images/userPhoto.jpg" %}" />
+      <span class="number-block green-block user-level">6</span>
+      <span class="drop-down-area">
+        <span class="user-name">username</span>
+        <img class="drop-down-menu-button" alt="" src="{% static "images/icon_down.png" %}" />
+      </span>
+      <div class="drop-down-menu" tabindex="0" onblur="javascript:alert('blur');" onfocus="javascript:alert('focus')">
+        <div class="text-pointer"></div>
+        <ul class="links">
+          <li><a href="javascript:void(0)">修改密码</a></li>
+          <li><a href="javascript:void(0)">完善信息</a></li>
+          <li class="last"><a href="javascript:void(0)">退出</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
   <div id="right_container">
     <div id="index_status_container">
       <div class="index_title">指标状态</div>
 
+      {% comment %}
       <!-- 这里需要后端读取cookie，来判断用户是否已经点击大叉。
            若否，则显示；若是，则隐藏
       -->
@@ -272,93 +309,120 @@
         <div class="content">以下可能是您感兴趣的指标，您可以点击卡片右上角“X”，取消关注。</div>
         <div class="close_icon" id="index_title_closed_icon"></div>
       </div>
+      {% endcomment %}
 
       <!-- 左边的卡片加一个class "index_card_fir"，
            右边的卡片加一个class "index_card_sec"
       -->
       <!-- 卡片div的id为 "index_card_卡片id"，方便后续操作 -->
       {% for ind in indicators %}
-        <div class="index_card {% cycle 'index_card_fir' 'index_card_sec' %}" id="index_card_{{ ind|dict_get:"id" }}">
+        <div class="index_card {% cycle 'index_card_fir' 'index_card_sec' %} {% if ind|dict_get:"recommended" %}recommended{% endif %} {% if ind|dict_get:"record_empty" %}record_empty{% endif %}" id="index_card_{{ ind|dict_get:"id" }}">
           <div class="card_title">{{ ind|dict_get:"name" }}</div>
           <div class="refer_range">
             <span class="refer_text">{{ ind|dict_get:"ref_text" }}</span>
             <span class="refer_value">{{ ind|dict_get:"ref_value"|safe }}</span>
             <span class="data_unit">{% if ind|dict_get:"std_unit_symbol" %}({{ ind|dict_get:"std_unit_symbol" }}){% endif %}</span>
           </div>
-          {% if ind|dict_get:"record_empty" %} {# vim: {{{ #}
-            {# if no record, then hide 'last_edit_data' #}
-            <!-- "record_empty": True -->
-            <div class="edit_data">
-                <div class="last_edit_data" style="display: none;">
-                  <span class="last_data">Null</span>
-                  <span class="data_unit">{% if ind|dict_get:"std_unit_symbol" %}({{ ind|dict_get:"std_unit_symbol" }}){% endif %}</span>
-                </div>
-                <img class="small_edit_icon" src="{% static "images/pen.png" %}" />
-                <img class="explain_icon" src="{% static "images/nodata.png" %}" />
-            </div> <!-- end: edit_data -->
-            <div class="editing_data">
-              <div class="input_container">
-                <input class="edit_input_main" type="text" value="0" />
-                x 10^
-                <input class="edit_input_sub" type="text" value="0" />
-              </div>
-              <div class="add_minus_icon">
-                <div class="add_icon"></div>
-                <div class="minus_icon"></div>
-              </div>
-              <div class="data_unit">{% if ind|dict_get:"std_unit_symbol" %}({{ ind|dict_get:"std_unit_symbol" }}){% endif %}</div>
-              <div class="confirm_edit_icon"></div>
-              <div class="cancel_edit_icon"></div>
-            </div> <!-- end: editing_data -->
-            <!-- hints to get started, display when has no record -->
-            <div class="edit_icon_container">
-              <div class="edit_icon"></div>
-              <div class="curve_icon"></div>
-              <div style="clear:both;"></div>
-            </div>
-            <div class="edit_text">点击右上角的按钮开始添加数据</div>
-          {# vim: }}} #}
-          {% else %} {# record_empty == False; vim: {{{ #}
+
+          <div class="edit_data">
+            {% if ind|dict_get:"record_empty" %}
+            {# record_empty==True, hide 'last_edit_data' #}
+            <div class="last_edit_data" style="display: none;">
+            {% else %}
             {# indicator has records #}
-            <!-- "record_empty": False -->
-            <div class="edit_data">
-                <div class="last_edit_data" style="display: block;">
-                  <span class="last_data">{{ ind|dict_get:"last_record"|dict_get:"value_str"|safe }}</span>
-                  <span class="data_unit">{% if ind|dict_get:"std_unit_symbol" %}({{ ind|dict_get:"std_unit_symbol" }}){% endif %}</span>
-                </div>
-                <img class="small_edit_icon" src="{% static "images/pen.png" %}" />
-                <img class="explain_icon" src="{% static "images/last_edit_data.png" %}" />
-            </div> <!-- end: edit_data -->
-            <div class="editing_data">
-              <div class="input_container">
-                <input class="edit_input_main" type="text" value="" autocomplete="off" />
-                x 10^
-                <input class="edit_input_sub" type="text" value="" autocomplete="off" />
-              </div>
-              <div class="add_minus_icon">
-                <div class="add_icon"></div>
-                <div class="minus_icon"></div>
-              </div>
-              <div class="data_unit">{% if ind|dict_get:"std_unit_symbol" %}({{ ind|dict_get:"std_unit_symbol" }}){% endif %}</div>
-              <div class="confirm_edit_icon"></div>
-              <div class="cancel_edit_icon"></div>
-            </div> <!-- end: editing_data -->
-            <div class="refresh_data">
-              <div class="refresh_text">
-                记录日期: {{ ind|dict_get:"last_record"|dict_get:"date" }}
-              </div>
-              <div class="refresh_icon"></div>
-              <div style="clear:both;"></div>
+            <div class="last_edit_data" style="display: block;">
+            {% endif %}
+              <span class="data_value">{{ ind|dict_get:"last_record"|dict_get:"value_html"|safe }}</span>
+              <span class="data_unit">{% if ind|dict_get:"std_unit_symbol" %}({{ ind|dict_get:"std_unit_symbol" }}){% endif %}</span>
             </div>
-            <div class="select_date">
-              <input class="datepicker" type="text" autocomplete="off" />
+            <img class="small_edit_icon" src="{% static "images/pen.png" %}" />
+            <!-- explain_icon -->
+            {% if ind|dict_get:"record_empty" %}
+            <img class="explain_icon nodata_icon" src="{% static "images/nodata.png" %}" style="display: block;" />
+            <img class="explain_icon lastdata_icon" src="{% static "images/last_edit_data.png" %}" style="display: none;" />
+            {% else %}
+            <img class="explain_icon nodata_icon" src="{% static "images/nodata.png" %}" style="display: none;" />
+            <img class="explain_icon lastdata_icon" src="{% static "images/last_edit_data.png" %}" style="display: block;" />
+            {% endif %}
+            <div style="clear:both;"></div>
+            <!-- last edit date -->
+            {% if ind|dict_get:"record_empty" %}
+            <div class="last_edit_date" style="display: none;">
+            {% else %}
+            <div class="last_edit_date" style="display: block;">
+            {% endif %}
+              <span class="date_prompt">记录日期</span>
+              <span class="date_value">{{ ind|dict_get:"last_record"|dict_get:"date" }}</span>
             </div>
-            <!-- chart rendered by Highcharts -->
-            <div class="chart" id="chart_{{ ind|dict_get:"id" }}"></div>
-          {% endif %} {# end: record_empty; vim: }}} #}
+            <!-- refresh icon -->
+            {% if ind|dict_get:"record_empty" %}
+            <div class="refresh_icon" style="display: none;"></div>
+            {% else %}
+            <div class="refresh_icon" style="display: block;"></div>
+            {% endif %}
+            <div style="clear:both;"></div>
+          </div> <!-- end: edit_data -->
+
+          <div class="editing_data">
+            <div class="data data_type_{{ ind|dict_get:"dataType" }}">
+              <!-- <div class="prompt">记录</div> -->
+              {% if ind|dict_get:"dataType" == DATA_TYPES|dict_get:"INTEGER_TYPE" %}
+              {# INTEGER_TYPE #}
+              TODO
+              {% elif ind|dict_get:"dataType" == DATA_TYPES|dict_get:"FLOAT_TYPE" %}
+              {# FLOAT_TYPE #}
+              <input class="data_input to_validate" type="text" value="" autocomplete="off" />
+              {% elif ind|dict_get:"dataType" == DATA_TYPES|dict_get:"RANGE_TYPE" %}
+              {# RANGE_TYPE #}
+              <input class="data_input to_validate" type="text" value="" autocomplete="off" />
+              {% elif ind|dict_get:"dataType" == DATA_TYPES|dict_get:"FLOAT_RANGE_TYPE" %}
+              {# FLOAT_RANGE_TYPE #}
+              <input class="data_input to_validate" type="text" value="" autocomplete="off" />
+              {% elif ind|dict_get:"dataType" == DATA_TYPES|dict_get:"PM_TYPE" %}
+              {# PM_TYPE #}
+              <div class="radio_input to_validate">
+                <input type="radio" id="minus_r" name="pm_data" value="-" />
+                <label for="minus_r">阴性(-)</label>
+                <input type="radio" id="plus_r" name="pm_data" value="+" />
+                <label for="plus_r">阳性(+)</label>
+              </div>
+              {% else %}
+              {# UNKNOWN TYPE #}
+              ERROR: unknown data type
+              {% endif %}
+            </div>
+            <div class="data_unit">{% if ind|dict_get:"std_unit_symbol" %}({{ ind|dict_get:"std_unit_symbol" }}){% endif %}</div>
+            <div class="confirm_edit_icon"></div>
+            <div class="cancel_edit_icon"></div>
+            <div style="clear:both;"></div>
+            <div class="date">
+              <div class="datepicker_container">
+                <input class="datepicker date_input to_validate" type="text" autocomplete="off" />
+              </div>
+            </div>
+          </div> <!-- end: editing_data -->
+
+          <!-- edit_hint -->
+          {% if ind|dict_get:"record_empty" %}
+          <div class="edit_icon_container" style="display: block;">
+          {% else %}
+          <div class="edit_icon_container" style="display: none;">
+          {% endif %}
+            <div class="edit_icon"></div>
+            <div class="curve_icon"></div>
+            <div style="clear:both;"></div>
+            <div class="edit_text">点击右上角的按钮开始添加数据</div>
+            <div style="clear:both;"></div>
+          </div>
+          <!-- chart rendered by Highcharts -->
+          {% if ind|dict_get:"record_empty" %}
+          <div class="chart" id="chart_{{ ind|dict_get:"id" }}" style="display: none;"></div>
+          {% else %}
+          <div class="chart" id="chart_{{ ind|dict_get:"id" }}" style="display: block;"></div>
+          {% endif %}
 
           <div class="card_bottom">
-            <div class="understand_index"><a class="thickbox" href="{% url indicator_indexdesc %}?card_id={{ ind|dict_get:"id" }}&url_type=html&no_title=true&TB_iframe=true&height=351&width=630">了解该指标</a></div>
+            <div class="understand_index"><a class="thickbox" href="{% url indicator_indexdesc %}?card_id={{ ind|dict_get:"id" }}&url_type=html&no_title=true&TB_iframe=true&height=367&width=630">了解该指标</a></div>
             <!-- TODO -->
             <div class="simulation_sheet"><a href="{% static "images/demo_sheet.png" %}" class="thickbox">仿真化验单</a></div>
             <div class="detail_history">

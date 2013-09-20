@@ -1,10 +1,134 @@
-#right_container {
-	width: 596px;
+/*
+ * radio input button
+ */
+input[type="radio"] {
+	display: none;
+	margin: 4px;
+	vertical-align: middle;
+}
+input[type="radio"] + label {
+	display: inline-block;
+	height: 17px;
+	line-height: 17px;
+	margin-right: 2px;
+	padding: 2px 7px;
+	background-color: #F3F3F1;
+	border: 1px solid #9C9C9C;
+}
+input[type="radio"]:checked + label {
+	background-image: none;
+	background-color: #99CC33;
+}
+
+/* login {{{ */
+#login_container {
 	float: left;
+	position: relative;
+	width: 865px;
+	height: 85px;
 	margin-left: 457px;
 }
+#login_container .logged-in {
+	float: right;
+	margin-top: 26px;
+	right: 16px;
+	width: 160px;
+}
+#login.logged-in .user-name, #login.logged-in .user-level, #login.logged-in .user-photo, #login.logged-in .drop-down-menu-button {
+    vertical-align: bottom;
+}
+#login.logged-in .user-photo {
+	position: relative;
+	top: 2px;
+	/* display: none; */
+}
+#login.logged-in .user-level {
+    font-size: 1em;
+    line-height: 1em;
+    padding: 0.05em 0.25em 0.05em 0.2em;
+    /* display: none; */
+}
+.green-block {
+    background-color: #7BB81B;
+    color: #FFFFFF;
+}
+.number-block {
+    border-radius: 3px 3px 3px 3px;
+    font-family: "Courier New","DejaVu Sans Mono",monospace,sans-serif,"STHeiti","WenQuanYi Micro Hei","Microsoft YaHei",SimSun,sans-serif;
+    text-align: center;
+    width: 1.3em;
+}
+#login.logged-in .drop-down-area {
+    cursor: pointer;
+}
+#login.logged-in .user-name {
+    font-size: 1.14286em;
+    font-weight: bold;
+    line-height: 1em;
+}
+#login.logged-in .drop-down-menu {
+    background-color: #FFFFFF;
+    border: 1px solid #C9C9C9;
+    border-radius: 2px 2px 2px 2px;
+    box-shadow: 0 0 10px rgba(85, 85, 85, 0.5);
+    color: #000000;
+    display: none;
+    margin-top: 10px;
+    position: absolute;
+    z-index: 999;
+    width: 168px;
+    height: 91px;
+}
+#login.logged-in .drop-down-menu .text-pointer {
+    background: url("../images/login-menu-popup-pointer.png") no-repeat scroll 0 0 transparent;
+    height: 8px;
+    left: 100px;
+    margin-left: -10px;
+    position: absolute;
+    top: -8px;
+    width: 20px;
+}
+#login.logged-in .drop-down-menu ul {
+    margin: 0;
+    padding: 0;
+    list-style: none outside none;
+}
+#login.logged-in .drop-down-menu ul li {
+    border-bottom: 1px solid #EFEFEF;
+    padding: 2px;
+}
+#login.logged-in .drop-down-menu ul li a {
+    border-radius: 2px 2px 2px 2px;
+    color: inherit;
+    display: block;
+    padding-bottom: 0.2em;
+    padding-left: 1em;
+    padding-top: 0.2em;
+    text-decoration: none;
+    width: 150px;
+}
+#login.logged-in .drop-down-menu ul li.last {
+    border-bottom: medium none;
+}
+#login.logged-in .drop-down-menu.open {
+    display: block;
+}
+/* login }}} */
+
+
+#right_container {
+	width: 696px;
+	float: left;
+	/*
+	position: absolute;
+	margin : 85px 0 0 457px;
+	*/
+	position: relative;
+	margin-left: 457px;
+	padding-bottom: 50px;
+}
 #index_status_container {
-	width: 596px;
+	width: 696px;
 }
 .index_title {
 	color: #4a4a4a;
@@ -31,7 +155,7 @@
 	cursor: pointer;
 }
 .detail_card_info {
-	width: 562px;
+	width: 662px;
 	border: 1px solid #CACACA;
 	position: relative;
 	float: left;
@@ -66,10 +190,10 @@
 .detail_card_info .search_data_div {
 	margin-top: 9px;
 	margin-bottom: 17px;
-	width: 562px;
+	width: 662px;
 }
 .detail_card_info .search_data_div input[type='button'] {
-	width: 80px;
+	width: 100px;
 	height: 23px;
 	line-height: 23px;
 	float: left;
@@ -88,13 +212,13 @@
 	float: right;
 }
 .detail_card_info .search_data_div .end_date_container {
-	margin-left: 10px;
+	margin-left: 25px;
 }
 .detail_card_info .search_data_div .datepicker_container .datepicker {
 	background: #FFFFFF;
 	border: 1px solid #9C9C9C;
 	color: #B9B9B9;
-	width: 107px;
+	width: 117px;
 	height: 17px;
 	line-height: 17px;
 	position: relative;
@@ -138,13 +262,19 @@
 	background-color: #CCCCCC;
 }
 .index_card {
-	width: 278px;
-	height: 375px;
+	width: 328px;
+	height: 434px;
 	border: 1px solid #CACACA;
 	margin-top: 9px;
 	border-radius: 2px;
 	padding: 5px 5px 0 8px;
 	position: relative;
+}
+/* recommended indicator's card */
+#index_status_container .recommended {
+	width: 326px;
+	height: 432px;
+	border: 2px solid #99CC33;
 }
 .index_card_fir {
 	float: left;
@@ -168,8 +298,9 @@
 .index_card .refer_range .refer_value {
 	margin-right: 5px;
 }
+
 .index_card .edit_data, .index_card .editing_data {
-	height: 25px;
+	height: 53px;
 	margin-top: 7px;
 }
 .index_card .edit_data .explain_icon {
@@ -181,99 +312,82 @@
 	cursor: pointer;
 }
 .index_card .edit_data .last_edit_data {
+	height: 25px;
+	line-height: 25px;
 	float: left;
 }
-.index_card .editing_data {
-	display: none;
+.index_card .edit_data .last_edit_data .data_value {
+	margin-right: 5px;
 }
-.index_card .editing_data .input_container {
-	float: left;
-}
-.index_card .editing_data .input_container input {
-	color: #5C5C5C;
-	background-color: #FFFFFF;
-	border: 1px solid #9C9C9C;
-}
-.index_card .editing_data .input_container .error {
-	border: 1px solid red;
-}
-.index_card .editing_data .input_container .edit_input_main {
-	width: 42px;
-	height: 17px;
-	line-height: 17px;
-	padding-top: 2px;
-	padding-bottom: 2px;
-}
-.index_card .editing_data .input_container .edit_input_sub {
-	width: 17px;
-	height: 17px;
-	line-height: 17px;
-	padding-top: 2px;
-	padding-bottom: 2px;
-}
-.index_card .editing_data .add_minus_icon {
-	float: left;
-	margin-right: 8px;
-}
-.index_card .editing_data .add_minus_icon .add_icon {
-	background:url(../images/add.png) no-repeat;
-	width: 15px;
-	height: 11px;
-	border-right: 1px solid #9C9C9C;
-	cursor: pointer;
-}
-.index_card .editing_data .add_minus_icon .minus_icon {
-	background:url(../images/minus.png) no-repeat;
-	width: 15px;
-	height: 10px;
-	border-bottom: 1px solid #9C9C9C;
-	border-right: 1px solid #9C9C9C;
-	margin-top: 1px;
-	cursor: pointer;
-}
-.index_card .editing_data .data_unit {
-	float: left;
-	margin-right: 8px;
-}
-.index_card .editing_data .cancel_edit_icon {
-	float: right;
-	background:url(../images/cancel_edit.png) no-repeat;
-	width: 23px;
-	height: 23px;
-	margin-right: 2px;
-	cursor: pointer;
-}
-.index_card .editing_data .confirm_edit_icon {
-	float: right;
-	background:url(../images/confirm_edit.png) no-repeat;
-	width: 23px;
-	height: 23px;
-	cursor: pointer;
-}
-.index_card .refresh_data {
-	height: 23px;
-	line-height: 23px;
+.index_card .edit_data .last_edit_date {
+	height: 25px;
+	line-height: 25px;
 	margin-top: 3px;
-}
-.index_card .refresh_data .refresh_text {
 	float: left;
 	color: #B9B9B9;
 }
-.index_card .refresh_data .refresh_icon {
+.index_card .edit_data .last_edit_date .date_prompt {
+	margin-right: 5px;
+}
+.index_card .edit_data .refresh_icon {
 	float: right;
 	background: url("../images/refresh.png") no-repeat;
 	width: 23px;
 	height: 23px;
+	margin-top: 2px;
 	cursor: pointer;
 }
-.index_card .select_date {
-	width: 148px;
-	height: 23px;
-	position: relative;
-	margin-top: 3px;
+
+.index_card .editing_data {
+	height: 53px;
+	margin-top: 7px;
 	display: none;
 }
-.index_card .select_date .datepicker {
+.index_card .editing_data .data  {
+	height: 25px;
+	line-height: 25px;
+	float: left;
+	top: 1px;
+}
+.index_card .editing_data .data .prompt {
+	margin-right: 8px;
+	float: left;
+}
+.index_card .editing_data .data input {
+	color: #5C5C5C;
+	background-color: #FFFFFF;
+	border: 1px solid #9C9C9C;
+}
+.index_card .editing_data .data .valid {
+	border: 2px solid green;
+}
+.index_card .editing_data .data .invalid {
+	border: 2px solid red;
+}
+.index_card .editing_data .data .radio_input {
+	margin-right: 8px;
+	float: left;
+}
+.index_card .editing_data .data .data_input {
+	width: 165px;
+	height: 17px;
+	line-height: 17px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	margin-right: 8px;
+}
+.index_card .editing_data .data_unit {
+	float: left;
+	height: 25px;
+	line-height: 25px;
+}
+.index_card .editing_data .date .datepicker_container {
+	width: 148px;
+	height: 25px;
+	position: relative;
+	margin-top: 5px;
+}
+.index_card .editing_data .date .datepicker_container .datepicker {
 	background: #FFFFFF;
 	border: 1px solid #9C9C9C;
 	color: #B9B9B9;
@@ -284,27 +398,57 @@
 	padding-top: 2px;
 	padding-bottom: 2px;
 }
-.index_card .select_date .ui-datepicker-trigger {
+.index_card .editing_data .date .datepicker_container .ui-datepicker-trigger {
 	position: absolute;
 	top: 2px;
 	right: 8px;
 	cursor: pointer;
+}
+.index_card .editing_data .date .datepicker_container .valid {
+	border: 2px solid green;
+}
+.index_card .editing_data .date .datepicker_container .invalid {
+	border: 2px solid red;
+}
+
+.index_card .editing_data .cancel_edit_icon {
+	float: right;
+	background:url(../images/cancel_edit.png) no-repeat;
+	width: 23px;
+	height: 23px;
+	margin-right: 3px;
+	cursor: pointer;
+}
+.index_card .editing_data .confirm_edit_icon {
+	float: right;
+	background:url(../images/confirm_edit.png) no-repeat;
+	width: 23px;
+	height: 23px;
+	cursor: pointer;
+}
+
+.index_card .edit_icon_container {
+	height: 270px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	position: relative;
+	top: -38px;
 }
 .index_card .edit_icon_container .edit_icon {
 	background: url("../images/pen_large.png") no-repeat;
 	height: 85px;
 	width: 85px;
 	float: left;
-	margin: 40px 0 0 95px;
+	margin: 45px 0 0 135px;
 	cursor: pointer;
 }
 .index_card .edit_icon_container .curve_icon {
 	background: url("../images/curve.png") no-repeat;
 	height: 125px;
-	width: 97px;
+	width: 105px;
 	float: left;
 }
-.index_card .edit_text {
+.index_card .edit_icon_container .edit_text {
 	color: #4B4B4B;
 	text-align: center;
 	height: 20px;
@@ -312,12 +456,17 @@
 	margin-top: 11px;
 	margin-bottom: 100px;
 }
+
 .index_card .chart {
-	height: 230px;
+	height: 270px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	position: relative;
 }
 .index_card .card_bottom {
 	height: 30px;
-	width: 596px;
+	position: absolute;
+	bottom: 0;
 }
 .index_card .card_bottom .understand_index, .index_card .card_bottom .simulation_sheet, .index_card .card_bottom .detail_history {
 	float: left;
@@ -328,10 +477,10 @@
 	text-decoration: none;
 }
 .index_card .card_bottom .understand_index {
-	width: 99px;
+	width: 120px;
 }
 .index_card .card_bottom .simulation_sheet {
-	width: 96px;
+	width: 115px;
 }
 .index_card .card_delete {
 	background: url('../images/closed.png') no-repeat;
@@ -354,13 +503,13 @@
 	cursor: pointer;
 }
 .act_card_container {
-	width: 293px;
+	width: 343px;
 	height: 380px;
 }
 .act_card{
-	width: 290px;
-	height: 96px;
-	line-height: 96px;
+	width: 340px;
+	height: 118px;
+	line-height: 118px;
 	text-align: center;
 	border: 2px dashed #A0A0A0;
 	margin-top: 9px;
@@ -377,3 +526,4 @@
 .move_div_2_left {
 	float: left;
 }
+/* vim: set ts=4 sw=4 tw=0 fenc=utf-8 ft=css: */

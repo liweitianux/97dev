@@ -28,6 +28,7 @@ def follow_indicator(user_id, indicator_id):
         # to remove the indicator from 'followedHistories' if exists
         if indicator in ui.followedHistories.all():
             ui.followedHistories.remove(indicator)
+        ui.save()
         return True
     except:
         return False
@@ -46,6 +47,7 @@ def unfollow_indicator(user_id, indicator_id):
         ui.followedIndicators.remove(indicator)
         # add indicator to 'followedHistories'
         ui.followedHistories.add(indicator)
+        ui.save()
         return True
     except:
         return False
@@ -106,6 +108,7 @@ def get_followed_indicator(user_id, category_id="all", startswith="all"):
 
     u = User.objects.get(id=user_id)
     ui, created = im.UserIndicator.objects.get_or_create(user=u)
+    ui.save()
     _idict = {}
     iqueryset = ui.followedIndicators.all()
     if not category_id == 'all':
@@ -141,6 +144,7 @@ def get_unfollowed_indicator(user_id, category_id="all", startswith="all"):
 
     u = User.objects.get(id=user_id)
     ui, created = im.UserIndicator.objects.get_or_create(user=u)
+    ui.save()
     _idict = {}
     # XXX: if 'exclude(followed_indicators=ui)' OK??
     iqueryset = im.Indicator.objects.exclude(followed_indicators=ui)
@@ -443,6 +447,7 @@ def add_recordhistory(user_id, record_id, reason, created_at=None):
     return True
 # }}}
 
+
 # types of recommended indicators, and weights {{{
 RI_TYPES = {
     'ANNOTATION_COLLECTED': u'ANN_CL',
@@ -515,10 +520,13 @@ def calc_indicator_weight(user_id, indicator_id):
 
 
 # recommend_indicator {{{
-def recommend_indicator(user_id, number):
+def recommend_indicator(user_id, number=1, auto_follow=False):
     """
     recommend unfollowed indicator for user,
     based on his/her readings and collections.
+
+    if auto_follow=True, then the recommended indicators are
+    followed automatically.
 
     return a list of recommended indicators in format:
     [ {'id': id, 'weight': w, 'type': t}, ... ]
@@ -528,7 +536,7 @@ def recommend_indicator(user_id, number):
     # get unfollowed indicators
     u = User.objects.get(id=user_id)
     ui, created = im.UserIndicator.objects.get_or_create(user=u)
-    # XXX: if 'exclude(followed_indicators=ui)' OK??
+    # XXX: is 'exclude(followed_indicators=ui)' OK??
     uf_ind_qs = im.Indicator.objects.exclude(followed_indicators=ui)
     # calc weight for each unfollowed indicator
     weights = []
@@ -542,8 +550,19 @@ def recommend_indicator(user_id, number):
     # sort 'weights' dict list by key 'weight'
     weights_sorted = sorted(weights, key=lambda item: item['weight'])
     weights_sorted.reverse()
-    # return results with largest weights
-    return weights_sorted[:number]
+    # results with largest weights
+    results = weights_sorted[:number]
+    # update 'lastRecommendTime' of 'UserIndicator'
+    now_utc = datetime.datetime.utcnow().replace(tzinfo=utc)
+    ui.lastRecommendTime = now_utc
+    # updated followedIndicators of 'auto_follow=True'
+    if auto_follow:
+        for wi in results:
+            follow_indicator(user_id, wi['id'])
+    # save 'UserIndicator'
+    ui.save()
+    #
+    return results
 # }}}
 
 
@@ -675,4 +694,5 @@ def format_data(indicator_obj, value=None, val_max=None, val_min=None, type="htm
 
     return value_str
 # }}}
+
 

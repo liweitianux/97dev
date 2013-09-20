@@ -195,8 +195,7 @@ class Indicator(models.Model):                              # {{{
             return True
         except InnateConfine.DoesNotExist:
             print u'Indicator id=%s 未指定 InnateConfine' % self.id
-            raise ValueError(u'Indicator id=%s 未指定 InnateConfine'
-                    % self.id)
+            #raise ValueError(u'Indicator id=%s 未指定 InnateConfine' % self.id)
             return False
 
     def get_confine(self):
@@ -253,8 +252,12 @@ class UserIndicator(models.Model):                          # {{{
             verbose_name=u"历史关注指标",
             related_name="followed_histories",
             null=True, blank=True)
-    # TODO
     # last_recommend_time
+    lastRecommendTime = models.DateTimeField(u"上次推荐指标时间",
+            null=True, blank=True)
+    # TODO: deletedIndicators
+    # record the recommended indicators, but unfollowed by user
+    # thus not recommended in the following recommendations
 
     class Meta:
         verbose_name_plural = u"用户指标信息"
@@ -314,7 +317,8 @@ class IndicatorRecord(models.Model):                        # {{{
         qs = IndicatorRecord.objects.filter(indicator=self.indicator,
                 date=self.date)
         if qs and qs[0].id != self.id:
-            raise ValueError(u'date="%s" 该日期已经存在记录' % self.date)
+            #raise ValueError(u'date="%s" 该日期已经存在记录' % self.date)
+            print u'date="%s" 该日期已经存在记录' % self.date
             return False
         # check dataType
         if self.indicator.dataType == self.indicator.INTEGER_TYPE:
@@ -323,35 +327,42 @@ class IndicatorRecord(models.Model):                        # {{{
                 value = int(self.value)
                 return True
             except ValueError:
-                raise ValueError(u'您提交的指标数据类型不正确')
+                #raise ValueError(u'您提交的指标数据类型不正确')
+                print u'您提交的指标数据类型不正确'
                 return False
         elif self.indicator.dataType == self.indicator.FLOAT_TYPE:
             # 浮点型
             if not self.unit:
-                raise ValueError(u'未填写单位')
+                #raise ValueError(u'未填写单位')
+                print u'未填写单位'
                 return False
             try:
                 value = float(self.value)
                 return True
             except ValueError:
-                raise ValueError(u'value 数据类型不正确')
+                #raise ValueError(u'value 数据类型不正确')
+                print u'value 数据类型不正确'
                 return False
         elif self.indicator.dataType == self.indicator.RANGE_TYPE:
             # 范围型
             if not self.unit:
-                raise ValueError(u'未填写单位')
+                #raise ValueError(u'未填写单位')
+                print u'未填写单位'
                 return False
             if (self.val_max is None) or (self.val_min is None):
-                raise ValueError(u'val_max 或 val_min 未填写')
+                #raise ValueError(u'val_max 或 val_min 未填写')
+                print u'val_max 或 val_min 未填写'
                 return False
             if (self.val_max <= self.val_min):
-                raise ValueError(u'val_max <= val_min')
+                #raise ValueError(u'val_max <= val_min')
+                print u'Error: val_max <= val_min'
                 return False
             return True
         elif self.indicator.dataType == self.indicator.FLOAT_RANGE_TYPE:
             # 定值/范围型 (浮点定值优先)
             if not self.unit:
-                raise ValueError(u'未填写单位')
+                #raise ValueError(u'未填写单位')
+                print u'未填写单位'
                 return False
             if self.value:
                 # 定值
@@ -359,32 +370,38 @@ class IndicatorRecord(models.Model):                        # {{{
                     value = float(self.value)
                     return True
                 except ValueError:
-                    raise ValueError(u'value 数据类型不正确')
+                    #raise ValueError(u'value 数据类型不正确')
+                    print u'value 数据类型不正确'
                     return False
             elif (self.val_max is not None) and (self.val_min is not None):
                 # 范围值
                 if (self.val_max <= self.val_min):
-                    raise ValueError(u'val_max <= val_min')
+                    #raise ValueError(u'val_max <= val_min')
+                    print u'Error: val_max <= val_min'
                     return False
                 else:
                     return True
             else:
-                raise ValueError(u'您提交的指标数据不符合要求')
+                #raise ValueError(u'您提交的指标数据不符合要求')
+                print u'您提交的指标数据不符合要求'
                 return False
         elif self.indicator.dataType == self.indicator.PM_TYPE:
             # +/- 型，无单位要求
             if (len(self.value) == 1) and (self.value in [u'+', u'-']):
                 return True
             else:
-                raise ValueError(u'value 只接受 "+" 或 "-"')
+                #raise ValueError(u'value 只接受 "+" 或 "-"')
+                print u'Error: value 只接受 "+" 或 "-"'
                 return False
         ## TODO: RADIO_TYPE, CHECKBOX_TYPE
         elif self.indicator.dataType in [self.indicator.RADIO_TYPE,
                 self.indicator.CHECKBOX_TYPE]:
-            raise ValueError(u'RADIO_TYPE, CHECKBOX_TYPE 验证未实现')
+            #raise ValueError(u'RADIO_TYPE, CHECKBOX_TYPE 验证未实现')
+            print u'Error: RADIO_TYPE, CHECKBOX_TYPE 验证未实现'
             return False
         else:
-            raise ValueError(u'指标数据类型不合法')
+            #raise ValueError(u'指标数据类型不合法')
+            print u'指标数据类型不合法'
             return False
     # }}}
 
@@ -422,8 +439,9 @@ class IndicatorRecord(models.Model):                        # {{{
                 try:
                     value_std = float(rel_sym.evalf(subs={v: value}))
                 except ValueError:
+                    #raise ValueError(errmsg)
                     print errmsg
-                    raise ValueError(errmsg)
+                    return False
                 if (value_std < sic.math_min) or (
                         value_std > sic.math_max):
                     print u'ERROR: value(std) < math_min or value(std) > math_max'
@@ -435,8 +453,9 @@ class IndicatorRecord(models.Model):                        # {{{
                     val_max_std = float(rel_sym.evalf(
                         subs={v: self.val_max}))
                 except ValueError:
+                    #raise ValueError(errmsg)
                     print errmsg
-                    raise ValueError(errmsg)
+                    return False
                 if (val_max_std <= sic.math_min) or (
                         val_max_std > sic.math_max):
                     print u'ERROR: val_max(std) <= math_min or val_max(std) > math_max'
@@ -447,8 +466,9 @@ class IndicatorRecord(models.Model):                        # {{{
                     val_min_std = float(rel_sym.evalf(
                         subs={v: self.val_min}))
                 except ValueError:
+                    #raise ValueError(errmsg)
                     print errmsg
-                    raise ValueError(errmsg)
+                    return False
                 if (val_min_std < sic.math_min) or (
                         val_min_std >= sic.math_max):
                     print u'ERROR: val_min(std) < math_min or val_min(std) >= math_max'
@@ -458,7 +478,6 @@ class IndicatorRecord(models.Model):                        # {{{
         else:
             # INTEGER_TYPE or PM_TYPE
             return True
-
     # }}}
 
     def get_data(self, **kwargs):                           # {{{
@@ -525,8 +544,8 @@ class IndicatorRecord(models.Model):                        # {{{
                 return self.get_data(**kwargs)
             # check if specified 'standard unit' for this indicator
             elif sind.check_unit():
-                # unit relation
                 std_unit = sind.get_unit(type="standard")[0]
+                # unit relation
                 unit_rel = self.unit.relation
                 v = sympy.symbols('v')
                 rel_sym = sympy.sympify(unit_rel)
@@ -654,7 +673,7 @@ class IndicatorRecord(models.Model):                        # {{{
                     return False
             else:
                 print u'数据类型错误'
-                raise ValueError(u'数据类型错误')
+                #raise ValueError(u'数据类型错误')
                 return None
         elif sind.dataType == sind.PM_TYPE:
             # 阴阳(+/-)型
@@ -665,12 +684,12 @@ class IndicatorRecord(models.Model):                        # {{{
             else:
                 return False
         elif sind.dataType in [sind.RADIO_TYPE, sind.CHECKBOX_TYPE]:
-            print u'RADIO_TYPE, CHECKBOX_TYPE 验证未实现'
-            raise ValueError(u'RADIO_TYPE, CHECKBOX_TYPE 验证未实现')
+            print u'Error: RADIO_TYPE, CHECKBOX_TYPE 验证未实现'
+            #raise ValueError(u'RADIO_TYPE, CHECKBOX_TYPE 验证未实现')
             return None
         else:
             print u'数据类型不合法'
-            raise ValueError(u'数据类型不合法')
+            #raise ValueError(u'数据类型不合法')
             return None
     # }}}
 

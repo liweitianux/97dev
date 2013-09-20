@@ -330,6 +330,43 @@ class BaseLine(models.Model):
 # }}}
 
 
+# UserCollection {{{
+class UserCollection(models.Model):
+    """
+    record the collections/catches for user
+    记录用户收藏的"注释"/"文章"，以及标注看懂了的文章
+    """
+    user = models.OneToOneField(User, verbose_name=u"用户",
+            related_name="user_collection")
+    # collect annotation
+    # -> BlogAnnotation.collected_by
+    #collectedAnnotation = models.ManyToManyField("BlogAnnotation",
+    #        verbose_name=u"收藏的注释",
+    #        related_name="collected_annotations",)
+    lastCollectAnnotationTime = models.DateTimeField(u"上次收藏注释时间",
+            null=True, blank=True)
+    # catch blog
+    # -> SciBlog.catched_by
+    #catchedBlog = models.ManyToManyField("SciBlog",
+    #        verbose_name=u"收藏的文章",
+    #        related_name="catched_blogs",)
+    lastCatchBlogTime = models.DateTimeField(u"上次读懂文章时间",
+            null=True, blank=True)
+    # collect blog
+    # -> SciBlog.collected_by
+    #collectedBlog = models.ManyToManyField("SciBlog",
+    #        verbose_name=u"收藏的文章",
+    #        related_name="collected_blogs",)
+    lastCollectBlogTime = models.DateTimeField(u"上次收藏文章时间",
+            null=True, blank=True)
+
+    class Meta:
+        verbose_name_plural = u"用户收藏信息"
+
+    def __unicode__(self):
+        return "< UserCollection: for %s >" % self.user.username
+# UserCollection }}}
+
 
 admin.site.register([
                      Source,
@@ -340,4 +377,5 @@ admin.site.register([
                      BaseLine,
                      ResultContent,
                      BlogAnnotation,
+                     UserCollection,
                     ])

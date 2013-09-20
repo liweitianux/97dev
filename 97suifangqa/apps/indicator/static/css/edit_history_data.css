@@ -126,12 +126,6 @@ input[type="radio"]:checked + label {
 	float: left;
 	position: relative;
 }
-.edit_history_data_content .editing_data .date .datepicker_container .valid {
-	border: 2px solid green;
-}
-.edit_history_data_content .editing_data .date .datepicker_container .invalid {
-	border: 2px solid red;
-}
 .edit_history_data_content .editing_data .date .datepicker {
 	background: #FFFFFF;
 	border: 1px solid #9C9C9C;
@@ -148,6 +142,12 @@ input[type="radio"]:checked + label {
 	top: 4px;
 	right: 8px;
 	cursor: pointer;
+}
+.edit_history_data_content .editing_data .date .datepicker_container .valid {
+	border: 2px solid green;
+}
+.edit_history_data_content .editing_data .date .datepicker_container .invalid {
+	border: 2px solid red;
 }
 .edit_history_data_content .editing_data .data  {
 	height: 26px;
@@ -181,62 +181,6 @@ input[type="radio"]:checked + label {
 	padding-top: 2px;
 	padding-bottom: 2px;
 	margin-right: 8px;
-}
-.edit_history_data_content .editing_data .input_container {
-	height: 26px;
-	line-height: 26px;
-	float: left;
-	top: 1px;
-}
-.edit_history_data_content .editing_data .input_container .prompt {
-	margin-right: 8px;
-	float: left;
-}
-.edit_history_data_content .editing_data .input_container input {
-	color: #5C5C5C;
-	background-color: #FFFFFF;
-	border: 1px solid #9C9C9C;
-}
-.edit_history_data_content .editing_data .input_container .error {
-	border: 2px solid red;
-}
-.edit_history_data_content .editing_data .input_container .edit_input_main {
-	width: 42px;
-	height: 17px;
-	line-height: 17px;
-	padding-top: 2px;
-	padding-bottom: 2px;
-}
-.edit_history_data_content .editing_data .input_container .edit_input_sub {
-	width: 17px;
-	height: 17px;
-	line-height: 17px;
-	padding-top: 2px;
-	padding-bottom: 2px;
-}
-.edit_history_data_content .editing_data .add_minus_icon {
-	height: 26px;
-	line-height: 26px;
-	float: left;
-	padding-top: 1px;
-	padding-bottom: 1px;
-	margin-right: 8px;
-}
-.edit_history_data_content .editing_data .add_minus_icon .add_icon {
-	background:url(../images/add.png) no-repeat;
-	width: 15px;
-	height: 11px;
-	border-right: 1px solid #9C9C9C;
-	cursor: pointer;
-}
-.edit_history_data_content .editing_data .add_minus_icon .minus_icon {
-	background:url(../images/minus.png) no-repeat;
-	width: 15px;
-	height: 10px;
-	border-bottom: 1px solid #9C9C9C;
-	border-right: 1px solid #9C9C9C;
-	margin-top: 1px;
-	cursor: pointer;
 }
 .edit_history_data_content .editing_data .data_unit {
 	height: 26px;

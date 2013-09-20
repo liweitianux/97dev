@@ -422,9 +422,11 @@ def indicator_status(request):
     add/edit/view indicator data
 
     TODO:
-    * when to recommend indicators
     * how to deal with non-standard units
     """
+    # period between two recommendation of indicators (default 40 days)
+    recommend_period = 40
+    #
     template = 'indicator/SheetDefault.html'
     letters = map(chr, range(ord('a'), ord('z')+1))
     # indicators
@@ -437,19 +439,83 @@ def indicator_status(request):
     # convert to list
     for l in letters:
         followed_indicators += followed_indicators_pdict[l]
+    # add key 'recommended', False
+    for ind in followed_indicators:
+        ind['recommended'] = False
 
-    ## TODO: when to recommend indicators for user ??
+    ## XXX: recommend indicators for user {{{
+    now_utc = datetime.datetime.utcnow().replace(tzinfo=utc)
+    ui, created = im.UserIndicator.objects.get_or_create(
+            user=request.user)
+    ui.save()
+    # lastRecommendTime
+    if ui.lastRecommendTime:
+        td_lastrecommend = now_utc - ui.lastRecommendTime
+    else:
+        td_lastrecommend = None
+    # sciblog.models.UserCollection
+    uc, created = sm.UserCollection.objects.get_or_create(
+            user=request.user)
+    uc.save()
+    # lastCollectAnnotationTime
+    if uc.lastCollectAnnotationTime:
+        td_lastcollectannotation = (uc.lastCollectAnnotationTime
+                - ui.lastRecommendTime)
+    else:
+        td_lastcollectannotation = None
+    # lastCatchBlogTime
+    if uc.lastCatchBlogTime:
+        td_lastcatchblog = uc.lastCatchBlogTime - ui.lastRecommendTime
+    else:
+        td_lastcatchblog = None
+    # lastCollectBlogTime
+    if uc.lastCollectBlogTime:
+        td_lastcollectblog = uc.lastCollectBlogTime - ui.lastRecommendTime
+    else:
+        td_lastcollectblog = None
+    ##
     if not followed_indicators:
         # if no followed indicators yet, then recommend 2 indicators
         r_indicators_unsort = [
                 im.Indicator.objects.get(id=ri['id']).dump()
-                for ri in recommend_indicator(request.user.id, 2)
+                for ri in recommend_indicator(request.user.id,
+                    number=2, auto_follow=True)
         ]
-        r_indicators= sorted(r_indicators_unsort,
-                key = lambda item: item['pinyin'])
+    elif (td_lastrecommend is not None and \
+            td_lastrecommend.days > recommend_period):
+        # excess the 'recommend_period'
+        r_indicators_unsort = [
+                im.Indicator.objects.get(id=ri['id']).dump()
+                for ri in recommend_indicator(request.user.id,
+                    number=1, auto_follow=True)
+        ]
+    elif (     (td_lastcollectannotation is not None and \
+                td_lastcollectannotation.total_seconds() > 0) \
+            or (td_lastcatchblog is not None and \
+                td_lastcatchblog.total_seconds() > 0) \
+            or (td_lastcollectblog is not None and \
+                td_lastcollectblog.total_seconds() > 0) ):
+        # user has new collections
+        # TODO: to improve the relations between recommended indicators
+        #       with the user's new collections
+        r_indicators_unsort = [
+                im.Indicator.objects.get(id=ri['id']).dump()
+                for ri in recommend_indicator(request.user.id,
+                    number=1, auto_follow=True)
+        ]
+    else:
+        # no recommendation
+        r_indicators_unsort = []
+    # sort (empty list OK)
+    r_indicators= sorted(r_indicators_unsort,
+            key = lambda item: item['pinyin'])
+    # add key 'recommended', True
+    for ind in r_indicators:
+        ind['recommended'] = True
+    # }}}
 
-    # recommended indicators behind followed ones
-    indicators = followed_indicators + r_indicators
+    # recommended indicators come first
+    indicators = r_indicators + followed_indicators
 
     # process 'indicators' list, to add following keys:         # {{{
     #   ref_text:
@@ -472,8 +538,12 @@ def indicator_status(request):
             # ref_value
             human_max = confine.get('human_max')
             human_min = confine.get('human_min')
+            math_max = confine.get('math_max')
+            math_min = confine.get('math_min')
             ind['ref_value'] = format_data(ind_obj,
                     val_max=human_max, val_min=human_min, type="html")
+            ind['math_range_html'] = format_data(ind_obj,
+                    val_max=math_max, val_min=math_min, type="html")
             # set 'std_unit_*'
             ind['std_unit_name'] = confine.get('unit').get('name')
             ind['std_unit_symbol'] = confine.get('unit').get('symbol')
@@ -483,12 +553,14 @@ def indicator_status(request):
             val_norm = confine.get('val_norm')
             ind['ref_value'] = format_data(ind_obj, value=val_norm,
                     type="html")
+            ind['math_range_html'] = None
             # std_unit
             ind['std_unit_name'] = u""
             ind['std_unit_symbol'] = u""
         else:
             ind['ref_text'] = u"参考"
             ind['ref_value'] = None
+            ind['math_range_html'] = None
             ind['std_unit_name'] = None
             ind['std_unit_symbol'] = None
         ## check record of indicator
@@ -500,10 +572,10 @@ def indicator_status(request):
             last_record = records[0]
             if dataType in [ind_obj.INTEGER_TYPE, ind_obj.PM_TYPE,
                     ind_obj.FLOAT_TYPE]:
-                value_str = format_data(ind_obj,
+                value_html = format_data(ind_obj,
                         value=last_record.value, type="html")
             elif dataType == ind_obj.RANGE_TYPE:
-                value_str = format_data(ind_obj,
+                value_html = format_data(ind_obj,
                         val_max=last_record.val_max,
                         val_min=last_record.val_min,
                         type="html")
@@ -512,21 +584,21 @@ def indicator_status(request):
                 val_max = last_record.val_max
                 val_min = last_record.val_min
                 if value is not None:
-                    value_str = format_data(ind_obj, value=value,
+                    value_html = format_data(ind_obj, value=value,
                             type="html")
                 elif (val_max is not None) and (val_min is not None):
-                    value_str = format_data(ind_obj,
+                    value_html = format_data(ind_obj,
                             val_max=val_max, val_min=val_min,
                             type="html")
                 else:
-                    value_str = u''
+                    value_html = None
             else:
                 # unknow
-                value_str = u''
+                value_html = None
             # save to dict
             ind['last_record'] = {
                 'date': last_record.date.isoformat(),
-                'value_str': value_str,
+                'value_html': value_html,
             }
         else:
             ind['record_empty'] = True
@@ -541,10 +613,37 @@ def indicator_status(request):
         'FLOAT_RANGE_TYPE': im.Indicator.FLOAT_RANGE_TYPE,
         'PM_TYPE': im.Indicator.PM_TYPE,
     }
+    # datatypes of indicators (for js)
+    datatypes = {}
+    # recordempty for indicators (for js)
+    recordempty = {}
+    # records of indicators (for js)
+    confines = {}
+    for ind in indicators:
+        id = ind['id']
+        ind_obj = get_object_or_404(im.Indicator, id=ind['id'])
+        datatypes['id%d'%id] = ind_obj.dataType
+        # recordempty
+        recordempty['id%d'%id] = ind['record_empty']
+        # confines
+        confine = ind_obj.get_confine()
+        confines['id%d'%id] = {
+            'human_min': confine.get('human_min'),
+            'human_max': confine.get('human_max'),
+            'math_min': confine.get('math_min'),
+            'math_max': confine.get('math_max'),
+            'val_norm': confine.get('val_norm'),
+            'math_range_html': ind['math_range_html'],
+        }
 
+    #print "indicators: ", indicators
     data = {
         'indicators': indicators,
         'DATA_TYPES': DATA_TYPES,
+        'DATA_TYPES_json': json.dumps(DATA_TYPES),
+        'datatypes_json': json.dumps(datatypes),
+        'recordempty_json': json.dumps(recordempty),
+        'confines_json': json.dumps(confines),
     }
     # render template
     return render(request, template, data)
@@ -750,7 +849,6 @@ def indicator_edithistorydata(request):
                 type="html")
         record_value_text = format_data(ind_obj, value=record_value,
                 type="text")
-        pass
     elif dataType == im.Indicator.FLOAT_TYPE:
         ref_text = u"参考范围"
         ref_value = format_data(ind_obj, val_max=confine_human_max,
@@ -785,7 +883,6 @@ def indicator_edithistorydata(request):
         # TODO
         record_value_html = u"TODO"
         record_value_text = u"TODO"
-        pass
     elif dataType == im.Indicator.PM_TYPE:
         ref_text = u"参考值"
         ref_value = format_data(ind_obj, value=confine_val_norm,
@@ -937,6 +1034,127 @@ def ajax_act_index(request):
                 result = 'fail'
 
     return HttpResponse(result)
+# }}}
+
+
+# ajax_add_record {{{
+@login_required
+def ajax_add_record(request):
+    """
+    add new record for given indicator using the POSTed data
+    if the given date already has record, then return False
+
+    error_code & error_string:
+      1: unknown
+     10: indicator_id
+     20: record_exist
+     30: record_invalid
+    """
+    data = {'failed': True, 'error_code': 1, 'error_string': 'unknown'}
+    if request.is_ajax() and request.method == 'POST':
+        #print request.POST.dict()
+        indicator_id = request.POST.get('indicator_id')
+        date_str = request.POST.get('date')
+        value = request.POST.get('value')
+        val_min_str = request.POST.get('val_min')
+        val_max_str = request.POST.get('val_max')
+        # get indicator object
+        try:
+            indicator_id = int(indicator_id)
+            indicator_obj = get_object_or_404(im.Indicator,
+                    id=indicator_id)
+        except ValueError:
+            data = {
+                'failed': True,
+                'error_code': 10,
+                'error_string': 'indicator_id'
+            }
+            return HttpResponse(json.dumps(data),
+                    mimetype='application/json')
+        # check if exist record
+        record_dt = datetime.datetime.strptime(date_str, '%Y-%m-%d')
+        record_d = record_dt.date()
+        exist_record = indicator_obj.indicator_records.filter(
+                date=record_d, user=request.user)
+        if exist_record:
+            data = {'failed': True, 'error_code': 20,
+                    'error_string': 'record_exist'}
+            return HttpResponse(json.dumps(data),
+                    mimetype='application/json')
+        # val_min
+        if val_min_str:
+            val_min = float(val_min_str)
+        else:
+            val_min = None
+        # val_max
+        if val_max_str:
+            val_max = float(val_max_str)
+        else:
+            val_max = None
+        # create record (NOTE: use "standard" unit)
+        new_record = im.IndicatorRecord(
+            indicator=indicator_obj,
+            user=request.user,
+            date=record_d,
+            unit=indicator_obj.get_unit(type="standard")[0],
+            value=value,
+            val_min=val_min,
+            val_max=val_max,
+            notes=u""
+        )
+        if new_record.is_valid():
+            # True -> Valid; save
+            new_record.save()
+            # generate result {{{
+            dataType = indicator_obj.dataType
+            if dataType == im.Indicator.INTEGER_TYPE:
+                # TODO
+                record_value_html = format_data(indicator_obj,
+                        value=new_record.value, type="html")
+                record_value_text = format_data(indicator_obj,
+                        value=new_record.value, type="text")
+            elif dataType == im.Indicator.FLOAT_TYPE:
+                record_value_html = format_data(indicator_obj,
+                        value=new_record.value, type="html")
+                record_value_text = format_data(indicator_obj,
+                        value=new_record.value, type="text")
+            elif dataType == im.Indicator.RANGE_TYPE:
+                record_value_html = format_data(indicator_obj,
+                        val_min=new_record.val_min,
+                        val_max=new_record.val_max, type="html")
+                record_value_text = format_data(indicator_obj,
+                        val_min=new_record.val_min,
+                        val_max=new_record.val_max, type="text")
+            elif dataType == im.Indicator.FLOAT_RANGE_TYPE:
+                # TODO
+                record_value_html = u"TODO"
+                record_value_text = u"TODO"
+            elif dataType == im.Indicator.PM_TYPE:
+                record_value_html = format_data(indicator_obj,
+                        value=new_record.value, type="html")
+                record_value_text = format_data(indicator_obj,
+                        value=new_record.value, type="text")
+            else:
+                record_value_html = None
+                record_value_text = None
+            data = {
+                'failed': False,
+                'record_id': new_record.id,
+                'date': new_record.date.isoformat(),
+                'value': new_record.value,
+                'val_min': new_record.val_min,
+                'val_max': new_record.val_max,
+                'value_html': record_value_html,
+                'value_text': record_value_text
+            }
+            # }}}
+        else:
+            # invalid
+            data = {'failed': True, 'error_code': 30,
+                    'error_string': 'record_invalid' }
+
+    print "data: ", data
+    return HttpResponse(json.dumps(data), mimetype='application/json')
 # }}}
 
 
@@ -1282,6 +1500,44 @@ def ajax_get_card_data_table(request):
 # }}}
 
 
+# ajax_search_indicators {{{
+@login_required
+def ajax_search_indicators(request):
+    """
+    search indicators
+    search keyword passed by 'GET' parameters
+    """
+    data = {'failed': True, 'error_code': 1, 'error_string': 'unknow'}
+    if True:
+    #if request.is_ajax():
+        if 'kw' in request.GET:
+            # kw: search keyword to find indicator
+            search_kw = request.GET.get('kw')
+            # check search keyword
+            if not search_kw.strip():
+                data = {'failed': True, 'error_code': 10,
+                        'error_string': 'blank_keyword'}
+            else:
+                # TODO: howto order_by() by 'pinyin'
+                sqs = SearchQuerySet().models(im.Indicator).\
+                        filter(content=search_kw)
+                if sqs:
+                    # search result not empty
+                    inds_unsort = [ind.dump()
+                            for ind in objects_of_sqs(sqs)]
+                    indicators = sorted(inds_unsort,
+                            key = lambda item: item['pinyin'])
+                    # process results
+                    data = {'failed': False, 'indicators': indicators}
+                else:
+                    # search result empty
+                    data = {'failed': True, 'error_code': 20,
+                            'error_string': 'result_empty',
+                            'empty': True}
+
+    return HttpResponse(json.dumps(data), mimetype='application/json')
+# }}}
+
 # ajax_unfollow_indicator {{{
 @login_required
 def ajax_unfollow_indicator(request):
@@ -1313,11 +1569,17 @@ def ajax_modify_record(request):
     """
     modify the existing record using the POSTed data
     and add a 'RecordHistory' for the record
+
+    error_code & error_string:
+      1: unknown
+     10: record_id
+     20: recordhistory
+     30: record_invalid
     """
     data = {'failed': True, 'error_code': 1, 'error_string': 'unknown'}
     #if request.method == 'POST':
     if request.is_ajax() and request.method == 'POST':
-        print request.POST.dict()
+        #print request.POST.dict()
         record_id = request.POST.get('record_id')
         date_str = request.POST.get('date')
         value = request.POST.get('value')
@@ -1374,11 +1636,12 @@ def ajax_modify_record(request):
         record_obj.val_max = val_max
         r_flag = record_obj.is_valid()
         if r_flag:
+            # save
             record_obj.save()
             data = { 'failed': False }
         else:
             data = { 'failed': True, 'error_code': 30,
-                    'error_string': 'record_valid' }
+                     'error_string': 'record_invalid' }
 
     return HttpResponse(json.dumps(data), mimetype='application/json')
 # }}}
@@ -1386,7 +1649,7 @@ def ajax_modify_record(request):
 
 ###########################################################
 
-### test_view ###
+### test_view ### {{{
 def test_view(request, **kwargs):
     """
     test view
@@ -1413,4 +1676,5 @@ def test_view(request, **kwargs):
         'boolvar': boolvar,
     }
     return render(request, template, data)
+# test }}}
 

@@ -23,6 +23,9 @@
       {% if annotation_not_found %}
       {# change cursor style #}
       $("#collection_btn").css('cursor', 'auto');
+      $("#collection_btn").html('');
+      $("#collection_btn").removeClass('collection');
+      $("#collection_btn").addClass('collection_no_annotation');
       {% else %}
       {# annotation found #}
       $("#collection_btn").bind("update", function(e) {

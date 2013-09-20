@@ -91,14 +91,14 @@ $(document).ready(function(){
     $(".detail_history").bind("click", function(){
         // update 'detail_card_id'
         detail_card_id = $(this).closest(".index_card").attr("id").replace('index_card_', '');
-        // check if this card has data
-        // if has no data, then exists div class="edit_icon_container"
-        if ($("#index_card_"+detail_card_id + " .edit_icon_container").length) {
+        var card = $("#index_card_"+detail_card_id);
+        // check if this card has data (class "record_empty")
+        if (card.hasClass("record_empty")) {
             $(".detail_card_info").hide();
             return false;
         }
         // get the index title and set for the 'detail card'
-        var index_title = $("#index_card_"+detail_card_id + " .card_title").html();
+        var index_title = card.find(".card_title").html();
         $(".detail_card_info .card_title .title").html(index_title);
         // set date for the 'shift_date' buttons
         var date_fmt = 'YYYY-MM-DD';
@@ -116,6 +116,9 @@ $(document).ready(function(){
         // options for chart global var: 'options_chart_<id>'
         // update global var 'detail_chart_options_str'
         detail_chart_options_str = 'options_chart_' + detail_card_id;
+        if (typeof window[detail_chart_options_str] === 'undefined') {
+            return false;
+        }
         // clickable data point
         window[detail_chart_options_str].plotOptions = {
             series: {

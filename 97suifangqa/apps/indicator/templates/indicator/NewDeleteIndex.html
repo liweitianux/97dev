@@ -13,6 +13,8 @@
 {% endblock %}
 
 {% block scripts %}
+  <script type="text/javascript" src="{% static "plugins/moment/moment.min.js" %}"></script>
+  <script type="text/javascript" src="{% static "plugins/moment/lang/zh-cn.js" %}"></script>
   <script type="text/javascript" src="{% static "javascripts/new_delete_index.js" %}"></script>
   <script type="text/javascript" src="{% static "plugins/thickbox/thickbox.js" %}"></script>
 
@@ -23,14 +25,36 @@
   <script>
     var static_url = "{{ STATIC_URL }}";
     var indicator_url = "/indicator/";
+
+    // default the language to English
+    moment.lang('en');
+    // default date format
+    var mm_date_fmt = "YYYY-MM-DD";
   </script>
 {% endblock %}
 
 {% block page %}
-  <!--
-  <iframe align="left" width="420" height="720" src="SideBar.html" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
-  -->
-  <iframe align="left" width="420" height="720" src="{% url indicator_sidebar %}" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+  <iframe align="left" width="420" height="1020" style="position:fixed;left:0;top:0;z-index:99;" src="{% url indicator_sidebar %}" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+
+  <!-- TODO -->
+  <div id="login_container">
+    <div class="logged-in" id="login">
+      <img class="user-photo" alt="" src="{% static "images/userPhoto.jpg" %}">
+      <span class="number-block green-block user-level">6</span>
+      <span class="drop-down-area">
+        <span class="user-name">username</span>
+        <img class="drop-down-menu-button" alt="" src="{% static "images/icon_down.png" %}">
+      </span>
+      <div class="drop-down-menu" tabindex="0" onblur="javascript:alert('blur');" onfocus="javascript:alert('focus')">
+        <div class="text-pointer"></div>
+        <ul class="links">
+          <li><a href="javascript:void(0)">修改密码</a></li>
+          <li><a href="javascript:void(0)">完善信息</a></li>
+          <li class="last"><a href="javascript:void(0)">退出</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
   {% comment %}
     Description:
@@ -42,7 +66,7 @@
     <div class="new_delete_title">
       <div class="content">添加或删除关注指标</div>
       <div class="search">
-        <input type="text" value="" placeholder="直接搜索指标" id="search_kw" autocomplete="off" />
+        <input type="text" value="" placeholder="直接搜索指标" id="search_kw" />
         <img id="search_btn" src="{% static "images/search.png" %}">
       </div>
       <div style="clear: both;"></div>
@@ -50,7 +74,7 @@
 
     <div class="index_navigation">
       <!-- 所有指标 -->
-      <div class="index_type {% if page_condition == "all" %}selected{% endif %}">
+      <div id="index_all" class="index_type {% if page_condition == "all" %}selected{% endif %}">
         <a href="?tab=all">所有指标</a>
       </div>
       <!-- 指标类别，页面只能容纳 7 个 -->
@@ -105,7 +129,7 @@
             {% for l in letters %}
               {% with l_inds=indicators|dict_get:l %}
                 {% if l_inds|length >= 1 %}
-                  <div class="index_lines {{ l|upper }}">
+                  <div class="index_lines {{ l|upper }} to_add">
                     <div class="letter_title">{{ l|upper }}</div>
                     {% for ind in l_inds %}
                       <div class="index_line" index_id="{{ ind|dict_get:"id" }}">
@@ -129,12 +153,14 @@
         <div class="category_condition" style="display: {% if page_condition == "category" %}block{% else %}none{% endif %};">
           <div class="index_title_container">
             <div class="index_title">{{ selected_category.name }}</div>
-            <div class="example_sheet">仿真化验单</div>
+            <div class="example_sheet">
+              <a href="javascript:void(0)">仿真化验单</a>
+            </div>
             <div style="clear:both;"></div>
           </div>
           <!-- list of indicators of the category -->
           {% if page_condition == "category" %}
-          <div class="index_lines left">
+          <div class="index_lines left to_add">
             {% for ind in indicators %}
               <div class="index_line" index_id="{{ ind.id }}">
                 <div class="index_name">{{ ind.name }}</div>
@@ -158,7 +184,7 @@
           </div>
           <!-- list of indicators returned by search -->
           {% if page_condition == "search" %}
-          <div class="index_lines left">
+          <div class="index_lines left to_add">
             {# 'indicators': list made up by the dumps of indicator #}
             {# check if search keyword empty & if search result empty #}
             {% if search_kw_empty %}
@@ -188,7 +214,7 @@
               {% endfor %}
             {% endif %}
           </div> <!-- end: index_lines left -->
-          {% endif %} {# end: page_condition == "search" #}
+          {% endif %} {# end: page_condition #}
         </div> <!-- end: search_condition -->
       </div> <!-- end: index_container -->
 
@@ -196,6 +222,7 @@
       <div class="index_container">
         <div class="index_title_container">
           <div class="index_title">已关注指标</div>
+          {% comment %}
           <div class="index_btn">
             <form id="index_form" method="post" action="">
               {% csrf_token %}
@@ -203,9 +230,10 @@
               <input type="hidden" id="commit_index" name="commit_index" value="" />
             </form>
           </div>
+          {% endcomment %}
           <div style="clear:both;"></div>
         </div>
-        <div class="index_lines right">
+        <div class="index_lines right to_minus">
           <!-- followed indicators for logged in user -->
           {% for fi in followed_indicators %}
             <div class="index_line" index_id="{{ fi|dict_get:"id" }}">
@@ -218,13 +246,12 @@
       </div> <!-- end: index_container -->
       <div style="clear:both;"></div>
     </div> <!-- end: show_indexes -->
+  </div> <!-- end: new_delete_container -->
 
-    <div class="link_container">
-      <div class="status_link">
-        <a href="{% url indicator_status %}">查看指标状态</a>
-      </div>
+  <div class="link_container">
+    <div class="status_link">
+      <a href="{% url indicator_status %}">查看指标状态</a>
     </div>
-
   </div>
 {% endblock page %}
 

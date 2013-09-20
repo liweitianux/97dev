@@ -8,7 +8,7 @@
 
 {% block css %}
 	<link rel="stylesheet" type="text/css" href="{% static "css/normalize.css" %}" />
-	<link rel="stylesheet" type="text/css" href="{% static "plugins/jquery-ui/themes/smoothness/jquery-ui.min.css" %}" />
+	<link rel="stylesheet" type="text/css" href="{% static "plugins/jquery-ui/themes/97suifang/jquery-ui.css" %}" />
 	<link rel="stylesheet" type="text/css" href="{% static "plugins/qtip2/jquery.qtip.min.css" %}" />
 	<link rel="stylesheet" type="text/css" href="{% static "css/edit_history_data.css" %}" />
 {% endblock %}
@@ -36,7 +36,7 @@
     // record id
     var record_id = {{ record_obj.id }};
     // indicator DATA_TYPES
-    var DATA_TYPES = {
+    var DATA_TYPES_JS = {
         'INTEGER_TYPE': '{{ indicator_obj.INTEGER_TYPE }}',
         'FLOAT_TYPE': '{{ indicator_obj.FLOAT_TYPE }}',
         'RANGE_TYPE': '{{ indicator_obj.RANGE_TYPE }}',
@@ -100,18 +100,6 @@
             <input class="datepicker date_input to_validate" id="editing_date_picker" type="text" value="{{ record_dict|dict_get:"date" }}" />
           </div>
         </div>
-        <!--
-        <div class="input_container">
-          <div class="prompt">修改记录</div>
-          <input class="edit_input_main" type="text" value="" autocomplete="off" />
-          x10^
-          <input class="edit_input_sub" type="text" value="" autocomplete="off" />
-        </div>
-        <div class="add_minus_icon">
-          <div class="add_icon"></div>
-          <div class="minus_icon"></div>
-        </div>
-        -->
         <div class="data data_type_{{ indicator_obj.dataType }}">
           <div class="prompt">修改记录</div>
           {% if indicator_obj.dataType == indicator_obj.INTEGER_TYPE %}
@@ -134,16 +122,6 @@
             <input type="radio" id="plus_r" name="pm_data" value="+" />
             <label for="plus_r">阳性(+)</label>
           </div>
-          <!--
-          <div class="radio_input">
-            <span class="radio_s"><input class="to_validate" type="radio" name="pm_data" value="minus" /></span>
-            <span class="radio_text">阴性(-)</span>
-          </div>
-          <div class="radio_input">
-            <span class="radio_s"><input class="to_validate" type="radio" name="pm_data" value="plus" /></span>
-            <span class="radio_text">阳性(+)</span>
-          </div>
-          -->
           {% else %}
           {# UNKNOWN TYPE #}
           ERROR: unknown data type
