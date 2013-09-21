@@ -94,12 +94,23 @@ input[type="radio"]:checked + label {
 }
 .edit_history_data_content .edit_data .state .normal {
 	background-color: #B8DB70;
+	padding: 2px;
 }
 .edit_history_data_content .edit_data .state .abnormal {
 	background-color: #FFB3B3;
+	padding: 2px;
 }
 .edit_history_data_content .edit_data .state .unknown {
 	background-color: #B3D9FF;
+	padding: 2px;
+}
+.edit_history_data_content .edit_data #delete_btn {
+	float: right;
+	height: 26px;
+	line-height: 22px;
+	padding: 1px 26px;
+	margin-right: 8px;
+	background-color: #E64848;
 }
 .edit_history_data_content .edit_data #edit_btn, .edit_history_data_content .editing_data #save_btn {
 	float: right;

@@ -249,6 +249,18 @@ input[type="radio"]:checked + label {
 	height: 29px;
 	color: #FFFFFF;
 }
+.detail_card_info .table_div table .state .normal {
+	background-color: #B8DB70;
+	padding: 2px;
+}
+.detail_card_info .table_div table .state .abnormal {
+	background-color: #FFB3B3;
+	padding: 2px;
+}
+.detail_card_info .table_div table .state .unknown {
+	background-color: #B3D9FF;
+	padding: 2px;
+}
 .detail_card_info .see_more {
 	margin-top: 5px;
 }

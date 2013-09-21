@@ -109,9 +109,14 @@
             dataType: 'json',
             success: function (dataJson) {
                 //console.log(dataJson);
-                if (dataJson.failed || dataJson.number_rsp == 0) {
+                if (dataJson.failed) {
                     // getdata failed or get no data
+                    // XXX: tooltip
                     return false;
+                }
+                else if (dataJson.number_rsp == 0) {
+                    // show 'edit_hint'
+                    toggle_edit_hint(card_id, "show");
                 }
                 else {
                     var begin_dt = moment(dataJson.begin_rsp);
@@ -132,7 +137,13 @@
                     window[options_str].xAxis.max = end_dt.valueOf();
                     window[options_str].series[0].data = dataJson.data;
                     // draw the chart
-                    // given 'chart_str' is the global var name of this chart
+                    // 'chart_str' is the global var name of this chart
+                    // destroy original chart and
+                    // redraw with new options and data
+                    if (window[chart_str] != null) {
+                        window[chart_str].destroy();
+                        window[chart_str] = null;
+                    }
                     window[chart_str] = new Highcharts.Chart(window[options_str]);
                 }
             },
@@ -140,134 +151,132 @@
     } // }}}
 
     {% for ind in indicators %}
-      {% if not ind|dict_get:"record_empty" %} {# indicator has records #}
-        {% if ind|dict_get:"dataType" == DATA_TYPES|dict_get:"INTEGER_TYPE" %}
-          {# INTEGER_TYPE #}
-          {# TODO #}
-        {% elif ind|dict_get:"dataType" == DATA_TYPES|dict_get:"FLOAT_TYPE" %}
-          {# FLOAT_TYPE #}
-          var chart_{{ ind|dict_get:"id" }};
-          // global var name style: 'options_chart_<id>'
-          // keep the name style, used in 'detail_history' binded functions
-          var options_chart_{{ ind|dict_get:"id" }} = { // {{{
-            chart: {
-              type: 'areaspline',
-              renderTo: 'chart_{{ ind|dict_get:"id" }}'
-            },
-            labels: {
-              items: [{   // custom label for unit_symbol
-                html: '{{ ind|dict_get:"std_unit_symbol" }}',
-                style: {
-                  left: '5px',
-                  top: '0px'
-                }
-              }]
-            },
-            series: [{
-              data: []
-            }],
-            tooltip: {
-              formatter: function() {
-                return '<span style="color:#969696;font-weight:bold;">' + Highcharts.dateFormat('%Y-%m-%d', this.x) + '</span>' +'<br />' + '<span style="color:#464646;font-weight:bold;">' + this.y + ' ({{ ind|dict_get:"std_unit_symbol" }})' + '</span>';
+      {% if ind|dict_get:"dataType" == DATA_TYPES|dict_get:"INTEGER_TYPE" %}
+        {# INTEGER_TYPE #}
+        {# TODO #}
+      {% elif ind|dict_get:"dataType" == DATA_TYPES|dict_get:"FLOAT_TYPE" %}
+        {# FLOAT_TYPE #}
+        var chart_{{ ind|dict_get:"id" }};
+        // global var name style: 'options_chart_<id>'
+        // keep the name style, used in 'detail_history' binded functions
+        var options_chart_{{ ind|dict_get:"id" }} = { // {{{
+          chart: {
+            type: 'areaspline',
+            renderTo: 'chart_{{ ind|dict_get:"id" }}'
+          },
+          labels: {
+            items: [{   // custom label for unit_symbol
+              html: '{{ ind|dict_get:"std_unit_symbol" }}',
+              style: {
+                left: '5px',
+                top: '0px'
               }
-            },
-            xAxis: {
-              min: null,
-              max: null
-            },
-            yAxis: {
-              labels: {
-                useHTML: true,
-                formatter: function() {
-                  var value = this.value;
-                  if (value > 9999.0) {
-                    var value_str = value.toExponential(2);
-                    var m = exp_regex.exec(value_str);
-                    var ylabel = m[1] + m[2].replace(/(\.0*|0*)$/, '') + '&times;10<sup>' + m[3]+m[4] + '</sup>';
-                  }
-                  else {
-                    var ylabel = value.toString();
-                  }
-                  return ylabel;
+            }]
+          },
+          series: [{
+            data: []
+          }],
+          tooltip: {
+            formatter: function() {
+              return '<span style="color:#969696;font-weight:bold;">' + Highcharts.dateFormat('%Y-%m-%d', this.x) + '</span>' +'<br />' + '<span style="color:#464646;font-weight:bold;">' + this.y + ' ({{ ind|dict_get:"std_unit_symbol" }})' + '</span>';
+            }
+          },
+          xAxis: {
+            min: null,
+            max: null
+          },
+          yAxis: {
+            labels: {
+              useHTML: true,
+              formatter: function() {
+                var value = this.value;
+                if (value > 9999.0) {
+                  var value_str = value.toExponential(2);
+                  var m = exp_regex.exec(value_str);
+                  var ylabel = m[1] + m[2].replace(/(\.0*|0*)$/, '') + '&times;10<sup>' + m[3]+m[4] + '</sup>';
                 }
+                else {
+                  var ylabel = value.toString();
+                }
+                return ylabel;
               }
             }
-          }; // }}}
-          // draw chart
-          $(document).ready(function() {
-            chart_getdata_draw("chart_{{ ind|dict_get:"id" }}",
-              {{ ind|dict_get:"id" }},
-              "options_chart_{{ ind|dict_get:"id" }}",
-              chart_getdata_type, chart_dp_num,
-              null, null
-            );
-          });
-        {% elif ind|dict_get:"dataType" == DATA_TYPES|dict_get:"RANGE_TYPE" %}
-          {# RANGE_TYPE #}
-          var chart_{{ ind|dict_get:"id" }};
-          var options_chart_{{ ind|dict_get:"id" }} = { // {{{
-            chart: {
-              type: 'areasplinerange',
-              renderTo: 'chart_{{ ind|dict_get:"id" }}'
-            },
-            labels: {
-              items: [{   // custom label for unit_symbol
-                html: '{{ ind|dict_get:"std_unit_symbol" }}',
-                style: {
-                  left: '5px',
-                  top: '0px'
-                }
-              }]
-            },
-            series: [{
-              data: []
-            }],
-            tooltip: {
-              formatter: function() {
-                return '<span style="color:#969696;font-weight:bold;">' + Highcharts.dateFormat('%Y-%m-%d', this.x) + '</span>' + '<br />' + '<span style="color:#464646;font-weight:bold;">' + this.point.low + ' &sim; ' + this.point.high + ' ({{ ind|dict_get:"std_unit_symbol" }})' + '</span>';
+          }
+        }; // }}}
+        // draw chart
+        $(document).ready(function() {
+          chart_getdata_draw("chart_{{ ind|dict_get:"id" }}",
+            {{ ind|dict_get:"id" }},
+            "options_chart_{{ ind|dict_get:"id" }}",
+            chart_getdata_type, chart_dp_num,
+            null, null
+          );
+        });
+      {% elif ind|dict_get:"dataType" == DATA_TYPES|dict_get:"RANGE_TYPE" %}
+        {# RANGE_TYPE #}
+        var chart_{{ ind|dict_get:"id" }};
+        var options_chart_{{ ind|dict_get:"id" }} = { // {{{
+          chart: {
+            type: 'areasplinerange',
+            renderTo: 'chart_{{ ind|dict_get:"id" }}'
+          },
+          labels: {
+            items: [{   // custom label for unit_symbol
+              html: '{{ ind|dict_get:"std_unit_symbol" }}',
+              style: {
+                left: '5px',
+                top: '0px'
               }
-            },
-            xAxis: {
-              min: null,
-              max: null
-            },
-            yAxis: {
-              labels: {
-                useHTML: true,
-                formatter: function() {
-                  var value = this.value;
-                  if (value > 9999.0) {
-                    var value_str = value.toExponential(2);
-                    var m = exp_regex.exec(value_str);
-                    var ylabel = m[1] + m[2].replace(/(\.0*|0*)$/, '') + '&times;10<sup>' + m[3]+m[4] + '</sup>';
-                  }
-                  else {
-                    var ylabel = value.toString();
-                  }
-                  return ylabel;
+            }]
+          },
+          series: [{
+            data: []
+          }],
+          tooltip: {
+            formatter: function() {
+              return '<span style="color:#969696;font-weight:bold;">' + Highcharts.dateFormat('%Y-%m-%d', this.x) + '</span>' + '<br />' + '<span style="color:#464646;font-weight:bold;">' + this.point.low + ' &sim; ' + this.point.high + ' ({{ ind|dict_get:"std_unit_symbol" }})' + '</span>';
+            }
+          },
+          xAxis: {
+            min: null,
+            max: null
+          },
+          yAxis: {
+            labels: {
+              useHTML: true,
+              formatter: function() {
+                var value = this.value;
+                if (value > 9999.0) {
+                  var value_str = value.toExponential(2);
+                  var m = exp_regex.exec(value_str);
+                  var ylabel = m[1] + m[2].replace(/(\.0*|0*)$/, '') + '&times;10<sup>' + m[3]+m[4] + '</sup>';
                 }
+                else {
+                  var ylabel = value.toString();
+                }
+                return ylabel;
               }
             }
-          }; // }}}
-          // draw chart
-          $(document).ready(function() {
-            chart_getdata_draw("chart_{{ ind|dict_get:"id" }}",
-              {{ ind|dict_get:"id" }},
-              "options_chart_{{ ind|dict_get:"id" }}",
-              chart_getdata_type, chart_dp_num,
-              null, null
-            );
-          });
-        {% elif ind|dict_get:"dataType" == DATA_TYPES|dict_get:"FLOAT_RANGE_TYPE" %}
-          {# FLOAT_RANGE_TYPE #}
-          {# TODO #}
-        {% elif ind|dict_get:"dataType" == DATA_TYPES|dict_get:"PM_TYPE" %}
-          {# PM_TYPE #}
-          {# TODO #}
-        {% else %}
-          {# unknown TYPE #}
-        {% endif %} {# end: DATA_TYPES #}
-      {% endif %} {# end: record_empty #}
+          }
+        }; // }}}
+        // draw chart
+        $(document).ready(function() {
+          chart_getdata_draw("chart_{{ ind|dict_get:"id" }}",
+            {{ ind|dict_get:"id" }},
+            "options_chart_{{ ind|dict_get:"id" }}",
+            chart_getdata_type, chart_dp_num,
+            null, null
+          );
+        });
+      {% elif ind|dict_get:"dataType" == DATA_TYPES|dict_get:"FLOAT_RANGE_TYPE" %}
+        {# FLOAT_RANGE_TYPE #}
+        {# TODO #}
+      {% elif ind|dict_get:"dataType" == DATA_TYPES|dict_get:"PM_TYPE" %}
+        {# PM_TYPE #}
+        {# TODO #}
+      {% else %}
+        {# unknown TYPE #}
+      {% endif %} {# end: DATA_TYPES #}
     {% endfor %}
   </script>
 {% endblock %}
@@ -355,11 +364,13 @@
               <span class="date_value">{{ ind|dict_get:"last_record"|dict_get:"date" }}</span>
             </div>
             <!-- refresh icon -->
+            {% comment %}
             {% if ind|dict_get:"record_empty" %}
             <div class="refresh_icon" style="display: none;"></div>
             {% else %}
             <div class="refresh_icon" style="display: block;"></div>
             {% endif %}
+            {% endcomment %}
             <div style="clear:both;"></div>
           </div> <!-- end: edit_data -->
 
@@ -469,7 +480,7 @@
             <tr class="first_line">
               <td class="date" width="124px">化验日期</td>
               <td class="record" width="312px">数据记录</td>
-              <td class="state" width="122px">是否正常</td>
+              <td class="state" width="122px">状态</td>
             </tr>
           </table>
         </div>

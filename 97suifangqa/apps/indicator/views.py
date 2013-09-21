@@ -1174,6 +1174,35 @@ def ajax_close_sub_title(request):
 # }}}
 
 
+# ajax_delete_record {{{
+@login_required
+def ajax_delete_record(request):
+    """
+    delete the specified record
+    """
+    result = 'failed'
+    if request.is_ajax() and request.method == 'GET':
+        record_id = request.GET.get('record_id')
+        # get record object
+        try:
+            record_id = int(record_id)
+            record_obj = get_object_or_404(im.IndicatorRecord,
+                    id=record_id)
+            record_obj.delete()
+            result = 'success'
+        except ValueError:
+            print u'Error: record_id="%s" cannot convert to integer'\
+                    % record_id
+            result = 'failed'
+        except:
+            print u'Error: unknwon error'
+            result = 'failed'
+
+    #
+    return HttpResponse(result)
+# }}}
+
+
 # ajax_get_card_data_chart {{{
 @login_required
 def ajax_get_card_data_chart(request):
@@ -1537,6 +1566,7 @@ def ajax_search_indicators(request):
 
     return HttpResponse(json.dumps(data), mimetype='application/json')
 # }}}
+
 
 # ajax_unfollow_indicator {{{
 @login_required

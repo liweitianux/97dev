@@ -70,7 +70,7 @@ $(document).ready(function(){
         var time = date.getTime();
         $.ajax({  //数据库还是cookie，都可以，建议使用cookie，html中是否显示sub_title也由后端读取的cookie决定
             type: 'get',
-            url: indicator_url + 'ajax/close_sub_title',
+            url: indicator_url + 'ajax/close_sub_title/',
             data: 'time='+time,
             success: function(data){
                 if(data == 'success'){
@@ -419,7 +419,7 @@ $(document).ready(function(){
     });
     // }}}
 
-    //点击提交icon
+    //点击提交icon {{{
     $(".confirm_edit_icon").bind("click", function(){
         var this_editing_data_div = $(this).closest(".editing_data");
         var card = $(this).closest(".index_card");
@@ -488,8 +488,13 @@ $(document).ready(function(){
                     // refresh_icon
                     this_edit_data_div.find(".refresh_icon").show();
                     // edit_icon_container & chart
-                    this_editing_data_div.siblings(".edit_icon_container").hide();
-                    this_editing_data_div.siblings(".chart").show();
+                    toggle_edit_hint(id, "hide");
+                    // redraw chart
+                    chart_getdata_draw("chart_"+id, id,
+                            "options_chart_"+id,
+                            chart_getdata_type, chart_dp_num,
+                            null, null
+                    );
                 }
             }
         });
@@ -497,6 +502,7 @@ $(document).ready(function(){
 
         return false;
     });
+    // }}}
 
     //日期控件
     $(".datepicker_container>.datepicker").datepicker({
@@ -525,6 +531,22 @@ $(document).ready(function(){
         }
     });
 });
+
+// toggle 'edit_hint'
+function toggle_edit_hint(card_id, action) {
+    var card = $("#index_card_"+card_id);
+    var edit_hint = card.find(".edit_icon_container");
+    var chart = card.find(".chart");
+    if (action === 'show') {
+        chart.hide();
+        edit_hint.show();
+    }
+    else if (action === 'hide') {
+        edit_hint.hide();
+        chart.show();
+    }
+    return false;
+}
 
 //
 function delete_card(){

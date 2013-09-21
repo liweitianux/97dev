@@ -86,6 +86,10 @@ urlpatterns += patterns('indicator.views',
     url(r'^ajax/close_sub_title/$',
         'ajax_close_sub_title',
         name='indicator_ajax_closesubtitle'),
+    # delete_record
+    url(r'^ajax/delete_record/$',
+        'ajax_delete_record',
+        name='indicator_ajax_deleterecord'),
     # get_card_data_chart
     url(r'^ajax/get_card_data_chart/$',
         'ajax_get_card_data_chart',

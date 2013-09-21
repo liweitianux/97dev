@@ -21,6 +21,37 @@ $(document).ready(function(){
         maxDate: 0      // 0->today, 1->tomorrow
     });
 
+    // delete button
+    $("#delete_btn").bind("click", function(){
+        // delete record (ajax)
+        var time = moment().valueOf();
+        $.ajax({
+            type: 'get',
+            url: indicator_url + 'ajax/delete_record/',
+            data: 'record_id='+record_id + '&time='+time,
+            success: function(data) {
+                if (data == 'success') {
+                    // redraw chart
+                    var begin_str = $("#search_begin_date", window.parent.document).val();
+                    var end_str = $("#search_end_date", window.parent.document).val();
+                    //console.log("begin_str: "+begin_str);
+                    //console.log("end_str: "+end_str);
+                    var getdata_type = "date";
+                    var getdata_num = null;
+                    parent.detail_chart_getdata_draw(
+                            parent.detail_chart_str,
+                            parent.detail_chart_options_str,
+                            getdata_type, getdata_num,
+                            begin_str, end_str
+                    );
+                    // close popup window
+                    parent.TB_remove();
+                }
+            }
+        });
+        return false;
+    });
+
     // edit button
     $("#edit_btn").bind("click", function(){
         var this_edit_data_div = $(this).closest(".edit_data");
@@ -63,10 +94,25 @@ $(document).ready(function(){
                     // tooltip
                 }
                 else {
+                    // redraw chart
+                    var begin_str = $("#search_begin_date", window.parent.document).val();
+                    var end_str = $("#search_end_date", window.parent.document).val();
+                    var end_mm = moment(end_str);
+                    var record_date_mm = moment(record_data.date);
+                    if (record_date_mm.isAfter(end_mm)) {
+                        end_str = record_date_mm.format('YYYY-MM-DD');
+                    }
+                    //
+                    var getdata_type = "date";
+                    var getdata_num = null;
+                    parent.detail_chart_getdata_draw(
+                            parent.detail_chart_str,
+                            parent.detail_chart_options_str,
+                            getdata_type, getdata_num,
+                            begin_str, end_str
+                    );
                     // successfully modified
                     parent.TB_remove();
-                    // update the detail chart
-                    //parent.redraw_chart(parent.detail_chart, "2013-08-04", "2013-08-10"); //这边需要穿过来起始，结束时间，以便刷新图表和表格
                 }
             }
         });

@@ -320,6 +320,20 @@ class IndicatorRecord(models.Model):                        # {{{
             #raise ValueError(u'date="%s" 该日期已经存在记录' % self.date)
             print u'date="%s" 该日期已经存在记录' % self.date
             return False
+        # check unit
+        sind = self.indicator
+        if sind.dataType in [sind.FLOAT_TYPE, sind.RANGE_TYPE,
+                sind.FLOAT_RANGE_TYPE]:
+            # unit required
+            ind_units = sind.get_unit(type="all")
+            if not self.unit:
+                #raise ValueError(u'未填写单位')
+                print u'未填写单位'
+                return False
+            elif self.unit not in ind_units:
+                #raise ValueError(u'所选单位与该指标不符')
+                print u'所选单位与该指标不符'
+                return False
         # check dataType
         if self.indicator.dataType == self.indicator.INTEGER_TYPE:
             # 整数型
@@ -332,10 +346,6 @@ class IndicatorRecord(models.Model):                        # {{{
                 return False
         elif self.indicator.dataType == self.indicator.FLOAT_TYPE:
             # 浮点型
-            if not self.unit:
-                #raise ValueError(u'未填写单位')
-                print u'未填写单位'
-                return False
             try:
                 value = float(self.value)
                 return True
@@ -345,10 +355,6 @@ class IndicatorRecord(models.Model):                        # {{{
                 return False
         elif self.indicator.dataType == self.indicator.RANGE_TYPE:
             # 范围型
-            if not self.unit:
-                #raise ValueError(u'未填写单位')
-                print u'未填写单位'
-                return False
             if (self.val_max is None) or (self.val_min is None):
                 #raise ValueError(u'val_max 或 val_min 未填写')
                 print u'val_max 或 val_min 未填写'
@@ -360,10 +366,6 @@ class IndicatorRecord(models.Model):                        # {{{
             return True
         elif self.indicator.dataType == self.indicator.FLOAT_RANGE_TYPE:
             # 定值/范围型 (浮点定值优先)
-            if not self.unit:
-                #raise ValueError(u'未填写单位')
-                print u'未填写单位'
-                return False
             if self.value:
                 # 定值
                 try:
