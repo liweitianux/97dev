@@ -92,6 +92,22 @@ $(document).ready(function(){
         // update 'detail_card_id'
         detail_card_id = $(this).closest(".index_card").attr("id").replace('index_card_', '');
         var card = $("#index_card_"+detail_card_id);
+        // determine the position to show the 'detail_card'
+        var pos_to_insertafter = null;
+        if (card.hasClass("index_card_sec")) {
+            // this card in on the right
+            pos_to_insertafter = card;
+        }
+        else if (card.nextAll(".index_card_sec").length) {
+            // this card is on the left
+            pos_to_insertafter = card.nextAll(".index_card_sec").first();
+        }
+        else {
+            // this card is the last card
+            pos_to_insertafter = card.nextAll(".act_card_container");
+        }
+        // move 'detail_card_info' div
+        $(".detail_card_info").insertAfter(pos_to_insertafter);
         // check if this card has data (class "record_empty")
         if (card.hasClass("record_empty")) {
             $(".detail_card_info").hide();
@@ -142,7 +158,7 @@ $(document).ready(function(){
                 getdata_type, getdata_num,
                 begin_date_str, end_date_str
         );
-        $(".act_card_container").addClass("move_div_2_left");
+        //$(".act_card_container").addClass("move_div_2_left");
         return false;
     });
 
@@ -215,7 +231,7 @@ $(document).ready(function(){
         //初始化详细卡片id
         detail_card_id = "-1";
         //添加删除div位置初始化
-        $(".act_card_container").removeClass("move_div_2_left");
+        //$(".act_card_container").removeClass("move_div_2_left");
         return false;
     });
 });

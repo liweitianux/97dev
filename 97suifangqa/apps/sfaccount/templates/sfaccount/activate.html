@@ -1,0 +1,98 @@
+{% extends "picture-base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+激活账户 | 97 随访
+{% endblock %}
+
+{% block bodyclasses %}{{ block.super }} registration signup{% endblock %}
+{% block othercss %}
+<link rel="stylesheet" href="{% static "stylesheets/sass/registration.css" %}">
+{% endblock %}
+
+{% block scripts %}
+  <script type="text/javascript">
+    // activate account url
+    var activate_url = '{% url activate %}';
+
+    $(document).ready(function(){
+      // validate key input
+      $("#activation_key").focus(function() {
+        $(this).removeClass("valid invalid");
+      });
+      $("#activation_key").on("validate", null, function() {
+        var sha1_regex = /^[0-9a-f]{40}$/;
+        var key_raw = $(this).val();
+        var key = htmlEscape(key_raw.toLowerCase());
+        if (sha1_regex.test(key)) {
+          // key in valid format
+          $(this).removeClass("invalid");
+          $(this).addClass("valid");
+        }
+        else {
+          $(this).removeClass("valid");
+          $(this).addClass("invalid");
+        }
+      });
+
+      // sumbit key to activate account
+      $("#activate_account").on('submit', null, function() {
+        // validate key first
+        $("#activation_key").trigger("validate");
+        if ($(".invalid").length) {
+          // there exists invalid input
+          return false;
+        }
+        else {
+          // submit
+          var key_raw = $("#activation_key").val();
+          var key = htmlEscape(key_raw.toLowerCase());
+          var target_url = activate_url + key + '/';
+          //console.log(target_url);
+          window.location.href = target_url;
+        }
+      });
+      $("#activate_account").on('click', null, function() {
+        $(this).trigger('submit');
+      });
+      $("#activation_key").on('keypress', null, function(e) {
+        var keycode = (e.keyCode ? e.keyCode : e.which);
+        if (keycode == 13) {
+          $("#activate_account").trigger('submit');
+          return false;
+        }
+      });
+
+    });
+
+    function htmlEscape(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+  </script>
+{% endblock %}
+
+{% block body %}
+  <h2>加入97随访 &emsp; 科学了解乙肝治疗</h2>
+
+  <div class="activate_failed" style="display: {% if activate_failed %}block{% else %}none{% endif %} ;">
+    <h4>激活账户失败</h4>
+    请检查激活码或激活链接。
+    <br />
+    您也可以直接在下方输入激活码来完成账户激活。
+  </div>
+ 
+  <div class="activation">
+    <span class="prompt">激活码</span>
+    <input type="text" id="activation_key" />
+    <br />
+    <input type="button" id="activate_account" value="激活账户" />
+  </div>
+
+{% endblock body %}
+
+<!-- vim: set ts=8 sw=2 tw=0 fenc=utf-8 ft=htmldjango.html: -->

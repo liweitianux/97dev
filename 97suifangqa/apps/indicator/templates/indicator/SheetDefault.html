@@ -284,12 +284,12 @@
 {% block page %}
   {% csrf_token %}
 
-  <iframe align="left" width="420" height="1020" src="{% url indicator_sidebar %}" style="position:fixed;left:0;top:0;z-index:99;" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+  <iframe align="left" width="420" height="1020" src="{% url indicator_sidebar %}" style="position:fixed;left:0;top:0;z-index:99;" frameborder="no" marginwidth="0" marginheight="0" scrolling="no"></iframe>
 
   <!-- TODO -->
   <div id="login_container">
     <div class="logged-in" id="login">
-      <img class="user-photo" alt="" src="{% static "images/userPhoto.jpg" %}" />
+      <img class="user-photo" alt="user_photo" src="{% static "images/userPhoto.jpg" %}" />
       <span class="number-block green-block user-level">6</span>
       <span class="drop-down-area">
         <span class="user-name">username</span>
@@ -344,14 +344,14 @@
               <span class="data_value">{{ ind|dict_get:"last_record"|dict_get:"value_html"|safe }}</span>
               <span class="data_unit">{% if ind|dict_get:"std_unit_symbol" %}({{ ind|dict_get:"std_unit_symbol" }}){% endif %}</span>
             </div>
-            <img class="small_edit_icon" src="{% static "images/pen.png" %}" />
+            <img class="small_edit_icon" alt="edit_icon" src="{% static "images/pen.png" %}" />
             <!-- explain_icon -->
             {% if ind|dict_get:"record_empty" %}
-            <img class="explain_icon nodata_icon" src="{% static "images/nodata.png" %}" style="display: block;" />
-            <img class="explain_icon lastdata_icon" src="{% static "images/last_edit_data.png" %}" style="display: none;" />
+            <img class="explain_icon nodata_icon" alt="nodata_icon" src="{% static "images/nodata.png" %}" style="display: block;" />
+            <img class="explain_icon lastdata_icon" alt="lastdata_icon" src="{% static "images/last_edit_data.png" %}" style="display: none;" />
             {% else %}
-            <img class="explain_icon nodata_icon" src="{% static "images/nodata.png" %}" style="display: none;" />
-            <img class="explain_icon lastdata_icon" src="{% static "images/last_edit_data.png" %}" style="display: block;" />
+            <img class="explain_icon nodata_icon" alt="nodata_icon" src="{% static "images/nodata.png" %}" style="display: none;" />
+            <img class="explain_icon lastdata_icon" alt="lastdata_icon" src="{% static "images/last_edit_data.png" %}" style="display: block;" />
             {% endif %}
             <div style="clear:both;"></div>
             <!-- last edit date -->
@@ -433,7 +433,7 @@
           {% endif %}
 
           <div class="card_bottom">
-            <div class="understand_index"><a class="thickbox" href="{% url indicator_indexdesc %}?card_id={{ ind|dict_get:"id" }}&url_type=html&no_title=true&TB_iframe=true&height=367&width=630">了解该指标</a></div>
+            <div class="understand_index"><a class="thickbox" href="{% url indicator_indexdesc %}?card_id={{ ind|dict_get:"id" }}&amp;url_type=html&amp;no_title=true&amp;TB_iframe=true&amp;height=367&amp;width=630">了解该指标</a></div>
             <!-- TODO -->
             <div class="simulation_sheet"><a href="{% static "images/demo_sheet.png" %}" class="thickbox">仿真化验单</a></div>
             <div class="detail_history">
@@ -450,7 +450,7 @@
             width参数为弹出层页面宽度+2，
             card_id参数为 "卡片id"
           {% endcomment %}
-          <a class="card_delete_icon card_delete thickbox" href="{% url indicator_deletecardtip %}?card_id={{ ind|dict_get:"id" }}&url_type=html&no_title=true&TB_iframe=true&height=166&width=630"></a>
+          <a class="card_delete_icon card_delete thickbox" href="{% url indicator_deletecardtip %}?card_id={{ ind|dict_get:"id" }}&amp;url_type=html&amp;no_title=true&amp;TB_iframe=true&amp;height=166&amp;width=630"></a>
         </div> <!-- end: index_card -->
       {% endfor %} {# end: indicators #}
 

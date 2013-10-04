@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.conf.urls.defaults import patterns, include, url
 from django.views.generic.simple import direct_to_template
 from django.contrib.auth import logout, views as auth_views
-from django.shortcuts import redirect, render_to_response
+from django.shortcuts import redirect, render
 
 from django.conf import settings
 
@@ -24,25 +24,24 @@ def _logout(request, **kwargs):
     return redirect('/')
 
 urlpatterns += patterns("",
-	url(r"^$", direct_to_template, {"template": "index.html"}, name="index"),
+    url(r"^$", direct_to_template,
+        {"template": "index.html"}, name="index"),
 )
 
 urlpatterns += patterns("info.views",
-    url(r"^query\/?$", "query"),)
-
-urlpatterns += patterns("",
-    url(r"^blog/", include('sciblog.urls')),
-    url(r"^accounts/", include('profile.urls')),
-                       )
-def page_not_found(request):
-    return render_to_response('./templates/404.html')
-
-
-
-## apps/indicator
-urlpatterns += patterns('',
-    url(r'^indicator/', include('indicator.urls')),
+    url(r"^query\/?$", "query"),
 )
+
+urlpatterns += patterns('',
+    url(r'^blog/', include('sciblog.urls')),
+    url(r'^accounts/', include('sfaccount.urls')),
+    url(r'^profile/', include('profile.urls')),
+    url(r'^indicator/', include('indicator.urls')),
+    url(r'^recommend/', include('recommend.urls')),
+)
+
+def page_not_found(request):
+    return render(request, './templates/404.html')
 
 
 ## search (haystack)

@@ -1,0 +1,13 @@
+# -*- coding: utf-8 -*-
+
+## smtp settings to send email
+SF_EMAIL = {
+    'smtp_host': 'smtp.example.com',
+    'smtp_port': 25,
+    'username': 'username',
+    'password': 'password',
+    'from': 'username@example.com',
+    'display_from': 'account@97suifang.com',
+}
+
+

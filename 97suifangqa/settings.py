@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import os,sys
+import os, sys
 
 
 DEBUG = True
@@ -144,6 +144,8 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'haystack',
+    'djcelery',
+    'sfaccount',
     'profile',
     'location',
     'indicator',
@@ -152,15 +154,40 @@ INSTALLED_APPS = (
     'subjects',
     'sciblog',
     'info',
+    'recommend',
     #'97suifangqa',
 )
 
 LOGIN_REDIRECT_URL = '/blog/index'
 
-# django-haystack settings
+##
+ACCOUNT_ACTIVATION_DAYS = 3
+
+## avatar
+AVATAR_DIR = os.path.join(PROJECT_ROOT, 'uploads/avatars')
+
+## socialoauth settings
+USING_SOCIAL_LOGIN = True
+try:
+    from socialoauth_settings import *
+except ImportError:
+    pass
+
+## email
+BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+
+import djcelery
+djcelery.setup_loader()
+
+## mail server settings
+from mail_settings import *
+
+
+## django-haystack settings
 from haystack_settings import *
 
-# auto reload when deployed under uWSGI
+## auto reload when deployed under uWSGI
 try:
     import uwsgi
     from uwsgidecorators import timer
@@ -172,3 +199,5 @@ try:
             uwsgi.reload()
 except:
     pass
+
+

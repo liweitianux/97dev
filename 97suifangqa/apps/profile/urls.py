@@ -1,9 +1,10 @@
+# -*- coding: utf-8 -*-
+
 from django.conf.urls import patterns, url
 
-from .views import  *
 
-urlpatterns = patterns('',
-        url(r'^login/?$', login, name = "login"),
-        url(r'^logout/?$', logout, name = "logout"),
-        url(r'^signup/?$', signup, name = "signup"),
-                      )
+urlpatterns = patterns('profile.views',
+    url(r'^(?P<username>[a-zA-Z_][a-zA-Z0-9_]*)/$',
+        'profile_view', name='profile_home'),
+)
+

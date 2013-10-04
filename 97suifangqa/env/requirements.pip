@@ -8,3 +8,6 @@ lxml
 pysolr
 uwsgi
 git+https://github.com/toastdriven/django-haystack.git@master#egg=django-haystack
+django-celery
+redis
+socialoauth

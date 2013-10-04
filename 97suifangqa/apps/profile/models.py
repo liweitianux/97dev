@@ -10,6 +10,8 @@ from .storage import OverwriteStorage
 from .utils import avatar_by_user
 from .image import crop
 
+from sfaccount import models as am
+
 
 class Profile(models.Model):
 
@@ -25,11 +27,14 @@ class Profile(models.Model):
         (3, u"硕士"),
         (4, u"博士"))
 
-    user      = models.OneToOneField(User, null=True, blank=True)
-    name      = models.CharField(u"用户名", max_length=20, null=True, blank=True)
-    avatar    = models.ImageField(u"头像", upload_to="uploads/avatar/", storage=OverwriteStorage())
+    account = models.OneToOneField(am.Account, verbose_name=u"账户")
+    screen_name = models.CharField(u"显示名称",
+            max_length=15, blank=True)
+    #user      = models.OneToOneField(User, null=True, blank=True)
+    #name      = models.CharField(u"用户名", max_length=20, null=True, blank=True)
+    #avatar    = models.ImageField(u"头像", upload_to="uploads/avatar/", storage=OverwriteStorage())
     education = models.IntegerField(u"学历", choices=education_choices)
-    email     = models.EmailField(u"邮箱", primary_key=True)
+    #email     = models.EmailField(u"邮箱", primary_key=True)
     gender    = models.IntegerField(u"性别", choices=gender_choices, default=0)
     user_level= models.IntegerField(u"等级", default=0)
     medicines = models.ManyToManyField("medicine.Medicine", related_name="users", verbose_name= u"药物", null=True, blank=True)
