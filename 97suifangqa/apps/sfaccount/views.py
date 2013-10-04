@@ -50,7 +50,7 @@ def signup_view(request):
                     password=cd['password1'],
                     send_email=True
             )
-            return HttpResponseRedirect(request.REQUEST.get('next'))
+            return HttpResponseRedirect(reverse('activate'))
     else:
         form = AccountForm()
 

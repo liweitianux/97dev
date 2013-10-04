@@ -1,9 +1,9 @@
 尊敬的 {{ username }}，
 
-感谢您注册97随访(97suifang.com)。
+欢迎您加入97随访(97suifang.com)。
 
 您的激活码为 {{ activation_key }}，请在 {{ expiration_days }} 天内激活账户，直接打开以下链接进行激活：
 http://www.97suifang.com/accounts/activate/{{ activation_key }}/
 
 
-97随访
+97随访 团队

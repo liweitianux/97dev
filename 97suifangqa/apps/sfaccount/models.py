@@ -124,7 +124,7 @@ class Account(models.Model):                                    # {{{
         return u'< Account: %s, %s, %s >' % (self.user.username,
                 type, state)
 
-    def activation_key_expired(self):
+    def activation_key_expired(self): # {{{
         """
         determine whether the activation key has expired
 
@@ -148,8 +148,9 @@ class Account(models.Model):                                    # {{{
         now_utc = datetime.datetime.utcnow().replace(tzinfo=utc)
         return self.user.is_active or (
                 self.user.date_joined + expiration_days <= now_utc)
+    # }}}
 
-    def send_activation_email(self):
+    def send_activation_email(self): # {{{
         """
         send an activation email to the newly registered user
         """
@@ -160,10 +161,17 @@ class Account(models.Model):                                    # {{{
         }
         subject = render_to_string('sfaccount/activation_email_subject.txt', ctx_dict)
         subject = ''.join(subject.splitlines())
-        body_text = render_to_string('sfaccount/activation_email_body.txt', ctx_dict).encode('utf-8')
+        body_text = render_to_string('sfaccount/activation_email_body.txt', ctx_dict)
+        body_html = render_to_string('sfaccount/activation_email_body.html', ctx_dict)
         to = self.user.email
         # send email
-        send_mail.delay(to, subject, body_text, None)
+        send_mail.delay(to, subject, body_text, body_html)
+    # }}}
+
+    def delete_account(self):
+        user = self.user
+        user.delete()
+        self.delete()
 # }}}
 
 
