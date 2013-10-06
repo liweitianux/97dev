@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os, sys
+import djcelery
+djcelery.setup_loader()
 
 
 DEBUG = True
@@ -160,8 +162,15 @@ INSTALLED_APPS = (
 
 LOGIN_REDIRECT_URL = '/blog/index'
 
-##
+## account settings
 ACCOUNT_ACTIVATION_DAYS = 3
+MIN_USERNAME_LENGTH = 6
+MAX_USERNAME_LENGTH = 30
+MIN_PASSWORD_LENGTH = 6
+MAX_PASSWORD_LENGTH = 30
+
+## async send mail
+ASYNC_SEND_MAIL = True
 
 ## avatar
 AVATAR_DIR = os.path.join(PROJECT_ROOT, 'uploads/avatars')
@@ -176,9 +185,6 @@ except ImportError:
 ## email
 BROKER_URL = 'redis://127.0.0.1:6379/0'
 CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
-
-import djcelery
-djcelery.setup_loader()
 
 ## mail server settings
 from mail_settings import *

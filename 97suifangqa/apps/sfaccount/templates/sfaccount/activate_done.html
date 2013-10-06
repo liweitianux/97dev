@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 {% block title %}
-修改密码 | 97 随访
+账户已激活 | 97 随访
 {% endblock %}
 
 {% block othercss %}
@@ -11,12 +11,12 @@
 
 {% block scripts %}
   <script type="text/javascript">
-    // home url
-    var home_url = '{% url go_home %}';
+    // login url
+    var login_url = '{% url login %}';
 
     $(document).ready(function() {
-      $("#go-home").bind("click", function() {
-        window.location.href = home_url;
+      $("#login").bind("click", function() {
+        window.location.href = login_url;
       });
     });
   </script>
@@ -25,10 +25,11 @@
 {% block body %}
   <h2>加入97随访 &emsp; 科学了解乙肝治疗</h2>
 
-  <h4>密码修改成功！</h4>
+  <h4>欢迎加入97随访！</h4>
 
+  <p>您的账户已成功激活，现在您可以登录使用。</p>
   <p>
-  <input type="button" id="go-home" value="返回个人主页" />
+  <input type="button" id="login" value="登录" />
   </p>
 {% endblock body %}
 

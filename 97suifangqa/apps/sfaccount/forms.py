@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
+from django.conf import settings
 from django.template import loader
 from django.utils.http import int_to_base36
 from django.contrib.auth.models import User
@@ -34,8 +35,10 @@ class AccountForm(forms.Form):
     def clean_username(self):
         username = self.cleaned_data['username']
         # check length
-        if len(username) < 6:
+        if len(username) < settings.MIN_USERNAME_LENGTH:
             raise forms.ValidationError(u'用户名长度需大于6位')
+        if len(username) > settings.MAX_USERNAME_LENGTH:
+            raise forms.ValidationError(u'用户名长度不能超过30位')
         # check first letter
         p = re.compile('[a-zA-Z_]')
         if p.match(username[0]):
@@ -58,8 +61,11 @@ class AccountForm(forms.Form):
 
     def clean_password1(self):
         password1 = self.cleaned_data['password1']
-        if len(password1) < 6:
+        # check length
+        if len(password1) < settings.MIN_PASSWORD_LENGTH:
             raise forms.ValidationError(u'密码长度需大于6位')
+        if len(password1) > settings.MAX_PASSWORD_LENGTH:
+            raise forms.ValidationError(u'密码长度不能超过30位')
         return password1
 
     def clean(self):
@@ -79,12 +85,18 @@ class SFPasswordResetForm(forms.Form):
     to use djcelery's async send mail
     """
     error_messages = {
-        'unknown': _("That e-mail address doesn't have an associated "
-                     "user account. Are you sure you've registered?"),
+        'unknown': u"该邮箱未在系统中注册，请填写您注册时使用的邮箱地址",
         'unusable': _("The user account associated with this e-mail "
                       "address cannot reset the password."),
     }
     email = forms.EmailField(label=_("E-mail"), max_length=75)
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        users = User.objects.filter(email__iexact=email)
+        if not len(users):
+            raise forms.ValidationError(self.error_messages['unknown'])
+        return email
 
     def save(self, domain_override=None,
              subject_template_name='registration/password_reset_subject.txt',
@@ -96,14 +108,8 @@ class SFPasswordResetForm(forms.Form):
         Generates a one-use only link for resetting password
         and sends to the user.
         """
-        # validate first
-        if not self.is_valid():
-            return self
-        # validated: has 'self.cleaned_data'
         email = self.cleaned_data['email']
         users = User.objects.filter(email__iexact=email)
-        if not len(users):
-            raise forms.ValidationError(self.error_messages['unknown'])
         for user in users:
             # make sure that no email is sent to a user that actually
             # has a password marked as unusable
@@ -135,7 +141,30 @@ class SFPasswordResetForm(forms.Form):
                 body_html = None
             # send mail
             to = user.email
-            send_mail(to, subject, body_text, body_html)
+            if getattr(settings, 'ASYNC_SEND_MAIL', False):
+                send_mail.delay(to, subject, body_text, body_html)
+            else:
+                send_mail(to, subject, body_text, body_html)
+# }}}
+
+
+# SFEmailForm {{{
+class SFEmailForm(forms.Form):
+    """
+    get input email address and validate it
+    used in sending activation mail
+    """
+    error_messages = {
+        'unknown': u"该邮箱未在系统中注册，请填写您注册时使用的邮箱地址",
+    }
+    email = forms.EmailField(label=_("E-mail"), max_length=75)
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        users = User.objects.filter(email__iexact=email)
+        if not len(users):
+            raise forms.ValidationError(self.error_messages['unknown'])
+        return email
 # }}}
 
 

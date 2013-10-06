@@ -15,11 +15,17 @@ HOWTO run:
 5) ajust 'SF_MAIL' settings in 'mail_settings.py'
 6) $ redis-server
 7) $ ./manage.py syncdb
-8) $ ./manage.py celeryd worker -E
+8) $ ./manage.py celery worker --loglevel=info
 9) $ ./manage.py celerycam      (for monitoring)
 
 TEST:
 a) ./manage.py shell
    >>> from sfaccount.tasks import send_mail
    >>> send_mail(to, subject, body_text, body_html)
+   # async task
+   >>> r = send_mail.delay(to, subject, body_text, body_html)
+   >>> r.ready()
+   >>> r.result
+   >>> r.successful()
+   >>>
 

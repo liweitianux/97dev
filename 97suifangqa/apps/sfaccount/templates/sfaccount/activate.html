@@ -13,7 +13,8 @@
 {% block scripts %}
   <script type="text/javascript">
     // activate account url
-    var activate_url = '{% url activate %}';
+    var activate_key_url = '{{ activate_key_url }}';
+    var send_activation_mail_url = '{% url send_activation_mail %}';
 
     $(document).ready(function(){
       // validate key input
@@ -47,7 +48,7 @@
           // submit
           var key_raw = $("#activation_key").val();
           var key = htmlEscape(key_raw.toLowerCase());
-          var target_url = activate_url + key + '/';
+          var target_url = activate_key_url + key + '/';
           //console.log(target_url);
           window.location.href = target_url;
         }
@@ -63,6 +64,10 @@
         }
       });
 
+      // send_activation_mail
+      $("#send_activation_mail").bind("click", function() {
+          window.location.href = send_activation_mail_url;
+      });
     });
 
     function htmlEscape(str) {
@@ -91,6 +96,12 @@
     <input type="text" id="activation_key" />
     <br />
     <input type="button" id="activate_account" value="激活账户" />
+  </div>
+
+  <div class="no-mail">
+    还未收到激活邮件？您可以尝试重发激活邮件。
+    <br />
+    <input type="button" id="send_activation_mail" value="重发激活邮件" />
   </div>
 
 {% endblock body %}

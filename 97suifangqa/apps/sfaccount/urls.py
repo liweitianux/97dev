@@ -10,10 +10,16 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = patterns('sfaccount.views',
     url(r'^signup/$', 'signup_view', name='signup'),
+    # send activation mail
+    url(r'^activate/send_mail/$', 'send_activation_mail_view',
+        name='send_activation_mail'),
     # activate account
     url(r'^activate/$', 'activate_view', name='activate'),
-    url(r'^activate/(?P<activation_key>.+)/$',
-        'activate_view'),
+    url(r'^activate/key/(?P<activation_key>[0-9a-zA-Z]+)/$',
+        'activate_view',
+        name='activate_key'),
+    url(r'^activate/done/$', 'activate_done_view',
+        name='activate_done'),
     # go home
     url(r'^home/$', 'go_home_view', name='go_home'),
 )

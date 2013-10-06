@@ -47,11 +47,14 @@
 
     <input type="hidden" name="next" value="{{ next }}" />
     <input type="submit" value="登 录" class="submit login"/>
-    &emsp; | &emsp;
-    <a href="{% url signup %}">还没有帐号?</a>
-    &emsp; | &emsp;
-    <a href="{% url password_reset %}">忘记密码?</a>
   </form>
+  <br />
+
+  <p>
+  <a href="{% url signup %}">还没有帐号?</a>
+  &emsp; | &emsp;
+  <a href="{% url password_reset %}">忘记密码?</a>
+  </p>
 {% endblock body%}
 
 {# vim: set ts=2 sw=2 tw=0 fenc=utf-8 ft=htmldjango.html: #}

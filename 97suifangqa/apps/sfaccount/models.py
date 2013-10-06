@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.db import models
 from django.contrib import admin
@@ -150,22 +151,39 @@ class Account(models.Model):                                    # {{{
                 self.user.date_joined + expiration_days <= now_utc)
     # }}}
 
-    def send_activation_email(self): # {{{
+    def get_activation_url(self):
+        return reverse('activate_key',
+                kwargs={'activation_key': self.activation_key})
+
+    # send_activation_email {{{
+    def send_activation_email(self,
+            async=None,
+            subject_template_name='sfaccount/activation_email_subject.txt',
+            email_template_name='sfaccount/activation_email_body.txt',
+            html_email_template_name='sfaccount/activation_email_body.html'):
         """
         send an activation email to the newly registered user
         """
         ctx_dict = {
             'username': self.user.username,
             'activation_key': self.activation_key,
+            'activation_url': self.get_activation_url(),
             'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
         }
-        subject = render_to_string('sfaccount/activation_email_subject.txt', ctx_dict)
+        subject = render_to_string(subject_template_name, ctx_dict)
         subject = ''.join(subject.splitlines())
-        body_text = render_to_string('sfaccount/activation_email_body.txt', ctx_dict)
-        body_html = render_to_string('sfaccount/activation_email_body.html', ctx_dict)
+        body_text = render_to_string(email_template_name, ctx_dict)
+        body_html = render_to_string(html_email_template_name, ctx_dict)
         to = self.user.email
         # send email
-        send_mail.delay(to, subject, body_text, body_html)
+        if async is None:
+            async_send_mail = getattr(settings, 'ASYNC_SEND_MAIL', False)
+        else:
+            async_send_mail = async
+        if async_send_mail:
+            send_mail.delay(to, subject, body_text, body_html)
+        else:
+            send_mail(to, subject, body_text, body_html)
     # }}}
 
     def delete_account(self):

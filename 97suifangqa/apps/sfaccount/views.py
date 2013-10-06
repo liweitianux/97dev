@@ -8,10 +8,14 @@ from django.views.decorators.csrf import csrf_protect
 from django.utils.translation import ugettext as _
 from django.shortcuts import render, redirect
 
+from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 
 from sfaccount.models import Account
-from sfaccount.forms import AccountForm, SFPasswordResetForm
+from sfaccount.forms import (
+        AccountForm, SFPasswordResetForm,
+        SFEmailForm,
+)
 
 # email address shown in the sent mail
 FROM_EMAIL = getattr(settings, 'SF_EMAIL').get('display_from')
@@ -28,7 +32,9 @@ def go_home_view(request):
             kwargs={'username': username}))
     else:
         # not logged in
-        return redirect(reverse('login'))
+        cur_url = request.get_full_path()
+        target_url = reverse('login') + '?next=' + cur_url
+        return redirect(target_url)
 # }}}
 
 
@@ -74,15 +80,50 @@ def activate_view(request, activation_key=None):
         account = Account.objects.activate(activation_key)
         if account:
             # activated
-            home_url = '/profile/%s/' % account.user.username
-            return HttpResponseRedirect(home_url)
+            return HttpResponseRedirect(reverse('activate_done'))
         else:
             # activate failed
             data = {'activate_failed': True}
             return render(request, 'sfaccount/activate.html', data)
     else:
         # ask user for the 'activation_key'
-        return render(request, 'sfaccount/activate.html')
+        activate_key_url = reverse('activate_key',
+                kwargs={'activation_key': 'XXX'})
+        activate_key_url = activate_key_url.replace('XXX/', '')
+        data = {'activate_key_url': activate_key_url}
+        return render(request, 'sfaccount/activate.html', data)
+# }}}
+
+
+# activate_done {{{
+def activate_done_view(request):
+    template_name = 'sfaccount/activate_done.html'
+    context = {}
+    return render(request, template_name, context)
+# }}}
+
+
+# send_activation_mail_view {{{
+def send_activation_mail_view(request,
+        template_name='sfaccount/activate_send_mail.html'):
+    """
+    send activation mail to the given email address
+    """
+    if request.method == "POST":
+        form = SFEmailForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            accounts = Account.objects.filter(user__email__iexact=email)
+            for account in accounts:
+                account.send_activation_email(async=False)
+            return HttpResponseRedirect(reverse('activate'))
+    else:
+        form = SFEmailForm()
+    context = {
+        'form': form,
+        'title': u"重发激活邮件",
+    }
+    return TemplateResponse(request, template_name, context)
 # }}}
 
 

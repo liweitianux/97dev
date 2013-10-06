@@ -11,3 +11,8 @@ def send_mail(to, subject, content_text=None, content_html=None):
                content_text=content_text,
                content_html=content_html)
 
+
+@task
+def test_add(x, y):
+    return x + y
+
