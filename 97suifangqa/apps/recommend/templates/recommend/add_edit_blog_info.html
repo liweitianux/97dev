@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static from staticfiles %}
+{% load dict_get %}
+
+{% block title %}
+添加文章信息 | admin | 97 随访
+{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static "css/add_edit_blog_info.css" %}"/>
+{% endblock %}
+
+{% block scripts %}
+  <script type="text/javascript" src="{% static "plugins/moment/moment.min.js" %}"></script>
+  <script type="text/javascript" src="{% static "plugins/moment/lang/zh-cn.js" %}"></script>
+  <script type="text/javascript" src="{% static "javascripts/add_edit_blog_info.js" %}"></script>
+
+  <script type="text/javascript">
+    // urls
+    var static_url = "{{ STATIC_URL }}";
+    var recommend_url = "/recommend/";
+
+    // moment.js: default the language to English
+    moment.lang('en');
+    // default date format
+    var mm_date_fmt = "YYYY-MM-DD";
+
+    // index
+    var recommend_index_url = '{% url recommend_index %}';
+    // blog id
+    var blog_id = {{ blog.id }};
+    // number of research indicators
+    var rind_num = {{ rind_num }};
+    // all combinations of research indicators
+    var rind_combs = $.parseJSON('{{ rind_combs_json|safe }}');
+    // research indicator categories (by number)
+    var rind_categories = $.parseJSON('{{ rind_categories_json|safe }}');
+    // research indicator objs dump
+    var rind_objs = $.parseJSON('{{ rind_objs_json|safe }}');
+    // research configs
+    var research_configs = $.parseJSON('{{ research_configs_json|safe }}');
+    // treat response data
+    var treat_responses_list = $.parseJSON('{{ treat_responses_list_json|safe }}');
+    var treat_responses_objs = $.parseJSON('{{ treat_responses_objs_json|safe }}');
+
+  </script>
+{% endblock %}
+
+{% block page %}
+  {% csrf_token %}
+
+  <h2>添加文章信息</h2>
+
+  <section class="blog">
+    id: {{ blog.id }}
+    <br />
+    title: {{ blog.title }}
+  </section>
+
+  <section class="buttons">
+    <input type="button" id="submit_info" value="提交信息" />
+    &ensp; | &ensp;
+    <input type="button" id="back_to_list" value="返回文章列表" />
+  </section>
+
+  <section class="categories">
+    <!-- buttons -->
+    <div id="cate_btns"></div>
+  </section>
+
+  <section class="combinations">
+    <!-- div's & buttons -->
+    <div id="comb_divs"></div>
+  </section>
+
+  <section class="configs">
+    <!-- div's & info input -->
+    <div id="conf_divs"></div>
+  </section>
+
+  <section class="notes">
+    <h4>说明</h4>
+    <p>权重： 浮点数，范围 0-10</p>
+  </section>
+{% endblock page %}
+
+{# vim: set ts=2 sw=2 tw=0 fenc=utf-8 ft=htmldjango.html: #}

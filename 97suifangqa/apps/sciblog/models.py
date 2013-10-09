@@ -4,10 +4,8 @@ from django.db import models
 from django.contrib import admin
 from django.contrib.auth.models import User
 from utils import get_abstract
-from .managers import *
 
-
-# Create your models here.
+from sciblog.managers import *
 
 
 # SciBlog {{{
@@ -367,6 +365,9 @@ class UserCollection(models.Model):
         return "< UserCollection: for %s >" % self.user.username
 # UserCollection }}}
 
+
+## NOTES: should place at the end models
+from sciblog import signals
 
 admin.site.register([
                      Source,

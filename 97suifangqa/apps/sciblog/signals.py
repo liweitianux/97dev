@@ -2,8 +2,10 @@
 
 from django.db.models.signals import pre_save, m2m_changed
 from django.dispatch import receiver
-from models import SciBlog, BlogAnnotation, ResultContent, Reference, BaseLine,\
-                   ClinicCondition, KnowledgePiece, Guideline, EndPoint
+from sciblog.models import (
+        SciBlog, BlogAnnotation, ResultContent, Reference, BaseLine,
+        ClinicCondition, KnowledgePiece, Guideline, EndPoint
+)
 
 import re
 

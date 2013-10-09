@@ -1,0 +1,21 @@
+/*
+ * css for 'recommend_index' page
+ *
+ * 2013/10/07
+ */
+
+
+ul li {
+    padding: 4px
+}
+
+span.has_info, .has_info a {
+    background-color: #B8DB70;
+    padding: 2px;
+}
+
+span.error {
+    background-color: #FFB3B3;
+    padding: 2px;
+}
+

@@ -1,0 +1,107 @@
+/*
+ * css for 'add_edit_blog_info' page
+ *
+ * 2013/10/07
+ */
+
+section {
+    margin: 0.8em;
+}
+
+h4 {
+    margin: 0.5em;
+}
+
+p {
+    margin: 0.3em;
+}
+
+section.categories {
+    border: 1px solid #4A4A4A;
+    border-radius: 2px;
+    padding: 0.8em;
+}
+
+section.combinations {
+    border: 1px solid #4A4A4A;
+    border-radius: 2px;
+    padding: 0.8em;
+}
+
+section.configs {
+    border: 1px solid #99CC33;
+    border-radius: 2px;
+    padding: 0.8em;
+}
+
+input[type="button"], input[type="submit"] {
+    background-color: #99CC33;
+    border: 1px solid #F3F2F0;
+    border-radius: 3px;
+    box-shadow: 0 0 2px #FFFFFF;
+    color: #FFFFFF;
+    cursor: pointer;
+    height: 2.1em;
+    padding-left: 0.8em;
+    padding-right: 0.8em;
+    vertical-align: middle;
+}
+
+input.selected[type="button"] {
+    background-color: #99CC33;
+    color: #FFFFFF;
+    border-color: #F3F2F0;
+}
+
+input.unselected[type="button"] {
+    background-color: #FFFFFF;
+    color: #7E7E7E;
+    border-color: #4A4A4A;
+}
+
+input[type="text"] {
+    width: 50px;
+    border-radius: 1px;
+    border: 1px solid #9C9C9C;
+}
+input.weight.valid {
+    border: 2px solid green;
+}
+input.weight.invalid {
+    border: 2px solid red;
+}
+
+table {
+    width: 100%;
+}
+table th.name {
+    width: 70%;
+}
+table th.response {
+    width: 20%;
+}
+table th.weight {
+    width: 10%;
+}
+th, td {
+    /* border: 1px solid black; */
+    padding: 0.2em;
+}
+table tr.odd {
+    background-color: #E0F0C2;
+}
+table tr.invalid {
+    background-color: #FFCCCC;
+}
+
+select.treat_response {
+    border: 1px solid #9C9C9C;
+    background-color: #FFFFFF;
+    color: #000000;
+}
+
+span.error {
+    background-color: #FFB3B3;
+    padding: 2px;
+}
+

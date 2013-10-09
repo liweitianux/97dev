@@ -10,13 +10,13 @@ class AnnotationManager(models.Manager):
         u'''
         获取段落注释
         '''
-        return self.filter(type = 0)
+        return self.filter(type = self.PARAGRAPH)
 
     def propernouns(self):
         u'''
         获取专有名词
         '''
-        return self.filter(type = 1)
+        return self.filter(type = self.PROPER_NOUN)
     
     def all_json(self, user = AnonymousUser()):
         u'''

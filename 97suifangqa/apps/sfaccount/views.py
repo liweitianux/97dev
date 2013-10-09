@@ -17,6 +17,8 @@ from sfaccount.forms import (
         SFEmailForm,
 )
 
+import re
+
 # email address shown in the sent mail
 FROM_EMAIL = getattr(settings, 'SF_EMAIL').get('display_from')
 
@@ -89,7 +91,7 @@ def activate_view(request, activation_key=None):
         # ask user for the 'activation_key'
         activate_key_url = reverse('activate_key',
                 kwargs={'activation_key': 'XXX'})
-        activate_key_url = activate_key_url.replace('XXX/', '')
+        activate_key_url = re.sub(r'XXX/$', '', activate_key_url)
         data = {'activate_key_url': activate_key_url}
         return render(request, 'sfaccount/activate.html', data)
 # }}}

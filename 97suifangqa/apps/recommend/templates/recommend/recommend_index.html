@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static from staticfiles %}
+{% load dict_get %}
+
+{% block title %}
+文章列表 | admin | 97 随访
+{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static "css/recommend_index.css" %}"/>
+{% endblock %}
+
+{% block page %}
+  <h2>文章列表 | 添加文章信息</h2>
+
+  <p>图例：<span class="has_info">已添加信息</span></p>
+
+  <ul class="blogs">
+    {% for blog in blog_list %}
+    <li class="{% if blog|dict_get:"has_info" %}has_info{% endif %}">
+      <a href="{% url add_edit_blog_info blog|dict_get:"id" %}">{{ blog|dict_get:"title" }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+{% endblock page %}
+
+{# vim: set ts=2 sw=2 tw=0 fenc=utf-8 ft=htmldjango.html: #}

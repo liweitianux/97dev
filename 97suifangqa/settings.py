@@ -157,7 +157,8 @@ INSTALLED_APPS = (
     'sciblog',
     'info',
     'recommend',
-    #'97suifangqa',
+    # 'utils' app, which places tools may be used for other apps
+    'utils',
 )
 
 LOGIN_REDIRECT_URL = '/blog/index'

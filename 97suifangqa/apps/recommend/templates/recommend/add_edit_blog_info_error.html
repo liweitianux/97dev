@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static from staticfiles %}
+{% load dict_get %}
+
+{% block title %}
+添加文章信息 | admin | 97 随访
+{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static "css/add_edit_blog_info.css" %}"/>
+{% endblock %}
+
+{% block scripts %}
+  <script type="text/javascript">
+    // index
+    var recommend_index_url = '{% url recommend_index %}';
+    // back_to_list button
+    $("#back_to_list").bind("click", function() {
+      window.location.href = recommend_index_url;
+    });
+  </script>
+{% endblock %}
+
+{% block page %}
+  <h2>错误 | 添加文章信息</h2>
+
+  <section class="blog">
+    id: {{ blog.id }}
+    <br />
+    title: {{ blog.title }}
+  </section>
+
+  <section class="no_indicator" style="display: {% if no_indicator %}block{% else %}none{% endif %};">
+    <span class="error">
+    该文章未添加关联的研究指标"ResearchIndicator"
+    ({{ ResearchIndicatorName }})
+    </span>
+  </section>
+
+  <section class="error no_indicator_atom" style="display: {% if no_indicator_atom %}block{% else %}none{% endif %};">
+    <span class="error">
+    该文章关联的以下研究指标"ResearchIndicator"
+    没有添加原子分类"ResearchAtom"({{ ResearchAtomName }})
+    </span>
+    {% if no_indicator_atom %}
+    <ul class="research_indicator">
+      {% for ri in no_atom_ri %}
+      <li>{{ ri|dict_get:"display" }} (id={{ ri|dict_get:"id" }})</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </section>
+
+  <section class="error no_treat_response" style="display: {% if no_treat_response %}block{% else %}none{% endif %};">
+    <span class="error">
+    未添加全局的治疗反应"TreatResponse"({{ TreatResponseName }})
+    </span>
+  </section>
+
+  <section class="button">
+    <input type="button" id="back_to_list" value="返回文章列表" />
+  </section>
+
+{% endblock page %}
+
+{# vim: set ts=2 sw=2 tw=0 fenc=utf-8 ft=htmldjango.html: #}

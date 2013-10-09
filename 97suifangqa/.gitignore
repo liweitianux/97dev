@@ -9,3 +9,5 @@ syntax: glob
 env/env
 
 backup/
+apps/*/fixtures_bak/
+

@@ -1014,50 +1014,6 @@ class StatisticalConfine(models.Model):                     # {{{
 # }}}
 
 
-#class UnitLabSheet(models.Model):                           # {{{
-#
-#    equipment = models.CharField(u"化验设备", max_length=100, null=True, blank= True)
-#    #figure = models.OneToOneField("figure.Figure", verbose_name=u"图片", related_name="unitlabsheet")
-#    unit_standard = models.ForeignKey("UnitStandard", verbose_name = u"单位标准", related_name="unit_lab_sheets", null=True, blank=True)
-#
-#    class Meta:
-#        verbose_name_plural = u"标准化验单"
-#
-#    def __unicode__(self):
-#        return "< UnitLabSheet: %s >" % self.id
-## }}}
-
-
-#class ReviseReason(models.Model):                           # {{{
-#    """
-#    记录 IndicatorRecord 数据修改原因
-#    医学数据重要且要求准确，不可随意修改
-#    ReviseReason 添加后不允许再修改？
-#    """
-#    # TODO: 中文支持
-#    content = models.TextField(u"内容")
-#    created_at = models.DateTimeField(u"创建时间",
-#            editable=False, auto_now_add=True)
-#    user = models.ForeignKey(User, verbose_name=u"用户")
-#
-#    class Meta:
-#        verbose_name_plural=u"指标记录修改原因"
-#
-#    def __unicode__(self):
-#        return u"< ReviseReason: %s, %s >" % (self.id,
-#                self.user.username)
-#
-#    def dump(self, **kwargs):
-#        dump_data = {
-#            'id': self.id,
-#            'content': self.content,
-#            'created_at': self.created_at.isoformat(),
-#            'user_id': self.user.id,
-#        }
-#        return dump_data
-## }}}
-
-
 class RelatedIndicator(models.Model):                       # {{{
     """
     记录 blog/annotation 与哪些 indicator 关联，
@@ -1073,8 +1029,8 @@ class RelatedIndicator(models.Model):                       # {{{
     ANNOTATION_TYPE = 'AN'
     BLOG_TYPE = 'BL'
     OBJECT_TYPES = (
-        (ANNOTATION_TYPE, '文章注释'),
-        (BLOG_TYPE, '文章'),
+        (ANNOTATION_TYPE, u'文章注释'),
+        (BLOG_TYPE, u'文章'),
     )
     objectType = models.CharField(u"待关联目标类型", max_length=2,
             choices=OBJECT_TYPES)
@@ -1177,8 +1133,6 @@ admin.site.register([
                      Unit,
                      InnateConfine,
                      StatisticalConfine,
-                     #UnitLabSheet,
-                     #ReviseReason,
                      RelatedIndicator,
                     ])
 
