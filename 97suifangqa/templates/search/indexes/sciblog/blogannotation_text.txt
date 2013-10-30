@@ -1,5 +1,7 @@
+{%if object.type == 1 %}
 {{ object.brief_content }}
 {{ object.detail }}
 {% for keyword in object.keywords.all %}
 {{ keyword.content }} 
 {% endfor %}
+{% endif %}

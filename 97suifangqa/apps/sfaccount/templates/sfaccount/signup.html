@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 {% block title %}
-注册账户 | 97随访
+注册账户 | 医时代
 {% endblock %}
 
 {% block bodyclasses %}{{ block.super }} registration signup{% endblock %}
@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="{% static "stylesheets/sass/registration.css" %}">
 {% endblock %}
 {% block body %}
-<h2>加入97随访 &emsp; 科学了解乙肝治疗</h2>
+<h2>加入医时代 &emsp; 科学了解乙肝治疗</h2>
 <form action="" method="post">{% csrf_token %}
   	<table class="reg-form register-form">
   		{% for item in form %}

@@ -91,14 +91,14 @@ def query(request):
         request.session['search_history'] = '&&&'.join(search_history)
 
         results = form.search()
-        (has_blogs, blogs) = generator_has_content(limit(objects_of_sqs(results),10))
+        (has_blogs, blogs) = generator_has_content(limit(objects_of_sqs(results),20))
         questuinsqs = QuerySearchForm(request.GET).search()
         (has_relate_questions, questions) = generator_has_content(limit(objects_of_sqs(questuinsqs),8))
         ppnounsqs = ProperNounSearchForm(request.GET).search()
-        (hasppnouns, ppnouns) = generator_has_content(limit(objects_of_sqs(ppnounsqs),10))
+        (hasppnouns, ppnouns) = generator_has_content(limit(objects_of_sqs(ppnounsqs),5))
         return render(request, 'sciblog/blog_list.html', locals())
     else:
-        (has_blogs, blogs) = generator_has_content(limit(sm.SciBlog.objects.all(),10))
+        (has_blogs, blogs) = generator_has_content(limit(sm.SciBlog.objects.all(),30))
         return render(request, 'sciblog/blog_list.html', locals())
 
 
@@ -109,7 +109,7 @@ def blog_collection(request):
     has_blogs = len(blogs) > 0
     ppnouns = request.user.annotation_collection.all()
     has_ppnouns = request.user.annotation_collection.count() > 0
-    return render(request, 'sciblog/blog_list.html', locals())
+    return render(request, 'sciblog/blog_list_collection.html', locals())
 
 
 @login_required

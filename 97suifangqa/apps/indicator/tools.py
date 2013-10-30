@@ -15,6 +15,25 @@ import re
 import datetime
 
 
+# types of recommended indicators, and weights {{{
+RI_TYPES = {
+    'ANNOTATION_COLLECTED': u'ANN_CL',
+    'BLOG_CATCHED': u'BLG_CT',
+    'BLOG_COLLECTED': u'BLG_CL',
+    'OTHER': u'OTHER',
+    'ERROR': u'ERROR',      # no 'RelatedIndicator' data
+}
+RI_WEIGHTS = {
+    RI_TYPES['ANNOTATION_COLLECTED']: 4.0,
+    RI_TYPES['BLOG_CATCHED']: 3.0,
+    RI_TYPES['BLOG_COLLECTED']: 2.0,
+    RI_TYPES['OTHER']: 1.0,
+    RI_TYPES['ERROR']: 0.0,
+}
+# }}}
+
+
+
 # follow_indicator {{{
 def follow_indicator(user_id, indicator_id):
     """
@@ -23,6 +42,10 @@ def follow_indicator(user_id, indicator_id):
     try:
         user = get_object_or_404(User, id=user_id)
         indicator = im.Indicator.objects.get(id=indicator_id)
+        # check the type of indicator
+        if indicator.type != im.Indicator.NORMAL_TYPE:
+            return False
+        #
         ui, created = im.UserIndicator.objects.get_or_create(user=user)
         ui.followedIndicators.add(indicator)
         # to remove the indicator from 'followedHistories' if exists
@@ -55,7 +78,7 @@ def unfollow_indicator(user_id, indicator_id):
 
 
 # get_indicator {{{
-def get_indicator(category_id="all", startswith="all"):
+def get_indicator(category_id="all", startswith="all", type="all"):
     """
     根据指定的 category_id 和 startswith 获取 indicator
     返回一个 dict
@@ -69,17 +92,23 @@ def get_indicator(category_id="all", startswith="all"):
 
     _idict = {}
     if category_id == 'all':
-        iqueryset = im.Indicator.objects.all()
+        if type == 'all':
+            iqueryset = im.Indicator.objects.all()
+        else:
+            iqueryset = im.Indicator.objects.filter(type=type)
     else:
         try:
             cid = int(category_id)
             cate = im.IndicatorCategory.objects.get(id=cid)
-            iqueryset = cate.indicators.all()
+            if type == 'all':
+                iqueryset = cate.indicators.all()
+            else:
+                iqueryset = cate.indicators.filter(type=type)
         except ValueError:
-            raise ValueError(u'category_id 不是整数型')
+            raise ValueError(u'Error: category_id 不是整数型')
             return _idict
         except im.IndicatorCategory.DoesNotExist:
-            raise ValueError(u'id=%s 的 IndicatorCategory 不存在'
+            raise ValueError(u'Error: IndicatorCategory(id=%s) 不存在'
                     % cid)
             return _idict
 
@@ -116,7 +145,7 @@ def get_followed_indicator(user_id, category_id="all", startswith="all"):
             cid = int(category_id)
             iqueryset = iqueryset.filter(categories__id=cid)
         except ValueError:
-            raise ValueError(u'category_id 不是整数型')
+            raise ValueError(u'Error: category_id 不是整数型')
             return _idict
 
     if startswith == 'all':
@@ -140,6 +169,8 @@ def get_unfollowed_indicator(user_id, category_id="all", startswith="all"):
     """
     获取未关注的指标
     返回 dict, 格式与 get_indicator() 一致
+
+    只考虑 NORMAL_TYPE 的指标
     """
 
     u = User.objects.get(id=user_id)
@@ -147,13 +178,15 @@ def get_unfollowed_indicator(user_id, category_id="all", startswith="all"):
     ui.save()
     _idict = {}
     # XXX: if 'exclude(followed_indicators=ui)' OK??
-    iqueryset = im.Indicator.objects.exclude(followed_indicators=ui)
+    iqueryset = im.Indicator.objects.\
+            filter(type=im.Indicator.NORMAL_TYPE).\
+            exclude(followed_indicators=ui)
     if not category_id == 'all':
         try:
             cid = int(category_id)
             iqueryset = iqueryset.filter(categories__id=cid)
         except ValueError:
-            raise ValueError(u'category_id 不是整数型')
+            raise ValueError(u'Error: category_id 不是整数型')
             return _idict
 
     if startswith == 'all':
@@ -448,24 +481,6 @@ def add_recordhistory(user_id, record_id, reason, created_at=None):
 # }}}
 
 
-# types of recommended indicators, and weights {{{
-RI_TYPES = {
-    'ANNOTATION_COLLECTED': u'ANN_CL',
-    'BLOG_CATCHED': u'BLG_CT',
-    'BLOG_COLLECTED': u'BLG_CL',
-    'OTHER': u'OTHER',
-    'ERROR': u'ERROR',      # no 'RelatedIndicator' data
-}
-RI_WEIGHTS = {
-    RI_TYPES['ANNOTATION_COLLECTED']: 4.0,
-    RI_TYPES['BLOG_CATCHED']: 3.0,
-    RI_TYPES['BLOG_COLLECTED']: 2.0,
-    RI_TYPES['OTHER']: 1.0,
-    RI_TYPES['ERROR']: 0.0,
-}
-# }}}
-
-
 # calc_indicator_weight {{{
 def calc_indicator_weight(user_id, indicator_id):
     """
@@ -533,11 +548,13 @@ def recommend_indicator(user_id, number=1, auto_follow=False):
     """
     user_id = int(user_id)
     number = int(number)
-    # get unfollowed indicators
+    ## get unfollowed indicators (only 'NORMAL_TYPE' indicators)
     u = User.objects.get(id=user_id)
     ui, created = im.UserIndicator.objects.get_or_create(user=u)
     # XXX: is 'exclude(followed_indicators=ui)' OK??
-    uf_ind_qs = im.Indicator.objects.exclude(followed_indicators=ui)
+    uf_ind_qs = im.Indicator.objects.\
+            filter(type=im.Indicator.NORMAL_TYPE).\
+            exclude(followed_indicators=ui)
     # calc weight for each unfollowed indicator
     weights = []
     for ind in uf_ind_qs:
@@ -567,7 +584,12 @@ def recommend_indicator(user_id, number=1, auto_follow=False):
 
 
 # format_data {{{
-def format_data(indicator_obj, value=None, val_max=None, val_min=None, type="html"):
+def format_data(indicator_obj,
+        value=None,
+        val_max=None,
+        val_min=None,
+        kind=None,
+        type="html"):
     """
     format given data according to the dataType of given Indicator,
     make it proper for django templates
@@ -688,6 +710,13 @@ def format_data(indicator_obj, value=None, val_max=None, val_min=None, type="htm
         else:
             value_str = u'%s %s %s' % (val_min_str,
                     range_sym_text, val_max_str)
+    elif kind is not None:
+        # KIND_TYPE
+        if (dataType == ind.KIND_TYPE) and\
+                isinstance(kind, im.ValueKind):
+            value_str = u'%s' % kind.name
+        else:
+            value_str = u''
     else:
         # other type??
         return None

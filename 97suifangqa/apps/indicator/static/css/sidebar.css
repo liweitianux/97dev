@@ -5,7 +5,7 @@
 	padding: 1.5em 0;
 	position: absolute;
     z-index: 10;
-    width: 420px;
+    /*width: 420px;*/
     height: 1020px;
     background-color: #F3F3F1;
 }
@@ -79,8 +79,8 @@
 
 /* 对比容器样式 */
 #compare_container {
-	margin-top: 26px;
-	padding-left: 18px;
+	margin-top: -7px;
+	padding-left: 27px;
 	width: 383px;
 }
 #compare_container .post-question .searchdiv .question {
@@ -91,13 +91,14 @@
 }
 #compare_container .post-question .searchdiv .submit {
 	width: 72px;
-	height: 31px;
+	height: 35px;
 	border: 1px solid #cce79a;
 	vertical-align: baseline;
 	float: right;
+	
 }
 #compare_container .similar_container {
-	margin-top: 14px;
+	margin-top: 0px;
 	margin-left:15px;
 }
 .vertical_bar_component {
@@ -156,6 +157,16 @@
 	position: absolute;
 	z-index: 100;
 }
+
+#sidebar_container .submit{
+	margin-left: 40px;
+	margin-top: -5px;
+	width: 330px;
+	height: 45px;
+	line-height: 1em;
+	padding-top:0.5em;
+}
+
 #compare_container .similar_container .similar_content {
 	margin-left: 15px;
 	float: left;
@@ -168,7 +179,6 @@
 }
 #compare_container .similar_container .similar_content .specifix_content {
 	background: url("../images/dialog-default.png") no-repeat;
-	height: 47px;
 	width: 343px;
 	margin-left: -10px;
 	margin-bottom: 35px;
@@ -184,24 +194,22 @@
 	padding-left: 25px;
 	font-size: 15px;
 }
-#compare_container .compare_btn {
+/*compare_container .compare_btn {
 	border: 1px solid #7da625;
 	width: 380px;
 	height: 38px;
 	border-radius: 3px;
 	margin-top: 8px;
 	cursor: pointer;
-}
-#compare_container .compare_btn .compare_btn_in{
-	border: 1px solid #b8db71;
-	border-bottom: none;
-   	background: #8bb830;
+}*/
+#compare_btn_in{
+   	background: #99cc33;
    	background: -webkit-gradient(linear, left top, left bottom, from(#99cc33), to(#8bb830));
    	background: -webkit-linear-gradient(top, #99cc33, #8bb830);
    	background: -moz-linear-gradient(top, #99cc33, #8bb830);
    	background: -ms-linear-gradient(top, #99cc33, #8bb830);
    	background: -o-linear-gradient(top, #99cc33, #8bb830);
-   	width: 378px;
+   	width: 300px;
    	height: 36px;
    	line-height: 36px;
    	color: #FFF;
@@ -216,8 +224,9 @@
 	background: #8AB82E;
 	box-shadow: 0 0 10px rgba(85 85 85 0.5) inset;
 }
-#compare_container .logo_container {
-	margin-top: 30px;
-	text-align: center;
+#sidebar_container .logo_container {
+	margin-top: 20px;
+	margin-left:115px;
+
 }
 

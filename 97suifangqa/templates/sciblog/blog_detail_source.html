@@ -1,7 +1,7 @@
 {% extends "sciblog/blog_detail.html" %}
 
 {% block sectionname %}
-文章来源
+<span style="font-weight:normal;">文章来源</span>
 {% endblock %}
 
 {% block navigation %}
@@ -24,7 +24,7 @@
 <p>{{ blog.authors }}</p>
 <h4>学者机构</h4>
 <p>{% for h in blog.hospital.all %}
-{{ h.name }}({{ h.city.nation.name }})
+{{ h.name }}({{ h.city.nation.name }})&nbsp;&nbsp;&nbsp;&nbsp;
 {% endfor %}
-等等</p>
+等</p>
 {% endblock %}

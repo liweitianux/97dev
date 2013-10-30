@@ -79,6 +79,10 @@ class IndicatorCategory(models.Model):                      # {{{
 class Indicator(models.Model):                              # {{{
     """
     指标模型
+
+    type:
+      normal: 普通类别，用户可以follow/unfollow
+      basic: 基本信息指标，用于记录基本信息，不可以follow
     """
     name = models.CharField(u"指标名称", max_length=100)
     pinyin = models.CharField(u"拼音", max_length=200,
@@ -88,6 +92,16 @@ class Indicator(models.Model):                              # {{{
     description = models.TextField(u"指标描述", blank=True)
     # Indicator 接受数据类型/格式等说明/示例
     helpText = models.CharField(u"帮助", max_length=300, blank=True)
+    # indicator type
+    NORMAL_TYPE = u'NORM'
+    BASIC_TYPE  = u'BASI'
+    INDICATOR_TYPES = (
+        (NORMAL_TYPE, u"普通指标"),
+        (BASIC_TYPE,  u"基本信息指标"),
+    )
+    type = models.CharField(u"指标类型", max_length=4,
+            choices=INDICATOR_TYPES,
+            help_text=u"基本信息指标：用于记录用户的基本信息，不可以被用户关注")
     # 记录添加指标的用户，用户只能修改自己添加的指标
     addByUser = models.ForeignKey(User, verbose_name=u"添加的用户",
             related_name="indicators")
@@ -95,21 +109,23 @@ class Indicator(models.Model):                              # {{{
     categories = models.ManyToManyField(IndicatorCategory,
             verbose_name=u"所属类别", related_name="indicators")
     # DATA_TYPES for indicator
-    INTEGER_TYPE = u'IN'        # 整数型
-    FLOAT_TYPE = u'FL'          # 浮点型
-    RANGE_TYPE = u'RG'          # 范围型(eg. 250-500)
+    INTEGER_TYPE     = u'IN'    # 整数型
+    FLOAT_TYPE       = u'FL'    # 浮点型
+    RANGE_TYPE       = u'RG'    # 范围型(eg. 250-500)
     FLOAT_RANGE_TYPE = u'FR'    # 浮点型/范围型，接受定值或范围
-    PM_TYPE = u'PM'             # +/- 型
-    RADIO_TYPE = u'RD'          # 单选型
-    CHECKBOX_TYPE = u'CB'       # 多选多
+    PM_TYPE          = u'PM'    # +/- 型
+    KIND_TYPE        = u'KD'    # 种类型
+    RADIO_TYPE       = u'RD'    # 单选型
+    CHECKBOX_TYPE    = u'CB'    # 多选多
     DATA_TYPES = (
-        (INTEGER_TYPE, u"整数型"),
-        (FLOAT_TYPE, u"浮点定值型"),
-        (RANGE_TYPE, u"浮点范围型"),
+        (INTEGER_TYPE,     u"整数型"),
+        (FLOAT_TYPE,       u"浮点定值型"),
+        (RANGE_TYPE,       u"浮点范围型"),
         (FLOAT_RANGE_TYPE, u"定值或范围型"),
-        (PM_TYPE, u"阴阳型(+/-)"),
-        #(RADIO_TYPE, u"单选型"),
-        #(CHECKBOX_TYPE, u"多选型"),
+        (PM_TYPE,          u"阴阳型(+/-)"),
+        (KIND_TYPE,        u"种类型"),
+        #(RADIO_TYPE,       u"单选型"),
+        #(CHECKBOX_TYPE,    u"多选型"),
     )
     dataType = models.CharField(u"数据类型", max_length=2,
             choices=DATA_TYPES)
@@ -119,8 +135,8 @@ class Indicator(models.Model):                              # {{{
         ordering = ['pinyin', 'id']
 
     def __unicode__(self):
-        return u"< Indicator: #%s, %s, dataType %s addBy %s >"\
-                % (self.id, self.name, self.dataType,
+        return u"< Indicator: #%s(%s), %s, dataType %s addBy %s >"\
+                % (self.id, self.type, self.name, self.dataType,
                 self.addByUser.username)
 
     def show(self):
@@ -140,11 +156,11 @@ class Indicator(models.Model):                              # {{{
         self.pinyin = p.get_pinyin(self.name)
         super(Indicator, self).save(**kwargs)
 
-    def check_unit(self, **kwargs):
+    def check_unit(self, **kwargs):                         # {{{
         """
         Check if the validity of the units specified for the indicator.
         A indicator must have one 'standard unit'.
-        if indicator.dataType in [INTEGER_TYPE, PM_TYPE],
+        if indicator.dataType in [INTEGER_TYPE, PM_TYPE, KIND_TYPE],
         then units are not needed.
         """
         if self.dataType in [self.FLOAT_TYPE, self.RANGE_TYPE,
@@ -153,13 +169,14 @@ class Indicator(models.Model):                              # {{{
             if std_unit:
                 return True
             else:
-                print u"Indicator id=%s 未指定标准单位" % self.id
+                print u"Indicator(id=%s)未指定标准单位" % self.id
                 return False
         else:
-            print u"dataType=%s 不需要单位" % self.dataType
+            #print u"dataType='%s' 不需要单位" % self.dataType
             return True
+    # }}}
 
-    def _get_unit(self, type="standard"):
+    def _get_unit(self, type="standard"):                   # {{{
         if type == "standard":
             _units = self.units.filter(standard=True)
         elif type == "other":
@@ -167,8 +184,9 @@ class Indicator(models.Model):                              # {{{
         else:
             _units = []
         return list(_units)
+    # }}}
 
-    def get_unit(self, type="standard"):
+    def get_unit(self, type="standard"):                    # {{{
         """
         return a 'list' which contains the 'Unit's
         related to the indicator
@@ -185,6 +203,17 @@ class Indicator(models.Model):                              # {{{
             return _units
         else:
             return self._get_unit(type)
+    # }}}
+
+    def get_kind(self):
+        """
+        get the valid ValueKind's that can be used with this indicator
+        (1) general 'ValueKind's
+        (2) 'ValueKind's related to this indicator
+        """
+        general_kinds = list(ValueKind.objects.filter(indicator=None))
+        ind_kinds = list(ValueKind.objects.filter(indicator=self))
+        return list(general_kinds + ind_kinds)
 
     def check_confine(self):
         """
@@ -225,6 +254,7 @@ class Indicator(models.Model):                              # {{{
             'englishName': self.englishName,
             'description': self.description,
             'helpText': self.helpText,
+            'type': self.type,
             'addByUser_id': self.addByUser.id,
             'dataType': self.dataType,
             'categories_id': [c.id
@@ -291,6 +321,13 @@ class IndicatorRecord(models.Model):                        # {{{
             null=True, blank=True)
     val_max = models.FloatField(u"数据范围上限",
             null=True, blank=True)
+    # kind (for KIND_TYPE)
+    kind = models.ForeignKey("ValueKind",
+            related_name="indicator_records",
+            verbose_name=u"指标种类值",
+            null=True, blank=True,
+            help_text=u"仅供'种类型'指标填写")
+    # notes
     notes = models.TextField(u"记录说明", blank=True)
 
     class Meta:
@@ -309,7 +346,8 @@ class IndicatorRecord(models.Model):                        # {{{
         if self.is_valid() and self.check_confine():
             super(IndicatorRecord, self).save(**kwargs)
         else:
-            raise ValueError(u'您输入的数据不符合要求')
+            raise ValueError(u'Error: 您输入的数据不符合要求')
+            return self
 
     def is_valid(self, **kwargs):                           # {{{
         """验证输入数据是否合法"""
@@ -317,8 +355,8 @@ class IndicatorRecord(models.Model):                        # {{{
         qs = IndicatorRecord.objects.filter(indicator=self.indicator,
                 date=self.date)
         if qs and qs[0].id != self.id:
-            #raise ValueError(u'date="%s" 该日期已经存在记录' % self.date)
-            print u'date="%s" 该日期已经存在记录' % self.date
+            #raise ValueError(u'Error: date="%s" 该日期已经存在记录' % self.date)
+            print u'Error: date="%s" 该日期已经存在记录' % self.date
             return False
         # check unit
         sind = self.indicator
@@ -327,12 +365,12 @@ class IndicatorRecord(models.Model):                        # {{{
             # unit required
             ind_units = sind.get_unit(type="all")
             if not self.unit:
-                #raise ValueError(u'未填写单位')
-                print u'未填写单位'
+                #raise ValueError(u'Error: 未填写单位')
+                print u'Error: 未填写单位'
                 return False
             elif self.unit not in ind_units:
-                #raise ValueError(u'所选单位与该指标不符')
-                print u'所选单位与该指标不符'
+                #raise ValueError(u'Error: 所选单位与该指标不符')
+                print u'Error: 所选单位与该指标不符'
                 return False
         # check dataType
         if self.indicator.dataType == self.indicator.INTEGER_TYPE:
@@ -341,8 +379,8 @@ class IndicatorRecord(models.Model):                        # {{{
                 value = int(self.value)
                 return True
             except ValueError:
-                #raise ValueError(u'您提交的指标数据类型不正确')
-                print u'您提交的指标数据类型不正确'
+                #raise ValueError(u'Error: 您提交的指标数据类型不正确')
+                print u'Error: 您提交的指标数据类型不正确'
                 return False
         elif self.indicator.dataType == self.indicator.FLOAT_TYPE:
             # 浮点型
@@ -350,17 +388,17 @@ class IndicatorRecord(models.Model):                        # {{{
                 value = float(self.value)
                 return True
             except ValueError:
-                #raise ValueError(u'value 数据类型不正确')
-                print u'value 数据类型不正确'
+                #raise ValueError(u'Error: value 数据类型不正确')
+                print u'Error: value 数据类型不正确'
                 return False
         elif self.indicator.dataType == self.indicator.RANGE_TYPE:
             # 范围型
             if (self.val_max is None) or (self.val_min is None):
-                #raise ValueError(u'val_max 或 val_min 未填写')
-                print u'val_max 或 val_min 未填写'
+                #raise ValueError(u'Error: val_max 或 val_min 未填写')
+                print u'Error: val_max 或 val_min 未填写'
                 return False
             if (self.val_max <= self.val_min):
-                #raise ValueError(u'val_max <= val_min')
+                #raise ValueError(u'Error: val_max <= val_min')
                 print u'Error: val_max <= val_min'
                 return False
             return True
@@ -372,33 +410,44 @@ class IndicatorRecord(models.Model):                        # {{{
                     value = float(self.value)
                     return True
                 except ValueError:
-                    #raise ValueError(u'value 数据类型不正确')
-                    print u'value 数据类型不正确'
+                    #raise ValueError(u'Error: value 数据类型不正确')
+                    print u'Error: value 数据类型不正确'
                     return False
             elif (self.val_max is not None) and (self.val_min is not None):
                 # 范围值
                 if (self.val_max <= self.val_min):
-                    #raise ValueError(u'val_max <= val_min')
+                    #raise ValueError(u'Error: val_max <= val_min')
                     print u'Error: val_max <= val_min'
                     return False
                 else:
                     return True
             else:
-                #raise ValueError(u'您提交的指标数据不符合要求')
-                print u'您提交的指标数据不符合要求'
+                #raise ValueError(u'Error: 您提交的指标数据不符合要求')
+                print u'Error: 您提交的指标数据不符合要求'
                 return False
         elif self.indicator.dataType == self.indicator.PM_TYPE:
             # +/- 型，无单位要求
             if (len(self.value) == 1) and (self.value in [u'+', u'-']):
                 return True
             else:
-                #raise ValueError(u'value 只接受 "+" 或 "-"')
+                #raise ValueError(u'Error: value 只接受 "+" 或 "-"')
                 print u'Error: value 只接受 "+" 或 "-"'
                 return False
-        ## TODO: RADIO_TYPE, CHECKBOX_TYPE
+        elif self.indicator.dataType == self.indicator.KIND_TYPE:
+            ## KIND_TYPE
+            ## only the general 'ValueKind's and the ones related
+            ## to this indicator can be used
+            valid_kinds = self.indicator.get_kind()
+            if self.kind in valid_kinds:
+                return True
+            else:
+                #raise ValueError(u'Error: kind 不符合要求')
+                print u'Error: kind 不符合要求'
+                return False
         elif self.indicator.dataType in [self.indicator.RADIO_TYPE,
                 self.indicator.CHECKBOX_TYPE]:
-            #raise ValueError(u'RADIO_TYPE, CHECKBOX_TYPE 验证未实现')
+            ## TODO: RADIO_TYPE, CHECKBOX_TYPE
+            #raise ValueError(u'Error: RADIO_TYPE, CHECKBOX_TYPE 验证未实现')
             print u'Error: RADIO_TYPE, CHECKBOX_TYPE 验证未实现'
             return False
         else:
@@ -478,7 +527,7 @@ class IndicatorRecord(models.Model):                        # {{{
             # check finished
             return True
         else:
-            # INTEGER_TYPE or PM_TYPE
+            # INTEGER_TYPE or PM_TYPE or KIND_TYPE
             return True
     # }}}
 
@@ -489,6 +538,12 @@ class IndicatorRecord(models.Model):                        # {{{
         """
         # check the indicator.dataType
         sind = self.indicator
+        # kind_dump
+        if self.kind:
+            kind_dump = self.kind.dump()
+        else:
+            kind_dump = {}
+        #
         if sind.dataType in [sind.FLOAT_TYPE, sind.RANGE_TYPE,
                 sind.FLOAT_RANGE_TYPE]:
             # self.value
@@ -514,6 +569,7 @@ class IndicatorRecord(models.Model):                        # {{{
                 'val_max': val_max,
                 'val_min': val_min,
                 'unit': self.unit.dump(),
+                'kind': kind_dump,
                 'notes': self.notes,
                 'record_histories_id': [rh.id
                     for rh in self.record_histories.all()],
@@ -526,6 +582,7 @@ class IndicatorRecord(models.Model):                        # {{{
                 'val_max': self.val_max,
                 'val_min': self.val_min,
                 'unit': {},
+                'kind': kind_dump,
                 'notes': self.notes,
                 'record_histories_id': [rh.id
                     for rh in self.record_histories.all()],
@@ -586,6 +643,11 @@ class IndicatorRecord(models.Model):                        # {{{
                         raise ValueError(errmsg)
                 else:
                     val_min_std = None
+                # kind_dump
+                if self.kind:
+                    kind_dump = self.kind.dump
+                else:
+                    kind_dump = {}
                 # output data
                 data_std = {
                     'id': self.id,
@@ -594,6 +656,7 @@ class IndicatorRecord(models.Model):                        # {{{
                     'val_max': val_max_std,
                     'val_min': val_min_std,
                     'unit': std_unit.dump(),
+                    'kind': kind_dump,
                     'notes': self.notes,
                     'record_histories_id': [rh.id
                         for rh in self.record_histories.all()],
@@ -685,7 +748,15 @@ class IndicatorRecord(models.Model):                        # {{{
                 return True
             else:
                 return False
+        elif sind.dataType == sind.KIND_TYPE:
+            ## KIND_TYPE
+            kind_id = data_std['kind_id']
+            if kind_id == sic.kind.id:
+                return True
+            else:
+                return False
         elif sind.dataType in [sind.RADIO_TYPE, sind.CHECKBOX_TYPE]:
+            ## TODO: RADIO_TYPE, CHECKBOX_TYPE
             print u'Error: RADIO_TYPE, CHECKBOX_TYPE 验证未实现'
             #raise ValueError(u'RADIO_TYPE, CHECKBOX_TYPE 验证未实现')
             return None
@@ -695,12 +766,17 @@ class IndicatorRecord(models.Model):                        # {{{
             return None
     # }}}
 
-    def dump(self, **kwargs):
+    def dump(self, **kwargs):                               # {{{
         # check if the indicator needs unit
         if self.unit:
             unit_id = self.unit.id
         else:
             unit_id = None
+        # kind_id
+        if self.kind:
+            kind_dump = self.kind.dump()
+        else:
+            kind_dump = {}
         # dump
         dump_data = {
             'id': self.id,
@@ -713,11 +789,13 @@ class IndicatorRecord(models.Model):                        # {{{
             'value': self.value,
             'val_min': self.val_min,
             'val_max': self.val_max,
+            'kind': kind_dump,
             'notes': self.notes,
             'record_histories_id': [rh.id
                 for rh in self.record_histories.all()],
         }
         return dump_data
+    # }}}
 # }}}
 
 
@@ -744,6 +822,10 @@ class RecordHistory(models.Model):                          # {{{
             null=True, blank=True, editable=False)
     val_max_bak = models.FloatField(u"原数据范围上限",
             null=True, blank=True, editable=False)
+    kind_bak = models.ForeignKey("ValueKind",
+            related_name="record_histories",
+            verbose_name=u"原种类值",
+            null=True, blank=True, editable=False)
     notes_bak = models.TextField(u"原记录说明", blank=True,
             editable=False)
 
@@ -763,6 +845,7 @@ class RecordHistory(models.Model):                          # {{{
         self.value_bak = sr.value
         self.val_min_bak = sr.val_min
         self.val_max_bak = sr.val_max
+        self.kind_bak = sr.kind
         self.notes_bak = sr.notes
         # save
         super(RecordHistory, self).save(**kwargs)
@@ -773,6 +856,11 @@ class RecordHistory(models.Model):                          # {{{
             unit_bak_id = self.unit_bak.id
         else:
             unit_bak_id = None
+        # kind_bak_id
+        if self.kind_bak:
+            kind_bak_id = self.kind_bak.id
+        else:
+            kind_bak_id = None
         # dump
         dump_data = {
             'id': self.id,
@@ -784,6 +872,7 @@ class RecordHistory(models.Model):                          # {{{
             'value_bak': self.value_bak,
             'val_min_bak': self.val_min_bak,
             'val_max_bak': self.val_max_bak,
+            'kind_bak_id': kind_bak_id,
             'notes_bak': self.notes_bak,
         }
         return dump_data
@@ -829,23 +918,23 @@ class Unit(models.Model):                                   # {{{
                 if self.id == std_unit.id:
                     return True
                 else:
-                    print u"该指标已经指定了标准单位"
-                    raise ValueError(u"该指标已经指定了标准单位")
+                    print u"Error: 该指标已经指定了标准单位"
+                    raise ValueError(u"Error: 该指标已经指定了标准单位")
                     return False
             else:
                 return True
         else:
             if (not self.relation):
-                print u"单位映射关系未填写"
-                raise ValueError(u"单位映射关系未填写")
+                print u"Error: 单位映射关系未填写"
+                raise ValueError(u"Error: 单位映射关系未填写")
                 return False
             else:
                 try:
                     fsym = sympy.sympify(self.relation)
                     return True
                 except SympifyError:
-                    print u"'%s' 不是合法的算术表达式" % self.relation
-                    raise ValueError(u"'%s' 不是合法的算术表达式"\
+                    print u"Error: '%s' 不是合法的算术表达式" % self.relation
+                    raise ValueError(u"Error: '%s' 不是合法的算术表达式"\
                             % self.relation)
                     return False
 
@@ -878,6 +967,10 @@ class InnateConfine(models.Model):                          # {{{
     如果数据类型需要单位，则必须使用"标准单位"；
     IndicatorRecord.is_normal() 方法需要如此；
     因为 标准单位 到 其他单位 的换算没有实现。
+
+    KIND_TYPE:
+    对于'种类型'指标，如果每个可选种类不区分正常和异常，
+    且程序其他地方也不涉及是否正常，则可以随便选一个。
     """
     # indicator
     indicator = models.OneToOneField("Indicator",
@@ -889,6 +982,12 @@ class InnateConfine(models.Model):                          # {{{
     # normal value (for INTEGER_TYPE, PM_TYPE)
     val_norm = models.CharField(u"正常值", max_length=30, blank=True,
             help_text=u'填写"整数型","阴阳(+/-)型数据"')
+    # normal kind (for KIND_TYPE)
+    kind_norm = models.ForeignKey("ValueKind",
+            related_name="innate_confines",
+            verbose_name=u"正常种类值",
+            null=True, blank=True,
+            help_text=u"仅供'种类型'指标填写")
     # normal range
     human_min = models.FloatField(u"人体正常值下限",
             null=True, blank=True)
@@ -929,10 +1028,15 @@ class InnateConfine(models.Model):                          # {{{
         sind = self.indicator
         if sind.dataType in [sind.FLOAT_TYPE, sind.RANGE_TYPE,
                 sind.FLOAT_RANGE_TYPE]:
-            # check unit
-            if not (self.unit and self.unit.standard):
-                raise ValueError(u'单位未填写/不是标准单位')
+            # check unit if given
+            # check the unit if related to the indicator
+            ind_std_unit = sind.get_unit(type="standard")
+            if self.unit and self.unit in ind_std_unit:
+                return True
+            else:
+                raise ValueError(u'ERROR: 单位未填写/不是该指标的标准单位')
                 return False
+            #
             if (self.human_max is None) or (self.human_min is None):
                 raise ValueError(u'Error: human_max 或 human_min 未填写')
                 return False
@@ -959,7 +1063,7 @@ class InnateConfine(models.Model):                          # {{{
                 val_norm = int(self.val_norm)
                 return True
             except ValueError:
-                raise ValueError(u'val_norm="%s" 不是整数型值'
+                raise ValueError(u'ERROR: val_norm="%s" 不是整数型值'
                         % self.val_norm)
                 return False
         elif sind.dataType == sind.PM_TYPE:
@@ -968,14 +1072,27 @@ class InnateConfine(models.Model):                          # {{{
                     self.val_norm in [u'+', u'-']):
                 return True
             else:
-                raise ValueError(u'value 只接受 "+" 或 "-"')
+                raise ValueError(u'ERROR: value 只接受 "+" 或 "-"')
                 return False
-        ## TODO: RADIO_TYPE, CHECKBOX_TYPE
+        elif sind.dataType == sind.KIND_TYPE:
+            ## KIND type
+            ## (KIND type indicator not need 'InnateConfine')
+            if not self.kind_norm:
+                raise ValueError(u'ERROR: kind_norm 未填写')
+                return False
+            else:
+                valid_kinds = self.indicator.get_kind()
+                if self.kind_norm in valid_kinds:
+                    return True
+                else:
+                    raise ValueError(u'ERROR: kind_norm 不符合要求')
+                    return False
         elif sind.dataType in [sind.RADIO_TYPE, sind.CHECKBOX_TYPE]:
-            raise ValueError(u'RADIO_TYPE, CHECKBOX_TYPE 验证未实现')
+            ## TODO: RADIO_TYPE, CHECKBOX_TYPE
+            raise ValueError(u'ERROR: RADIO_TYPE, CHECKBOX_TYPE 验证未实现')
             return False
         else:
-            raise ValueError(u'数据不符合要求')
+            raise ValueError(u'ERROR: 数据不符合要求')
             return False
     # }}}
 
@@ -985,12 +1102,18 @@ class InnateConfine(models.Model):                          # {{{
             unit_dump = self.unit.dump()
         else:
             unit_dump = {}
+        # check 'kind_norm'
+        if self.kind_norm:
+            kind_norm_dump = self.kind_norm.dump()
+        else:
+            kind_norm_dump = {}
         # dump
         dump_data = {
             'id': self.id,
             'indicator_id': self.indicator.id,
             'unit': unit_dump,
             'val_norm': self.val_norm,
+            'kind_norm': kind_norm_dump,
             'human_min': self.human_min,
             'human_max': self.human_max,
             'math_min': self.math_min,
@@ -1123,17 +1246,76 @@ class RelatedIndicator(models.Model):                       # {{{
 # }}}
 
 
+class ValueKind(models.Model):                              # {{{
+    """
+    记录某指标可以可使用的"种类"值
+
+    并为需要使用"种类"值的地方提供可选范围(e.g.: recommend.ResearchAtom)
+    使用统一的符号(symbol)来寻找及匹配
+    """
+    name = models.CharField(u"名称", max_length=30)
+    symbol = models.CharField(u"符号", max_length=30,
+            help_text=u"仅能使用字母、数字和下划线，最长30字符")
+    description = models.TextField(u"描述", blank=True)
+    indicator = models.ForeignKey("Indicator",
+            related_name="value_kinds", verbose_name=u"关联的指标",
+            null=True, blank=True)
+
+    class Meta:
+        verbose_name_plural = u"指标可用种类"
+
+    def __unicode__(self):
+        if self.indicator:
+            indicator_name = self.indicator.name
+        else:
+            indicator_name = '*'
+        return u'< ValueKind: %s(%s) for indicator(%s) >' %\
+                (self.name, self.symbol, indicator_name)
+
+    def save(self, **kwargs):
+        if self.is_valid():
+            super(ValueKind, self).save(**kwargs)
+        else:
+            return self
+
+    def is_valid(self):
+        # check symbol
+        sym_regex = re.compile(r'^[_0-9a-zA-Z]+$')
+        if sym_regex.search(self.symbol):
+            return True
+        else:
+            raise ValueError(u"仅能使用字母、数字和下划线，最长30字符")
+            return False
+
+    def dump(self, **kwargs):
+        if self.indicator:
+            indicator_id = self.indicator.id
+        else:
+            indicator_id = None
+        #
+        dump_data = {
+            'id': self.id,
+            'name': self.name,
+            'symbol': self.symbol,
+            'description': self.description,
+            'indicator_id': indicator_id,
+        }
+        return dump_data
+# }}}
+
+
 
 admin.site.register([
-                     IndicatorCategory,
-                     Indicator,
-                     UserIndicator,
-                     IndicatorRecord,
-                     RecordHistory,
-                     Unit,
-                     InnateConfine,
-                     StatisticalConfine,
-                     RelatedIndicator,
-                    ])
+    IndicatorCategory,
+    Indicator,
+    UserIndicator,
+    IndicatorRecord,
+    RecordHistory,
+    Unit,
+    InnateConfine,
+    StatisticalConfine,
+    RelatedIndicator,
+    ValueKind,
+])
 
 # vim: set ts=4 sw=4 tw=0 fenc=utf-8 ft=python: #

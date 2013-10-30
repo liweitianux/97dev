@@ -1,7 +1,7 @@
 {% extends "sciblog/blog_detail.html" %}
 
 {% block sectionname %}
-学者科学评论
+<span style="font-weight:normal;">学者科学评论</span>
 {% endblock %}
 
 {% block navigation %}
@@ -11,5 +11,6 @@
 {% for piece in blog.konwledge_piece.comments %}
 <h4>{{ piece.title }}</h4>
 <p>{{ piece.content }}</p>
+<div style="width:645px;height:1px;margin:30px 0 40px -20px;padding:0px;background-color:#f2f2f0;overflow:hidden;"></div>
 {% endfor %}
 {% endblock %}

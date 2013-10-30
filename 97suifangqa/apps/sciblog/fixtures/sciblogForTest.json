@@ -1,0 +1,49 @@
+[
+    {
+        "pk": 1, 
+        "model": "sciblog.sciblog", 
+        "fields": {
+            "subhead": "subtitleForTest", 
+            "sample": [], 
+            "readed_count": 0, 
+            "references": [], 
+            "catched_by": [], 
+            "query": [], 
+            "endpoint_content": "", 
+            "treatment_content": "", 
+            "baseline": [], 
+            "title": "forTest", 
+            "clinic_conditions": [], 
+            "hospital": [], 
+            "source": null, 
+            "understanded_count": 0, 
+            "safety": "", 
+            "entitle": "enTitleForTest", 
+            "konwledge_piece": [], 
+            "method": "", 
+            "conclusion": "", 
+            "detectionAssay": "", 
+            "ifvalue": 1.0, 
+            "journal": "", 
+            "authors": "default authors", 
+            "abstractAE": "", 
+            "confused_count": 0, 
+            "collected_by": [], 
+            "guidline": null, 
+            "aim": "", 
+            "publish_date": null, 
+            "abstract_result": "", 
+            "endpoints": []
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "sciblog.usercollection", 
+        "fields": {
+            "lastCollectBlogTime": null, 
+            "lastCatchBlogTime": null, 
+            "user": 6, 
+            "lastCollectAnnotationTime": null
+        }
+    }
+]

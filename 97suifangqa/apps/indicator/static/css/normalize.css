@@ -565,6 +565,8 @@ input[type="submit"] {
   /* 2 */
 }
 
+
+
 /* line 574, ../../../sass/sass/normalize.scss */
 .button,
 button,
@@ -586,9 +588,11 @@ input[type="reset"] {
   color: white;
   padding-left: 0.8em;
   padding-right: 0.8em;
-  height: 2.1em;
-  line-height: 2.1em;
+  padding-bottom: 0.5em;
+  height: 3em;
+  line-height: 1.5em;
   vertical-align: middle;
+  font-size: 16px;
 }
 /* line 588, ../../../sass/sass/normalize.scss */
 .button:hover,
@@ -648,8 +652,8 @@ a.button:visited {
 
 /* line 619, ../../../sass/sass/normalize.scss */
 input[type="text"] {
-  background-color: #8b8885;
-  border: 1px solid white;
+  background-color: white;
+
   -webkit-box-shadow: 0px 0px 2px white;
   -moz-box-shadow: 0px 0px 2px white;
   box-shadow: 0px 0px 2px white;
@@ -658,12 +662,18 @@ input[type="text"] {
   padding-top: 0;
   padding-bottom: 0;
   line-height: 1.95em;
-  height: 1.95em;
+  height: 29px;
   color: white;
+  font-size:15px;
 }
+input[type="text"]:focus {
+  border-color:#99cc33;
+  outline:0;
+}
+
 /* line 65, ../../../sass/sass/_custom.scss */
 input[type="text"].placeholder {
-  color: #eeeeee;
+  color: #a6a6a6;
 }
 /* line 68, ../../../sass/sass/_custom.scss */
 input[type="text"]:focus.placeholder {
@@ -671,7 +681,7 @@ input[type="text"]:focus.placeholder {
 }
 /* line 65, ../../../sass/sass/_custom.scss */
 input[type="text"].input-placeholder {
-  color: #eeeeee;
+  color: #a6a6a6;
 }
 /* line 68, ../../../sass/sass/_custom.scss */
 input[type="text"]:focus.input-placeholder {
@@ -679,7 +689,7 @@ input[type="text"]:focus.input-placeholder {
 }
 /* line 65, ../../../sass/sass/_custom.scss */
 input[type="text"]:-moz-placeholder {
-  color: #eeeeee;
+  color: #a6a6a6;
 }
 /* line 68, ../../../sass/sass/_custom.scss */
 input[type="text"]:focus:-moz-placeholder {
@@ -687,7 +697,7 @@ input[type="text"]:focus:-moz-placeholder {
 }
 /* line 65, ../../../sass/sass/_custom.scss */
 input[type="text"]::-webkit-input-placeholder {
-  color: #eeeeee;
+  color: #a6a6a6;
 }
 /* line 68, ../../../sass/sass/_custom.scss */
 input[type="text"]:focus::-webkit-input-placeholder {
@@ -695,7 +705,7 @@ input[type="text"]:focus::-webkit-input-placeholder {
 }
 /* line 65, ../../../sass/sass/_custom.scss */
 input[type="text"]::-moz-placeholder {
-  color: #eeeeee;
+  color: #a6a6a6;
 }
 /* line 68, ../../../sass/sass/_custom.scss */
 input[type="text"]:focus::-moz-placeholder {
@@ -703,7 +713,7 @@ input[type="text"]:focus::-moz-placeholder {
 }
 /* line 65, ../../../sass/sass/_custom.scss */
 input[type="text"]:-ms-input-placeholder {
-  color: #eeeeee;
+  color: #a6a6a6;
 }
 /* line 68, ../../../sass/sass/_custom.scss */
 input[type="text"]:focus:-ms-input-placeholder {

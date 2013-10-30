@@ -108,7 +108,7 @@ class ResearchIndicator(models.Model):                      # {{{
                 raise ValueError(u"Error: dataType与Indicator不符")
                 return False
         elif self.dataType == self.SCOPE_TYPE:
-            if ind_dataType not in [ind_obj.RANGE_TYPE, ind_obj.FLOAT_RANGE_TYPE]:
+            if ind_dataType not in [ind_obj.RANGE_TYPE, ind_obj.FLOAT_RANGE_TYPE, ind_obj.FLOAT_TYPE]:
                 raise ValueError(u"Error: dataType与Indicator不符")
                 return False
         elif self.dataType == self.KIND_TYPE:
@@ -208,7 +208,7 @@ class ResearchAtom(models.Model):
     scope_min = models.FloatField(u"范围下限", null=True, blank=True)
     scope_max = models.FloatField(u"范围上限", null=True, blank=True)
     # dataType: KIND
-    kind = models.ForeignKey("ValueKind",
+    kind = models.ForeignKey("indicator.ValueKind",
             null=True, blank=True,
             related_name="research_atoms", verbose_name=u"种类")
     ## datetime
@@ -418,49 +418,6 @@ class ResearchConfig(models.Model):
 # }}}
 
 
-class ValueKind(models.Model):                              # {{{
-    """
-    记录系统所有可能使用到的"种类"值
-    并为需要使用"种类"值的地方提供可选范围(e.g.: recommend.ResearchAtom)
-    使用统一的符号(symbol)来寻找及匹配
-    """
-    name = models.CharField(u"名称", max_length=30)
-    symbol = models.CharField(u"符号", max_length=30,
-            help_text=u"仅能使用字母、数字和下划线，最长30字符")
-    description = models.TextField(u"描述", blank=True)
-
-    class Meta:
-        verbose_name_plural = u"可选种类"
-
-    def __unicode__(self):
-        return u'< ValueKind: %s (%s) >' % (self.name, self.symbol)
-
-    def save(self, **kwargs):
-        if self.is_valid():
-            super(ValueKind, self).save(**kwargs)
-        else:
-            return self
-
-    def is_valid(self):
-        # check symbol
-        sym_regex = re.compile(r'^[_0-9a-zA-Z]+$')
-        if sym_regex.search(self.symbol):
-            return True
-        else:
-            raise ValueError(u"仅能使用字母、数字和下划线，最长30字符")
-            return False
-
-    def dump(self, **kwargs):
-        dump_data = {
-            'id': self.id,
-            'name': self.name,
-            'symbol': self.symbol,
-            'description': self.description,
-        }
-        return dump_data
-# }}}
-
-
 # admin
 admin.site.register([
     TreatResponse,
@@ -468,6 +425,5 @@ admin.site.register([
     #ResearchCombination,
     ResearchAtom,
     ResearchConfig,
-    ValueKind,
 ])
 

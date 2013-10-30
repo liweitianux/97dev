@@ -158,6 +158,12 @@ urlpatterns += patterns('indicator.views',
     ## recommend indicator
     url(r'^recommend/indicator/(?P<number>\d+)/$',
         'recommend_indicator_view', name='recommend_indicator'),
+)
+
+
+## for forms.py (not updated)
+"""
+urlpatterns += patterns('indicator.views_forms',
     ## add/edit category
     url(r'^add/category/$', 'add_edit_category',
         name='add_category'),
@@ -188,7 +194,7 @@ urlpatterns += patterns('indicator.views',
         'add_recordhistory_view',
         name='add_recordhistory_view'),
 )
-
+"""
 
 urlpatterns += patterns('',
     ## done

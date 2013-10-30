@@ -19,14 +19,21 @@
 }
 /* line 26, ../../../sass/sass/elements.scss */
 .multi-segment-button .segment.first {
-  padding-left: 0.5em;
+	padding-left: 0.8em;
+  padding-top: 0.1em;
 }
 /* line 30, ../../../sass/sass/elements.scss */
 .multi-segment-button .segment.last {
-  padding-right: 0.5em;
+  padding-right: 0.6em;
   border-right: none;
+  font-weight: normal;
+  font-size: 16px;
+  padding-top: 0.2em;
 }
 
+.multi-segment-button .segment.last:active {
+	outline: 0;
+}
 /* line 38, ../../../sass/sass/elements.scss */
 .multi-button .button, .multi-button .multi-segment-button {
   margin: 0;
@@ -63,7 +70,7 @@
 /* line 60, ../../../sass/sass/elements.scss */
 .border-box, .expand-heading {
   background-color: #f7f7f7;
-  border: solid 1px #c9caca;
+  /*border: solid 1px #c9caca;*/
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   -ms-border-radius: 3px;
@@ -73,13 +80,14 @@
   padding-right: 1em;
   padding-top: 0.4em;
   padding-bottom: 0.4em;
+  font-size: 15px;
 }
 
 /* line 72, ../../../sass/sass/elements.scss */
 .expand-heading {
   cursor: pointer;
   color: #99cc33;
-  padding-left: 30px;
+  padding: 10px 0 10px 30px;
   background-image: url(../../images/green-triangle-right.png);
   background-repeat: no-repeat;
   background-position: 10px center;
@@ -247,9 +255,12 @@ body.modal-active {
 
 /* line 191, ../../../sass/sass/elements.scss */
 .grey-button {
-  border-color: #cccccc;
+  /*border-color: #cccccc;*/
   color: #6f6f6f;
   background-color: #f7f7f7;
+  font-weight: bold;
+  padding-top:0.1em;
+  
 }
 /* line 194, ../../../sass/sass/elements.scss */
 .grey-button:visited {
@@ -272,19 +283,19 @@ body.modal-active {
 .dark-grey-button {
   border: none;
   color: white;
-  background-color: #4c4948;
+  background-color: #f2f2f0;
 }
 /* line 217, ../../../sass/sass/elements.scss */
 .dark-grey-button:visited {
-  color: white;
+  color: #898989;
 }
 /* line 221, ../../../sass/sass/elements.scss */
 .dark-grey-button:hover {
-  background-color: #3f3c3c;
+  background-color: #e9eaea;
 }
 /* line 224, ../../../sass/sass/elements.scss */
 .dark-grey-button:active {
-  background-color: #32302f;
+  background-color: #f2f2f0;
 }
 /* line 229, ../../../sass/sass/elements.scss */
 .dark-grey-button.disabled:hover, .dark-grey-button.disabled:active {

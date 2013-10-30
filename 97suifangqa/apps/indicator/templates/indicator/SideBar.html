@@ -2,12 +2,13 @@
 {% load static from staticfiles %}
 
 {% block title %}
-边栏 | 随访工具 | 97 随访
+边栏 | 随访工具 | 医时代
 {% endblock %}
 
 {% block css %}
   <link rel="stylesheet" type="text/css" href="{% static "css/normalize.css" %}"/>
   <link rel="stylesheet" type="text/css" href="{% static "css/sidebar.css" %}"/>
+  <link rel="stylesheet" type="text/css" href="{% static "css/nav.css" %}"/>
 {% endblock %}
 
 {% block scripts %}
@@ -16,13 +17,32 @@
 
 {% block page %}
   <div id="sidebar_container">
+    
     <!-- ====================== navigation ====================== -->
-    <div id="nav_container">
+    <nav id="nav-ribbon" role="navigation">
+	<div class="controls-wrap">
+		<div class="head-background"></div>
+		<div class="links-wrap">
+			<ul class="links inline">
+				<li class="first"><a href="/blog/index" target="_blank">返回首页</a></li>
+				<!--li><a href="{% url list_blogs %}">知识库</a></li-->
+				<li><a href="/indicator/status" target="_blank">随访工具</a></li>
+				<!--li class="last"><a href="">我的花费</a></li-->
+			</ul>
+		</div>
+		<div class="tail">导航</div>
+		<div class="tail-cut"></div>
+	</div>
+</nav>
+    
+    
+    
+    <!--div id="nav_container">
       <div class="head-background"></div>
       <div class="hidden_navs">
         <ul>
-          <li><a href="javascript:void(0)">首页</a></li>
-          <li><a href="javascript:void(0)">医学知识</a></li>
+          <li><a href="/blog">首页</a></li>
+          <li><a href="/indicator/status">随访工具</a></li>
         </ul>
       </div>
       <div class="default_nav">
@@ -30,37 +50,57 @@
           <a href="javascript:void(0)">导航</a>
         </div>
         <div class="tail-cut"></div>
-        <div class="curr_nav">随访工具</div>
-      </div>
+        <!--div class="curr_nav">随访工具</div-->
+      <!--/div>
     </div>
-    <div class="clear"></div>
+    <div class="clear"></div-->
 
     <!-- ====================== compare ====================== -->
     <div id="compare_container">
-      <div class="post-question">
+      <!--div class="post-question">
         <form action="" class="searchdiv" method="get">
           <input type="text" value="" class="question" placeholder="在这里搜索关键词" name="q">
-          <input type="submit" class="submit" value="提问">
+          <input type="submit" class="submit" value="搜 索">
         </form>
-      </div>
+      </div-->
       <div class="similar_container">
-	<div class="vertical_bar_component">
+	<!--div class="vertical_bar_component">
 	  <img src="{% static "images/gradient_bar.png" %}" />
-	</div>
-        <div class="similar_content">
+	</div-->
+        <h3 style="font-szie:20px;margin-bottom:5px;">为您推荐临床治疗经验：</h3>
+        <div class="related-questions">
+		<a href="/blog/2/" target="_blank">e抗原阳性慢乙肝患者接受聚乙二醇干扰素alfa治疗前哪些起始因素可以预测未来疗效好与坏</a><br><br>
+		<span>Gastroenterology 胃肠病学      推荐指数：78%</span>
+		</div>
+		
+		<div class="related-questions">
+		<a href="">聚乙二醇干扰素alfa-2a治疗时，病毒和e抗原到底是谁更重要？还是应该结合地去看？</a><br><br>
+		<span>Hepatology 肝脏病学     推荐指数：74%</span>
+		</div>
+		
+		<div class="related-questions">
+		<a href="/blog/3/" target="_blank">用聚乙二醇干扰素治疗B型与C型e抗原阳性慢乙肝患者时，哪些患者乙肝e抗原血清学转换几率低？和疗程和剂量有哪些关系？</a><br><br>
+		<span>Hepatology 肝脏病学     推荐指数：70%</span>
+		</div>
+        
+      </div>
+      
+        <!--div class="similar_content">
           <div class="similar_title">经比对，下文中的被研究患者与您很像：</div>
-          <div class="specifix_content" id="specifix_content1"><div class="specifix_text">有 80% 的患者有感到头疼</div></div>
+          <div class="specifix_content" id="specifix_content1"><div class="specifix_text">聚乙二醇干扰素alfa-2a治疗e抗原（HBeAg）阳性慢乙肝患者时，e抗原与病毒（DNA）预测疗效</div></div>
           <div class="specifix_content" id="specifix_content2"><div class="specifix_text">有 10% 的患者有感到头疼并且也感觉到肌疼</div></div>
           <div class="specifix_content" id="specifix_content3"><div class="specifix_text">有 20% 的患者ALT到达过正常值</div></div>
           <div class="specifix_content" id="specifix_content4"><div class="specifix_text">有 3% 的患者有感到肌疼</div></div>
+        </div-->
+    </div>
+    <div class="clear"></div>
+      
+        <div>
+        	<a href="/blog" target="_blank"><input type="submit" value="推荐更多" class="submit"></a>
         </div>
-      </div>
-      <div class="clear"></div>
-      <div class="compare_btn">
-        <div class="compare_btn_in">比对文献</div>
-      </div>
+     
       <div class="logo_container">
-        <img src="{% static "images/slilogo.png" %}" />
+        <a href="../../blog/index" target="_blank"><img src="{% static "images/slilogo.png" %}" /></a>
       </div>
     </div>
 

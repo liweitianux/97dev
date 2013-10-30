@@ -21,8 +21,21 @@ $(document).ready(function(){
         maxDate: 0      // 0->today, 1->tomorrow
     });
 
+    // delete record {{{
     // delete button
     $("#delete_btn").bind("click", function(){
+        var this_edit_data_div = $(this).closest(".edit_data");
+        var this_delete_prompt_div = this_edit_data_div.siblings(".delete_prompt");
+        this_delete_prompt_div.show();
+        return false;
+    });
+    // cancel delete button
+    $("#cancel_delete_btn").bind("click", function(){
+        $(this).closest(".delete_prompt").hide();
+        return false;
+    });
+    // confirm delete button
+    $("#confirm_delete_btn").bind("click", function(){
         // delete record (ajax)
         var time = moment().valueOf();
         $.ajax({
@@ -51,13 +64,16 @@ $(document).ready(function(){
         });
         return false;
     });
+    // }}}
 
     // edit button
     $("#edit_btn").bind("click", function(){
         var this_edit_data_div = $(this).closest(".edit_data");
         var this_editing_data_div = this_edit_data_div.siblings(".editing_data");
-        this_editing_data_div.show();
+        var this_delete_prompt_div = this_edit_data_div.siblings(".delete_prompt");
+        this_delete_prompt_div.hide();
         this_edit_data_div.hide();
+        this_editing_data_div.show();
         return false;
     });
 

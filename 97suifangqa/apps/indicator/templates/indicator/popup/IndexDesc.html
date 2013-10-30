@@ -2,7 +2,7 @@
 {% load static from staticfiles %}
 
 {% block title %}
-指标注释 | 随访工具 | 97 随访
+指标注释 | 随访工具 | 医时代
 {% endblock %}
 
 {% block css %}
@@ -68,6 +68,18 @@
 
 {% block page %}
 	<div id="index_desc_container">
+    <!-- 直接使用 indicator 的 description 信息 -->
+		<div class="index_desc_title_line">
+      <div class="index_desc_title">
+        {{ indicator.name }}
+      </div>
+			<div class="index_desc_close"></div>
+		</div>
+    <div class="index_desc_content">
+      {{ indicator.description|safe }}
+    </div>
+    <!-- 使用与 indicator 关联的 annotation 来提供详情 -->
+    {% comment %}
 		<div class="index_desc_title_line">
       <div class="index_desc_title">
         {% if annotation_not_found %}
@@ -85,6 +97,7 @@
       {{ annotation.detail|safe }}
       {% endif %}
     </div>
+    {% endcomment %}
     <div class="collection" id="collection_btn">
       {% if is_collected %}
       点击取消收藏 (已有{{ collected_times }}人收藏)
@@ -92,9 +105,9 @@
       收藏该注释 (已有{{ collected_times }}人收藏)
       {% endif %}
     </div>
-    <div class="go_library">
+    <!--div class="go_library">
       <input type="button" class="go_library_btn" value="前往医学知识库" />
-    </div>
+    </div-->
 	</div>
 {% endblock page %}
 

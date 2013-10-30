@@ -9,14 +9,18 @@ class AnnotationManager(models.Manager):
     def paracomments(self):
         u'''
         获取段落注释
+
+        PARAGRAPH: 0
         '''
-        return self.filter(type = self.PARAGRAPH)
+        return self.filter(type = 0)
 
     def propernouns(self):
         u'''
         获取专有名词
+
+        PROPER_NOUN: 1
         '''
-        return self.filter(type = self.PROPER_NOUN)
+        return self.filter(type = 1)
     
     def all_json(self, user = AnonymousUser()):
         u'''

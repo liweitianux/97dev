@@ -28,6 +28,8 @@ class SciBlog(models.Model):
     treatment_content  = models.TextField(u"treatmentContent", blank=True)
     safety             = models.TextField(u"安全性", blank=True)
 
+
+
     hospital           = models.ManyToManyField("location.Hospital", verbose_name=u"作者医院", related_name="sciblogs", null=True, blank=True)
     guidline           = models.OneToOneField("Guideline", verbose_name=u"临床策略", related_name="blog", null=True, blank=True)
     baseline           = models.ManyToManyField("BaseLine", verbose_name=u"研究基线", related_name="blog", null=True, blank=True)
@@ -50,7 +52,7 @@ class SciBlog(models.Model):
         verbose_name_plural = u"文章"
 
     def __unicode__(self):
-        return "< SciBlog: %s >" % self.title
+        return "%s %s" % (self.id, self.subhead)
 
     def show(self):
         """
@@ -169,7 +171,7 @@ class KnowledgePiece(models.Model):
         verbose_name_plural = u"知识条目"
 
     def __unicode__(self):
-        return "< KnowledgePiece: %s %s >" % (self.id, self.content if len(self.content) < 20 else self.content[0:20])
+        return "< %d %s >" % (self.type, self.content if len(self.content) < 20 else self.content[0:20])
 # }}}
 
 
@@ -203,12 +205,13 @@ class BlogAnnotation(models.Model):
             verbose_name=u"收藏者", related_name="annotation_collection",
             null=True, blank=True)
     objects = AnnotationManager()
+    blogListWords = models.TextField(u"blogPosition", blank=True)
 
     class Meta:
         verbose_name_plural = u"文章注释"
 
     def __unicode__(self):
-        return "<BlogAnnotation: %s>" % get_abstract(self.brief_content)
+        return "%s" % get_abstract(self.brief_content)
 
     def show(self):
         """
@@ -233,7 +236,7 @@ class BlogAnnotation(models.Model):
         bloglist页面二上内容的阶段，
         django里面的注释第一段的末尾都是一个空格
         '''
-        return self.detail.split(' ')[0]
+        return self.detail.split('</p>')[0]+'...</p>'
 
     def is_collected_by(self, user):
         u'''
@@ -282,7 +285,7 @@ class EndPoint(models.Model):
         verbose_name_plural = u"治疗终点"
 
     def __unicode__(self):
-        return "<EndPoint: %s>" % get_abstract(self.content)
+        return "%s, %s" % (self.type,get_abstract(self.content))
 # }}}
 
 
@@ -373,10 +376,9 @@ admin.site.register([
                      Source,
                      Reference,
                      KnowledgePiece,
+                     ResultContent,
                      Guideline,
                      ClinicCondition,
                      BaseLine,
-                     ResultContent,
-                     BlogAnnotation,
                      UserCollection,
                     ])

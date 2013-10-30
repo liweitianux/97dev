@@ -25,7 +25,7 @@ class KeyWord(models.Model):
         verbose_name_plural = u"关键词"
 
     def __unicode__(self):
-        return "< KeyWord: %s >" % self.content
+        return "%s" % self.content
 
 
 # Query {{{

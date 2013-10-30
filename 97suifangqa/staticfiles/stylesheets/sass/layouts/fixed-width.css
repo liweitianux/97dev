@@ -120,7 +120,7 @@
   /* Span 3 columns, starting in 2nd column from left. */
   float: left;
   width: 660px;
-  margin-left: 300px;
+  margin-left: 350px;
   margin-right: -1000px;
 }
 /* line 128, ../../../../sass/sass/layouts/fixed-width.scss */
@@ -128,7 +128,7 @@
 .two-sidebars .region-sidebar-first {
   /* Span 1 column, starting in 1st column from left. */
   float: left;
-  width: 260px;
+  width: 290px;
   margin-left: 0px;
   margin-right: -300px;
 }
@@ -138,7 +138,7 @@
   /* Span 1 column, starting in 5th column from left. */
   float: left;
   width: 260px;
-  margin-left: 1000px;
+  margin-left: 1060px;
   margin-right: -1300px;
 }
 

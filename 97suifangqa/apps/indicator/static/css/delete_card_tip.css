@@ -4,6 +4,7 @@
 	background-color: #FFFFFF;
 	border: 1px solid #94C721;
 	padding: 0 20px 0 20px;
+	border-radius: 3px;
 }
 .delete_card_tip_title_line {
 	height: 42px;
@@ -26,26 +27,49 @@
 	cursor: pointer;
 }
 .delete_card_tip_content {
-	height: 55px;
+	height: 60px;
 	line-height: 55px;
 	color: #4A4A4A;
 	font-size: 14px;
+	text-align: center
 }
 .delete_card_tip_action {
 	height: 67px;
+	margin-left: -20px;
 }
-.delete_card_tip_action .action_confirm_cancel, .delete_card_tip_action .action_confirm_ignore {
+.delete_card_tip_action .action_confirm_ignore {
 	background-color: #99CC33;
-    border-radius: 2px;
-    width: 75px;
+    border-radius: 3px;
+    width: 100px;
     color: white;
     cursor: pointer;
-    height: 22px;
-    line-height: 22px;
+    height: 26px;
     display: inline-block;
     text-align: center;
-    margin-top: 13px;
     text-decoration: none;
+    font-size: 15px;
+    padding:2px;
+    padding-top:7px;
+    margin-right: 20px;
+
+}
+
+.delete_card_tip_action .action_confirm_cancel{
+	background-color: #a8a8a8;
+    border-radius: 3px;
+    width: 100px;
+    color: white;
+    cursor: pointer;
+    height: 26px;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+	padding:2px;
+	font-size: 15px;
+	padding-top:7px;
+	margin-right: 40px;
+
+
 }
 .delete_card_tip_action .action_confirm_cancel {
 	margin: 0 11px 0 213px;

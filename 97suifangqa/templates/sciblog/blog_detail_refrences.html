@@ -1,7 +1,7 @@
 {% extends "sciblog/blog_detail.html" %}
 
 {% block sectionname %}
-参考信息
+<span style="font-weight:normal;">参考信息</span>
 {% endblock %}
 
 {% block navigation %}
@@ -20,6 +20,7 @@
 <a href="" id="refrences"></a>
 <h3>参考文献</h3>
 {% for ref in blog.references.all %}
-<a href="{{ ref.link }}">{{ ref.description }}</a>
+{{ ref.description }}<br>
+<a href="{{ ref.link }}" target="_blank">阅读更多</a><br><br>
 {% endfor %}
 {% endblock %}

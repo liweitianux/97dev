@@ -4,7 +4,7 @@
 {% load divisible_by %}
 
 {% block title %}
-指标状态 | 随访工具 | 97 随访
+指标状态 | 随访工具 | 医时代
 {% endblock %}
 
 {% block css %}
@@ -274,6 +274,9 @@
       {% elif ind|dict_get:"dataType" == DATA_TYPES|dict_get:"PM_TYPE" %}
         {# PM_TYPE #}
         {# TODO #}
+      {% elif ind|dict_get:"dataType" == DATA_TYPES|dict_get:"KIND_TYPE" %}
+        {# KIND_TYPE #}
+        {# TODO #}
       {% else %}
         {# unknown TYPE #}
       {% endif %} {# end: DATA_TYPES #}
@@ -289,17 +292,17 @@
   <!-- TODO -->
   <div id="login_container">
     <div class="logged-in" id="login">
-      <img class="user-photo" alt="user_photo" src="{% static "images/userPhoto.jpg" %}" />
-      <span class="number-block green-block user-level">6</span>
+      <!--img class="user-photo" alt="user_photo" src="{% static "images/userPhoto.jpg" %}" />
+      <span class="number-block green-block user-level">6</span-->
       <span class="drop-down-area">
-        <span class="user-name">username</span>
-        <img class="drop-down-menu-button" alt="" src="{% static "images/icon_down.png" %}" />
+        <span class="user-name">isuifangqa</span>
+        <!--img class="drop-down-menu-button" alt="" src="{% static "images/icon_down.png" %}" /-->
       </span>
       <div class="drop-down-menu" tabindex="0" onblur="javascript:alert('blur');" onfocus="javascript:alert('focus')">
         <div class="text-pointer"></div>
         <ul class="links">
-          <li><a href="javascript:void(0)">修改密码</a></li>
-          <li><a href="javascript:void(0)">完善信息</a></li>
+          <!--li><a href="javascript:void(0)">修改密码</a></li>
+          <li><a href="javascript:void(0)">完善信息</a></li-->
           <li class="last"><a href="javascript:void(0)">退出</a></li>
         </ul>
       </div>
@@ -308,7 +311,7 @@
 
   <div id="right_container">
     <div id="index_status_container">
-      <div class="index_title">指标状态</div>
+      <div class="index_title">随访医学指标</div>
 
       {% comment %}
       <!-- 这里需要后端读取cookie，来判断用户是否已经点击大叉。
@@ -330,7 +333,7 @@
           <div class="refer_range">
             <span class="refer_text">{{ ind|dict_get:"ref_text" }}</span>
             <span class="refer_value">{{ ind|dict_get:"ref_value"|safe }}</span>
-            <span class="data_unit">{% if ind|dict_get:"std_unit_symbol" %}({{ ind|dict_get:"std_unit_symbol" }}){% endif %}</span>
+            <span class="data_unit">{% if ind|dict_get:"std_unit_symbol"%}{{ ind|dict_get:"std_unit_symbol"|safe}}{% endif %}</span>
           </div>
 
           <div class="edit_data">
@@ -342,7 +345,7 @@
             <div class="last_edit_data" style="display: block;">
             {% endif %}
               <span class="data_value">{{ ind|dict_get:"last_record"|dict_get:"value_html"|safe }}</span>
-              <span class="data_unit">{% if ind|dict_get:"std_unit_symbol" %}({{ ind|dict_get:"std_unit_symbol" }}){% endif %}</span>
+              <span class="data_unit">{% if ind|dict_get:"std_unit_symbol" %}{{ ind|dict_get:"std_unit_symbol" }}{% endif %}</span>
             </div>
             <img class="small_edit_icon" alt="edit_icon" src="{% static "images/pen.png" %}" />
             <!-- explain_icon -->
@@ -397,14 +400,18 @@
                 <input type="radio" id="plus_r" name="pm_data" value="+" />
                 <label for="plus_r">阳性(+)</label>
               </div>
+              {% elif ind|dict_get:"dataType" == DATA_TYPES|dict_get:"KIND_TYPE" %}
+              {# KIND_TYPE #}
+              TODO
               {% else %}
               {# UNKNOWN TYPE #}
               ERROR: unknown data type
               {% endif %}
             </div>
-            <div class="data_unit">{% if ind|dict_get:"std_unit_symbol" %}({{ ind|dict_get:"std_unit_symbol" }}){% endif %}</div>
-            <div class="confirm_edit_icon"></div>
+            <div class="data_unit">{% if ind|dict_get:"std_unit_symbol" %}{{ ind|dict_get:"std_unit_symbol" }}{% endif %}</div>
             <div class="cancel_edit_icon"></div>
+            <div class="confirm_edit_icon"></div>
+            
             <div style="clear:both;"></div>
             <div class="date">
               <div class="datepicker_container">
@@ -435,7 +442,7 @@
           <div class="card_bottom">
             <div class="understand_index"><a class="thickbox" href="{% url indicator_indexdesc %}?card_id={{ ind|dict_get:"id" }}&amp;url_type=html&amp;no_title=true&amp;TB_iframe=true&amp;height=367&amp;width=630">了解该指标</a></div>
             <!-- TODO -->
-            <div class="simulation_sheet"><a href="{% static "images/demo_sheet.png" %}" class="thickbox">仿真化验单</a></div>
+            <div class="simulation_sheet"><a href="http://image.97suifang.com/media/imgs/2013/10/21/%E4%B8%A4%E5%AF%B9%E5%8D%8A.jpg" class="thickbox">仿真化验单</a></div>
             <div class="detail_history">
               <a href="javascript:void(0)">详细历史记录</a>
             </div>
@@ -450,7 +457,7 @@
             width参数为弹出层页面宽度+2，
             card_id参数为 "卡片id"
           {% endcomment %}
-          <a class="card_delete_icon card_delete thickbox" href="{% url indicator_deletecardtip %}?card_id={{ ind|dict_get:"id" }}&amp;url_type=html&amp;no_title=true&amp;TB_iframe=true&amp;height=166&amp;width=630"></a>
+          <a class="card_delete_icon card_delete thickbox" href="{% url indicator_deletecardtip %}?card_id={{ ind|dict_get:"id" }}&amp;url_type=html&amp;no_title=true&amp;TB_iframe=true&amp;height=180&amp;width=650"></a>
         </div> <!-- end: index_card -->
       {% endfor %} {# end: indicators #}
 

@@ -178,6 +178,10 @@
 
     <field name="addByUser" type="text_en" indexed="true" stored="true" multiValued="false" />
 
+    <field name="pinyin" type="text_en" indexed="true" stored="true" multiValued="false" />
+
+    <field name="type" type="text_en" indexed="true" stored="true" multiValued="false" />
+
     <field name="dataType" type="text_en" indexed="true" stored="true" multiValued="false" />
 
     <field name="categories_id" type="text_en" indexed="true" stored="true" multiValued="true" />

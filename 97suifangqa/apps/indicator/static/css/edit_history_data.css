@@ -23,16 +23,18 @@ input[type="radio"]:checked + label {
 
 #edit_history_data_container {
 	width: 588px;
-	height: 180px;
+	height: 230px;
 	background-color: #FFFFFF;
 	border: 1px solid #94C721;
 	padding: 0 20px 0 20px;
+	border-radius: 3px;
 }
 .edit_history_data_title_line {
 	height: 42px;
 	line-height: 42px;
 	border-bottom: 1px solid #D6D0D6;
 	width: 588px;
+	margin-top: 10px;
 }
 .edit_history_data_title_line .edit_history_data_title {
 	font-weight: bold;
@@ -51,6 +53,7 @@ input[type="radio"]:checked + label {
 .edit_history_data_content {
 	color: #4A4A4A;
 	font-size: 14px;
+	margin-top:10px;
 }
 .edit_history_data_content .refer_range {
 	height: 26px;
@@ -60,9 +63,11 @@ input[type="radio"]:checked + label {
 }
 .edit_history_data_content .refer_range .refer_text {
 	margin-right: 8px;
+	margin-bottom:-5px;
 }
 .edit_history_data_content .refer_range .refer_value {
 	margin-right: 8px;
+	margin-bottom:-10px;
 }
 .edit_history_data_content .edit_data {
 	line-height: 26px;
@@ -70,6 +75,7 @@ input[type="radio"]:checked + label {
 .edit_history_data_content .edit_data .date {
 	height: 26px;
 	line-height: 26px;
+	margin-top: -10px;
 }
 .edit_history_data_content .edit_data .date .date_text {
 	margin-right: 8px;
@@ -93,11 +99,11 @@ input[type="radio"]:checked + label {
 	font-weight: bold;
 }
 .edit_history_data_content .edit_data .state .normal {
-	background-color: #B8DB70;
+	/*background-color: #B8DB70;*/
 	padding: 2px;
 }
 .edit_history_data_content .edit_data .state .abnormal {
-	background-color: #FFB3B3;
+	color: #99CC33;
 	padding: 2px;
 }
 .edit_history_data_content .edit_data .state .unknown {
@@ -105,19 +111,45 @@ input[type="radio"]:checked + label {
 	padding: 2px;
 }
 .edit_history_data_content .edit_data #delete_btn {
-	float: right;
-	height: 26px;
-	line-height: 22px;
-	padding: 1px 26px;
-	margin-right: 8px;
-	background-color: #E64848;
+    background-color: rgb(50, 53, 61);
+    border-radius: 3px 3px 3px 3px;
+    color: rgb(255, 255, 255);
+    float: right;
+    font-size: 15px;
+    height: 35px;
+    margin-right: 15px;
+    margin-top: 5px;
+    padding: 1px 26px 1px 20px;
+    width: 100px;
 }
 .edit_history_data_content .edit_data #edit_btn, .edit_history_data_content .editing_data #save_btn {
-	float: right;
-	height: 26px;
-	line-height: 22px;
-	padding: 1px 26px;
+    border-radius: 3px 3px 3px 3px;
+    float: right;
+    font-size: 15px;
+    height: 35px;
+    margin-top: 5px;
+    padding: 1px 26px 1px 20px;
+    width: 100px
 }
+.edit_history_data_content .delete_prompt {
+    float: right;
+    height: 35px;
+    margin-top: 10px;
+}
+.edit_history_data_content .delete_prompt div {
+    float: right;
+    margin-right: 10px;
+}
+.edit_history_data_content .delete_prompt .prompt {
+    font-size: 16px;
+    line-height: 24px;
+    padding: 1px 10px 1px 10px;
+}
+.edit_history_data_content .delete_prompt .prompt_btns {
+    cursor: pointer;
+}
+
+
 .edit_history_data_content .editing_data {
 	line-height: 26px;
 	display: none;
@@ -138,30 +170,40 @@ input[type="radio"]:checked + label {
 	position: relative;
 }
 .edit_history_data_content .editing_data .date .datepicker {
-	background: #FFFFFF;
-	border: 1px solid #9C9C9C;
-	color: #B9B9B9;
-	width: 131px;
-	height: 17px;
-	line-height: 17px;
-	position: relative;
-	padding-top: 2px;
-	padding-bottom: 2px;
+	background: none repeat scroll 0 0 rgb(255, 255, 255);
+    border: 1px solid rgb(217, 217, 217);
+    border-radius: 3px 3px 3px 3px;
+    color: rgb(217, 217, 217);
+    height: 30px;
+    line-height: 17px;
+    margin: -3px 0 15px;
+    padding-top: 2px;
+    position: absolute;
+    width: 123px;
 }
+
+.edit_history_data_content .editing_data .date .datepicker:focus {
+	outline:0;
+	border-color:#99cc33;
+}
+
 .edit_history_data_content .editing_data .date .ui-datepicker-trigger {
 	position: absolute;
-	top: 4px;
-	right: 8px;
+	top: 5px;
+	right: 20px;
+	/* margin-right: -10px; */
 	cursor: pointer;
+	margin-top: -1px;
+	/* margin-left: -50px; */
+	
 }
 .edit_history_data_content .editing_data .date .datepicker_container .valid {
-	border: 2px solid green;
+	color:inherit;
 }
 .edit_history_data_content .editing_data .date .datepicker_container .invalid {
 	border: 2px solid red;
 }
 .edit_history_data_content .editing_data .data  {
-	height: 26px;
 	line-height: 26px;
 	float: left;
 	top: 1px;
@@ -169,14 +211,24 @@ input[type="radio"]:checked + label {
 .edit_history_data_content .editing_data .data .prompt {
 	margin-right: 8px;
 	float: left;
+	margin-top: 16px;
+	line-height: 1.6em;
 }
 .edit_history_data_content .editing_data .data input {
 	color: #5C5C5C;
 	background-color: #FFFFFF;
-	border: 1px solid #9C9C9C;
+	border: 1px solid rgb(217,217,217);
+	border-radius: 3px;
+	padding-left: 10px;
 }
+
+.edit_history_data_content .editing_data .data input:focus {
+	border-color:#99cc33;
+}
+
 .edit_history_data_content .editing_data .data .valid {
-	border: 2px solid green;
+	/* border: 2px solid green; */
+	color: inherit;
 }
 .edit_history_data_content .editing_data .data .invalid {
 	border: 2px solid red;
@@ -186,17 +238,20 @@ input[type="radio"]:checked + label {
 	float: left;
 }
 .edit_history_data_content .editing_data .data .data_input {
-	width: 200px;
-	height: 17px;
-	line-height: 17px;
-	padding-top: 2px;
-	padding-bottom: 2px;
-	margin-right: 8px;
+	float: right;
+    height: 28px;
+    line-height: 17px;
+    margin-right: 8px;
+    margin-top: 10px;
+    padding-bottom: 2px;
+    padding-top: 2px;
+    width: 120px;
 }
 .edit_history_data_content .editing_data .data_unit {
 	height: 26px;
 	line-height: 26px;
 	margin-right: 8px;
+	margin-top: 16px;
 }
 .edit_history_data_content .editing_data .reason {
 	height: 26px;
@@ -206,6 +261,7 @@ input[type="radio"]:checked + label {
 .edit_history_data_content .editing_data .reason .prompt {
 	margin-right: 8px;
 	float: left;
+	margin-top: 10px;
 }
 .edit_history_data_content .editing_data .reason input {
 	color: #5C5C5C;
@@ -216,12 +272,19 @@ input[type="radio"]:checked + label {
 	border: 2px solid green;
 }
 .edit_history_data_content .editing_data .reason .invalid {
-	border: 2px solid red;
 }
 .edit_history_data_content .editing_data .reason .reason_input {
 	width: 330px;
-	height: 17px;
+	height: 26px;
 	line-height: 17px;
 	padding-top: 2px;
 	padding-bottom: 2px;
+	margin-top: 7px;
+	border-radius: 3px;
+	border-color: rgb(217,217,217);
 }
+
+.edit_history_data_content .editing_data .reason .reason_input :focus{
+	
+	border-color:#99cc33;
+	}

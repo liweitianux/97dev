@@ -10,4 +10,5 @@ env/env
 
 backup/
 apps/*/fixtures_bak/
+dump.rdb
 

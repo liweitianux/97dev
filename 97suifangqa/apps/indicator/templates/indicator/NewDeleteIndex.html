@@ -3,7 +3,7 @@
 {% load dict_get %}
 
 {% block title %}
-指标状态 | 随访工具 | 97 随访
+指标状态 | 随访工具 | 医时代
 {% endblock %}
 
 {% block css %}
@@ -39,17 +39,17 @@
   <!-- TODO -->
   <div id="login_container">
     <div class="logged-in" id="login">
-      <img class="user-photo" alt="" src="{% static "images/userPhoto.jpg" %}">
-      <span class="number-block green-block user-level">6</span>
+      <!--img class="user-photo" alt="" src="{% static "images/userPhoto.jpg" %}">
+      <span class="number-block green-block user-level">6</span-->
       <span class="drop-down-area">
-        <span class="user-name">username</span>
+        <span class="user-name">isuifangqa</span>
         <img class="drop-down-menu-button" alt="" src="{% static "images/icon_down.png" %}">
       </span>
       <div class="drop-down-menu" tabindex="0" onblur="javascript:alert('blur');" onfocus="javascript:alert('focus')">
         <div class="text-pointer"></div>
         <ul class="links">
-          <li><a href="javascript:void(0)">修改密码</a></li>
-          <li><a href="javascript:void(0)">完善信息</a></li>
+          <!--li><a href="javascript:void(0)">修改密码</a></li>
+          <li><a href="javascript:void(0)">完善信息</a></li-->
           <li class="last"><a href="javascript:void(0)">退出</a></li>
         </ul>
       </div>
@@ -66,7 +66,7 @@
     <div class="new_delete_title">
       <div class="content">添加或删除关注指标</div>
       <div class="search">
-        <input type="text" value="" placeholder="直接搜索指标" id="search_kw" />
+        <input type="text" name="q" placeholder="直接找寻指标" id="search_kw" value="{{ q }}"/>
         <img id="search_btn" src="{% static "images/search.png" %}">
       </div>
       <div style="clear: both;"></div>
@@ -77,7 +77,7 @@
       <div id="index_all" class="index_type {% if page_condition == "all" %}selected{% endif %}">
         <a href="?tab=all">所有指标</a>
       </div>
-      <!-- 指标类别，页面只能容纳 7 个 -->
+      <!-- 指标类别，一行只能容纳 7 个按钮 -->
       {% for cat in categories %}
       <div class="index_type {% if selected_catid == cat.id %}selected{% endif %}">
         <a href="?tab={{ cat.id }}">{{ cat.name }}</a>
@@ -93,32 +93,32 @@
         <div class="all_condition" style="display: {% if page_condition == "all" %}block{% else %}none{% endif %};">
           <div class="index_all_title">所有指标</div>
           <div class="index_all_letter">
-            <div>A</div>
-            <div>B</div>
-            <div>C</div>
-            <div>D</div>
-            <div>E</div>
-            <div>F</div>
-            <div>G</div>
-            <div>H</div>
-            <div>I</div>
-            <div>J</div>
-            <div>K</div>
-            <div>L</div>
-            <div>M</div>
-            <div>N</div>
-            <div>O</div>
-            <div>P</div>
-            <div>Q</div>
-            <div>R</div>
-            <div>S</div>
-            <div>T</div>
-            <div>U</div>
-            <div>V</div>
-            <div>W</div>
-            <div>X</div>
-            <div>Y</div>
-            <div>Z</div>
+            <div class="letter" id="A">A</div>
+            <div class="letter" id="B">B</div>
+            <div class="letter" id="C">C</div>
+            <div class="letter" id="D">D</div>
+            <div class="letter" id="E">E</div>
+            <div class="letter" id="F">F</div>
+            <div class="letter" id="G">G</div>
+            <div class="letter" id="H">H</div>
+            <div class="letter" id="I">I</div>
+            <div class="letter" id="J">J</div>
+            <div class="letter" id="K">K</div>
+            <div class="letter" id="L">L</div>
+            <div class="letter" id="M">M</div>
+            <div class="letter" id="N">N</div>
+            <div class="letter" id="O">O</div>
+            <div class="letter" id="P">P</div>
+            <div class="letter" id="Q">Q</div>
+            <div class="letter" id="R">R</div>
+            <div class="letter" id="S">S</div>
+            <div class="letter" id="T">T</div>
+            <div class="letter" id="U">U</div>
+            <div class="letter" id="V">V</div>
+            <div class="letter" id="W">W</div>
+            <div class="letter" id="X">X</div>
+            <div class="letter" id="Y">Y</div>
+            <div class="letter" id="Z">Z</div>
           </div> <!-- end: index_all_letter -->
           <div style="clear:both;"></div>
           {# display all indicators if in 'all' condition #}
@@ -127,21 +127,21 @@
           <div class="index_letter_container">
             {# display all indicators by letter index #}
             {% for l in letters %}
-              {% with l_inds=indicators|dict_get:l %}
-                {% if l_inds|length >= 1 %}
-                  <div class="index_lines {{ l|upper }} to_add">
-                    <div class="letter_title">{{ l|upper }}</div>
-                    {% for ind in l_inds %}
-                      <div class="index_line" index_id="{{ ind|dict_get:"id" }}">
-                        <div class="index_name">{{ ind|dict_get:"name" }}</div>
-                        <div class="index_category"></div>
-                        <div class="icon"></div>
-                        <div style="clear:both"></div>
-                      </div>
-                    {% endfor %}
-                  </div>
-                {% endif %}
-              {% endwith %}
+            {% with l_inds=indicators|dict_get:l %}
+            {% if l_inds|length >= 1 %}
+            <div class="index_lines to_add letter_section" id="sec_{{ l|upper }}">
+              <div class="letter_title">{{ l|upper }}</div>
+              {% for ind in l_inds %}
+              <div class="index_line" index_id="{{ ind|dict_get:"id" }}">
+                <div class="index_name">{{ ind|dict_get:"name" }}</div>
+                <div class="index_category"></div>
+                <div class="icon"></div>
+                <div style="clear:both"></div>
+              </div>
+              {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
             {% endfor %} {# end: display all indicators #}
           </div> <!-- end: index_letter_container -->
           {% endif %} {# end: page_condition == all #}
@@ -154,7 +154,7 @@
           <div class="index_title_container">
             <div class="index_title">{{ selected_category.name }}</div>
             <div class="example_sheet">
-              <a href="javascript:void(0)">仿真化验单</a>
+              <a href="{{ selected_category.description }}" class="thickbox" target="_blank">仿真化验单</a>
             </div>
             <div style="clear:both;"></div>
           </div>
@@ -250,7 +250,7 @@
 
   <div class="link_container">
     <div class="status_link">
-      <a href="{% url indicator_status %}">查看指标状态</a>
+      <a href="{% url indicator_status %}">完成并返回</a>
     </div>
   </div>
 {% endblock page %}

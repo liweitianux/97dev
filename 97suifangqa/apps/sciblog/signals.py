@@ -35,7 +35,7 @@ def mark_keywords_in_textfield(model, fields, related_name='NONE'):
 mark_keywords_in_textfield(SciBlog, ['abstract_result', 'method', 'aim', 
                                      'abstractAE', 'treatment_content', 
                                      'endpoint_content', 'detectionAssay'], 'blogs')
-mark_keywords_in_textfield(ResultContent, ['abstract', 'content', 'card_content'])
+mark_keywords_in_textfield(ResultContent, ['content'])
 mark_keywords_in_textfield(Reference, ['description'])
 mark_keywords_in_textfield(KnowledgePiece, ['content'])
 mark_keywords_in_textfield(Guideline, ['content'])

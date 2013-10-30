@@ -144,13 +144,13 @@ body {
  */
 /* line 162, ../../../sass/sass/normalize.scss */
 a {
-  color: #006699;
+  color: #99cc33;
   text-decoration: none;
 }
 
 /* line 167, ../../../sass/sass/normalize.scss */
 a:visited {
-  color: #006699;
+  color: #99cc33;
 }
 
 /* line 172, ../../../sass/sass/normalize.scss */
@@ -586,7 +586,9 @@ input[type="reset"] {
   color: white;
   padding-left: 0.8em;
   padding-right: 0.8em;
-  height: 2.1em;
+  padding-top:0.4em;
+  height: 35px;
+  font-size: 16px;
   vertical-align: middle;
 }
 /* line 588, ../../../sass/sass/normalize.scss */
@@ -651,9 +653,9 @@ input[type="text"],
 input[type="password"] {
   padding-left: 0.5em;
   padding-right: 0.5em;
-  padding-top: 0;
-  padding-bottom: 0;
-  height: 1.95em;
+  padding-top: 0em;
+  padding-bottom: 0.3em;
+  height: 1.65em;
 }
 
 /*

@@ -22,6 +22,16 @@ $(document).ready(function(){
         }
     );
 
+    // 'all_condition' letter selectors {{{
+    // disable all letter selectors
+    $(".index_all_letter .letter").addClass("disabled");
+    $(".index_letter_container .letter_section").each(function() {
+        var l = $(this).attr('id').replace('sec_', '');
+        //console.log(l);
+        $(".index_all_letter #"+l).removeClass("disabled");
+    });
+    // }}}
+
     // login control kit {{{
     $(".drop-down-area").bind("click", function(){
         var drop_down_menu = $(".drop-down-menu");
@@ -144,8 +154,9 @@ $(document).ready(function(){
         $(".letter_selected").removeClass("letter_selected");
         $(this).addClass("letter_selected");
         var container = $(".index_letter_container");
-        var letterClass = $(this).text();
-        var scrollTo = $("."+letterClass);
+        var letterClass = $(this).attr('id');
+        //console.log(letterClass);
+        var scrollTo = $("#sec_"+letterClass);
         container.scrollTop(scrollTo.offset().top - container.offset().top + container.scrollTop());
         select_letter = letterClass;
         return false;

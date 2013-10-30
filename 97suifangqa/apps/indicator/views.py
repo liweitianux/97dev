@@ -5,6 +5,7 @@ apps/indicator views
 
 """
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden, Http404
 from django.shortcuts import render, get_object_or_404
@@ -16,7 +17,6 @@ from django.template import RequestContext
 from haystack.query import SearchQuerySet
 
 from indicator import models as im
-from indicator.forms import *
 from indicator.tools import *
 
 from sciblog import models as sm
@@ -36,6 +36,8 @@ except ImportError:
     from django.utils import simplejson as json
 
 
+
+###########################################################
 
 def get_indicator_view(request, **kwargs):
     idict = get_indicator(**kwargs)
@@ -88,308 +90,6 @@ def get_record_view(request, indicator_id, date_range, **kwargs):
 # }}}
 
 
-
-###########################################################
-###### forms ######
-
-## add_edit_category                                        # {{{
-@login_required
-def add_edit_category(request, category_id=None, template='indicator/simple.html'):
-    """
-    add/edit category: 'models.IndicatorCategory'
-    for 'staff' or 'normal user'
-    """
-    # get or create model instance
-    if category_id:
-        category_id = int(category_id)
-        category = get_object_or_404(im.IndicatorCategory,
-                id=category_id)
-        action = 'Edit'
-        # check the user
-        # 'staff' can edit all data;
-        # normal users can only edit their own.
-        if category.addByUser != request.user and (
-                not request.user.is_staff):
-            return HttpResponseForbidden()
-    else:
-        category = im.IndicatorCategory(addByUser=request.user)
-        action = 'Add'
-
-    if request.method == 'POST':
-        form = IndicatorCategoryForm(request.POST, instance=category)
-        if form.is_valid():
-            # form posted and valid
-            # save form to create/update the model instance
-            form.save()
-            # redirect url, avoid page reload/refresh
-            return HttpResponseRedirect('/indicator/done/')
-    else:
-        # form with data of the specified instance
-        form = IndicatorCategoryForm(instance=category)
-
-    return render(request, template, {
-        'object': 'IndicatorCategory',
-        'action': action,
-        'form': form,
-    })
-# }}}
-
-
-# add_edit_indicator                                        # {{{
-@login_required
-def add_edit_indicator(request, indicator_id=None, template='indicator/simple.html'):
-    """
-    add/edit indicator: 'models.Indicator'
-    for 'staff' or 'normal user'
-    """
-    if indicator_id:
-        indicator_id = int(indicator_id)
-        indicator = get_object_or_404(im.Indicator,
-                id=indicator_id)
-        action = 'Edit'
-        # check the user
-        # 'staff' can edit all data;
-        # normal users can only edit their own.
-        if indicator.addByUser != request.user and (
-                not request.user.is_staff):
-            return HttpResponseForbidden()
-    else:
-        indicator = im.Indicator(addByUser=request.user)
-        action = 'Add'
-
-    if request.method == 'POST':
-        form = IndicatorForm(request.POST, instance=indicator)
-        if form.is_valid():
-            # form posted and valid
-            form.save()
-            # redirect url, avoid page reload/refresh
-            return HttpResponseRedirect('/indicator/done/')
-    else:
-        # form with instance
-        form = IndicatorForm(instance=indicator)
-
-    return render(request, template, {
-        'object': 'Indicator',
-        'action': action,
-        'form': form,
-    })
-# }}}
-
-
-## add_edit_unit {{{
-@login_required
-def add_edit_unit(request, unit_id=None, template='indicator/simple.html'):
-    """
-    add unit for indicator
-    """
-    if unit_id:
-        unit_id = int(unit_id)
-        unit = get_object_or_404(im.Unit, id=unit_id)
-        action = 'Edit'
-        # check the user
-        # 'staff' can edit all data;
-        # normal users can only edit their own.
-        if unit.addByUser != request.user and (
-                not request.user.is_staff):
-            return HttpResponseForbidden()
-    else:
-        unit = im.Unit(addByUser=request.user)
-        action = 'Add'
-
-    if request.method == 'POST':
-        form = UnitForm(request.POST, instance=unit)
-        if form.is_valid():
-            # form posted and valid
-            form.save()
-            # redirect url, avoid page reload/refresh
-            return HttpResponseRedirect('/indicator/done/')
-    else:
-        # form with instance
-        form = UnitForm(instance=unit)
-
-    return render(request, template, {
-        'object': 'Unit',
-        'action': action,
-        'form': form,
-    })
-# }}}
-
-
-## add_edit_confine {{{
-@login_required
-def add_edit_confine(request, confine_id=None, template='indicator/simple.html'):
-    """
-    InnateConfine
-    add confines for indicator
-    """
-    if confine_id:
-        confine_id = int(confine_id)
-        confine = get_object_or_404(im.InnateConfine, id=confine_id)
-        action = 'Edit'
-        # check the user
-        # 'staff' can edit all data;
-        # normal users can only edit their own.
-        if confine.addByUser != request.user and (
-                not request.user.is_staff):
-            return HttpResponseForbidden()
-    else:
-        confine = im.InnateConfine(addByUser=request.user)
-        action = 'Add'
-
-    if request.method == 'POST':
-        form = InnateConfineForm(request.POST, instance=confine)
-        if form.is_valid():
-            # form posted and valid
-            form.save()
-            # redirect url, avoid page reload/refresh
-            return HttpResponseRedirect('/indicator/done/')
-    else:
-        # form with instance
-        form = InnateConfineForm(instance=confine)
-
-    return render(request, template, {
-        'object': 'InnateConfine',
-        'action': action,
-        'form': form,
-    })
-# }}}
-
-
-## add_edit_record {{{
-@login_required
-def add_edit_record(request, record_id=None, template='indicator/simple.html'):
-    """
-    add/edit 'IndicatorRecord'
-
-    staff 能自由地修改所有的记录，并且无需填写"修改原因"；
-    普通用户只能修改自己的记录，而且必须填写"修改原因" -> RecordHistory
-
-    TODO:
-    * 当用户选择好"indicator"后，重新筛选"unit"，只提供与"indicator"
-      对应的"unit"供选择；
-    * 对"普通用户"增加限制，修改数据"记录"时必须同时提交"修改原因"，
-      对应模型"RecordHistory"。
-    """
-    if record_id:
-        record_id = int(record_id)
-        record = get_object_or_404(im.IndicatorRecord, id=record_id)
-        action = 'Edit'
-        # check the user
-        if request.user.is_staff:
-            # 'staff' can edit all data;
-            pass
-        elif request.user == record.user:
-            # user modify the record
-            return HttpResponse("Not finished yet ...")
-            #return modify_record(request, record_id)
-        else:
-            return HttpResponseForbidden()
-    else:
-        record = im.IndicatorRecord(user=request.user)
-        action = 'Add'
-
-    if request.method == 'POST':
-        form = IndicatorRecordForm(request.POST, instance=record)
-        if form.is_valid():
-            #raise ValueError
-            form.save()
-            # redirect url, avoid page reload/refresh
-            return HttpResponseRedirect('/indicator/done/')
-    else:
-        # form with instance
-        form = IndicatorRecordForm(instance=record)
-
-    return render(request, template, {
-        'object': 'IndicatorRecord',
-        'action': action,
-        'form': form,
-    })
-# }}}
-
-
-## modify_record {{{
-@login_required
-def modify_record(request, record_id=None, template='indicator/simple.html'):
-    """
-    modify an existing IndicatorRecord
-
-    TODO:
-    a new 'RecordHistory' is added to record the modification reason
-    and backup the original data
-    """
-    if record_id:
-        record_id = int(record_id)
-        record = get_object_or_404(im.IndicatorRecord, id=record_id)
-        action = 'Edit'
-        # check the user
-        if request.user.is_staff:
-            # 'staff' can edit all data;
-            return add_edit_record(request, record_id)
-        elif request.user == record.user:
-            # user modify the record
-            action = 'Modify'
-            pass
-        else:
-            return HttpResponseForbidden()
-    else:
-        return add_edit_record(request)
-
-    if request.method == 'POST':
-        form = IndicatorRecordForm(request.POST, instance=record)
-        if form.is_valid():
-            # form posted and valid
-            # TODO
-            raise ValueError(u"该功能尚未完整实现")
-            form.save()
-            # redirect url, avoid page reload/refresh
-            return HttpResponseRedirect('/indicator/done/')
-    else:
-        # form with instance
-        form = IndicatorRecordForm(instance=record)
-
-    return render(request, template, {
-        'object': 'IndicatorRecord',
-        'action': action,
-        'form': form,
-    })
-## }}}
-
-
-## add_recordhistory_view {{{
-@login_required
-def add_recordhistory_view(request, record_id, template='indicator/simple.html'):
-    """
-    add 'RecordHistory' for a record by given
-
-    'staff' should use the 'admin' interface.
-    """
-    record_id = int(record_id)
-    record = get_object_or_404(im.IndicatorRecord, id=record_id)
-    recordhistory = im.RecordHistory(indicatorRecord=record)
-    action = 'Add'
-    # check the user
-    if request.user != record.user:
-        return HttpResponseForbidden()
-
-    if request.method == 'POST':
-        form = RecordHistoryForm(request.POST, instance=recordhistory)
-        if form.is_valid():
-            # form posted and valid
-            form.save()
-            # redirect url, avoid page reload/refresh
-            return HttpResponseRedirect('/indicator/done/')
-    else:
-        # form with instance
-        form = RecordHistoryForm(instance=recordhistory)
-
-    return render(request, template, {
-        'object': 'RecordHistory',
-        'action': action,
-        'form': form,
-    })
-# }}}
-
-
 ###########################################################
 ###### indicator UI pages ######
 # indicator/index.html {{{
@@ -425,7 +125,7 @@ def indicator_status(request):
     * how to deal with non-standard units
     """
     # period between two recommendation of indicators (default 40 days)
-    recommend_period = 40
+    recommend_period = getattr(settings, 'INDICATOR_RECOMMEND_PERIOD', 40)
     #
     template = 'indicator/SheetDefault.html'
     letters = map(chr, range(ord('a'), ord('z')+1))
@@ -526,7 +226,7 @@ def indicator_status(request):
         ind_obj = get_object_or_404(im.Indicator, id=ind['id'])
         # check if 'indicator.is_ready()'
         if not ind_obj.is_ready():
-            raise ValueError(u"Indicator id=%s is NOT ready yet!"
+            raise ValueError(u"Error: Indicator id=%s is NOT ready yet!"
                     % ind_obj.id)
         # the indicator is ready
         dataType = ind_obj.dataType
@@ -555,6 +255,13 @@ def indicator_status(request):
                     type="html")
             ind['math_range_html'] = None
             # std_unit
+            ind['std_unit_name'] = u""
+            ind['std_unit_symbol'] = u""
+        elif dataType == ind_obj.KIND_TYPE:
+            # KIND_TYPE
+            ind['ref_text'] = u"参考值"
+            ind['ref_value'] = confine.get('kind_norm').get('name')
+            ind['math_range_html'] = None
             ind['std_unit_name'] = u""
             ind['std_unit_symbol'] = u""
         else:
@@ -592,6 +299,10 @@ def indicator_status(request):
                             type="html")
                 else:
                     value_html = None
+            elif dataType == ind_obj.KIND_TYPE:
+                # KIND_TYPE
+                value_html = format_data(ind_obj,
+                        kind=last_record.kind, type="html")
             else:
                 # unknow
                 value_html = None
@@ -607,11 +318,12 @@ def indicator_status(request):
 
     # dataType
     DATA_TYPES = {
-        'INTEGER_TYPE': im.Indicator.INTEGER_TYPE,
-        'FLOAT_TYPE': im.Indicator.FLOAT_TYPE,
-        'RANGE_TYPE': im.Indicator.RANGE_TYPE,
+        'INTEGER_TYPE':     im.Indicator.INTEGER_TYPE,
+        'FLOAT_TYPE':       im.Indicator.FLOAT_TYPE,
+        'RANGE_TYPE':       im.Indicator.RANGE_TYPE,
         'FLOAT_RANGE_TYPE': im.Indicator.FLOAT_RANGE_TYPE,
-        'PM_TYPE': im.Indicator.PM_TYPE,
+        'PM_TYPE':          im.Indicator.PM_TYPE,
+        'KIND_TYPE':        im.Indicator.KIND_TYPE,
     }
     # datatypes of indicators (for js)
     datatypes = {}
@@ -628,11 +340,12 @@ def indicator_status(request):
         # confines
         confine = ind_obj.get_confine()
         confines['id%d'%id] = {
-            'human_min': confine.get('human_min'),
-            'human_max': confine.get('human_max'),
-            'math_min': confine.get('math_min'),
-            'math_max': confine.get('math_max'),
-            'val_norm': confine.get('val_norm'),
+            'human_min':       confine.get('human_min'),
+            'human_max':       confine.get('human_max'),
+            'math_min':        confine.get('math_min'),
+            'math_max':        confine.get('math_max'),
+            'val_norm':        confine.get('val_norm'),
+            'kind_name':       confine.get('kind_norm').get('name', None),
             'math_range_html': ind['math_range_html'],
         }
 
@@ -664,9 +377,8 @@ def indicator_fanduf(request):
     template = 'indicator/NewDeleteIndex.html'
     letters = map(chr, range(ord('a'), ord('z')+1))
 
-    # get 7 categories (page can only contains 1+7 categories)
-    categories = im.IndicatorCategory.objects.all().\
-            order_by('id')[:7]
+    # get categories
+    categories = im.IndicatorCategory.objects.all().order_by('id')
     # set default value for 'selected_cat*'
     selected_catid = None
     selected_category = None
@@ -692,9 +404,11 @@ def indicator_fanduf(request):
                 selected_category = get_object_or_404(
                         im.IndicatorCategory, id=selected_catid)
                 page_condition = "category"
-                # get indicators of the category
+                # get indicators of the category (only 'NORMAL_TYPE')
+                # order by 'pinyin'
                 indicators = selected_category.indicators.\
-                        all().order_by('pinyin')
+                        filter(type=im.Indicator.NORMAL_TYPE).\
+                        order_by('pinyin')
         # page_condition: "search"
         # can override the above 'category' if 'tab' & 'kw' both exist
         if 'kw' in request.GET:
@@ -730,7 +444,9 @@ def indicator_fanduf(request):
     # all indicators
     if page_condition == "all":
         # get indicators, P[inyin] dict format
-        indicators = get_indicator()
+        indicators = get_indicator(
+                type=im.Indicator.NORMAL_TYPE,
+                category_id="all", startswith="all")
 
     # get followed indicator, P[inyin] dict format
     followed_indicators_pdict = get_followed_indicator(request.user.id)
@@ -818,12 +534,13 @@ def indicator_edithistorydata(request):
     # generate 'indicator_dict' and 'record_dict'           # {{{
     # check if 'indicator.is_ready()'
     if not ind_obj.is_ready():
-        print u"Indicator id=%s is NOT ready yet!" % ind_obj.id
+        print u"Error: Indicator id=%s is NOT ready yet!" % ind_obj.id
     # the indicator is ready
     dataType = ind_obj.dataType
     # confine
     confine = ind_obj.get_confine()
     confine_val_norm = confine.get('val_norm')
+    confine_kind_norm_name = confine.get('kind_norm').get('name')
     confine_human_min = confine.get('human_min')
     confine_human_max = confine.get('human_max')
     confine_math_min = confine.get('math_min')
@@ -833,6 +550,7 @@ def indicator_edithistorydata(request):
     # record data
     record_data_std = record_obj.get_data_std()
     record_value = record_data_std['value']
+    record_kind_name = record_data_std.get('kind').get('name')
     record_val_min = record_data_std['val_min']
     record_val_max = record_data_std['val_max']
     record_unit_name = record_data_std.get('unit').get('name')
@@ -892,6 +610,15 @@ def indicator_edithistorydata(request):
                 type="html")
         record_value_text = format_data(ind_obj, value=record_value,
                 type="text")
+    elif dataType == im.Indicator.KIND_TYPE:
+        # KIND_TYPE
+        ref_text = u"参考值"
+        ref_value = confine_kind_norm_name
+        confine_math_range_html = None
+        std_unit_name = None
+        std_unit_symbol = None
+        record_value_html = record_kind_name
+        record_value_text = record_kind_name
     else:
         ref_text = u"参考"
         ref_value = None
@@ -909,6 +636,7 @@ def indicator_edithistorydata(request):
         'math_min': confine_math_min,
         'math_max': confine_math_max,
         'val_norm': confine_val_norm,
+        'kind_norm_name': confine_kind_norm_name,
         'math_range_html': confine_math_range_html,
     }
     ind_dict = {
@@ -922,6 +650,7 @@ def indicator_edithistorydata(request):
         'value_html': record_value_html,
         'value_text': record_value_text,
         'value': record_value,
+        'kind_name': record_kind_name,
         'val_min': record_val_min,
         'val_max': record_val_max,
         'unit_name': record_unit_name,
@@ -980,7 +709,7 @@ def indicator_indexdesc(request):
         annotation = related_annotations[0].annotation
         collected_times = len(annotation.collected_by.all())
         is_collected = annotation.is_collected_by(request.user)
-        # TODO
+        ## TODO
         #annotation_url = annotation.get_absolute_url()
     else:
         annotation_not_found = True
@@ -1100,6 +829,8 @@ def ajax_add_record(request):
             value=value,
             val_min=val_min,
             val_max=val_max,
+            # TODO: 'KIND_TYPE' support to be implemented
+            kind=None,
             notes=u""
         )
         if new_record.is_valid():
@@ -1348,6 +1079,9 @@ def ajax_get_card_data_chart(request):
                 elif dataType == im.Indicator.PM_TYPE:
                     # TODO
                     pass
+                elif dataType == im.Indicator.KIND_TYPE:
+                    # TODO
+                    pass
                 else:
                     print u'Error: unknow dataType'
                     data = {'failed': True}
@@ -1511,6 +1245,10 @@ def ajax_get_card_data_table(request):
                     # TODO
                     r['value_html'] = ""
                     pass
+                elif dataType == im.Indicator.KIND_TYPE:
+                    # TODO
+                    r['value_html'] = ""
+                    pass
                 else:
                     print u'Error: unknow dataType'
                     data = {'failed': True}
@@ -1548,8 +1286,10 @@ def ajax_search_indicators(request):
                         'error_string': 'blank_keyword'}
             else:
                 # TODO: howto order_by() by 'pinyin'
+                # XXX: only return 'NORMAL_TYPE' indicators
                 sqs = SearchQuerySet().models(im.Indicator).\
-                        filter(content=search_kw)
+                        filter(content=search_kw).\
+                        filter(type=im.Indicator.NORMAL_TYPE)
                 if sqs:
                     # search result not empty
                     inds_unsort = [ind.dump()

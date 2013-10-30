@@ -170,6 +170,9 @@ MAX_USERNAME_LENGTH = 30
 MIN_PASSWORD_LENGTH = 6
 MAX_PASSWORD_LENGTH = 30
 
+## period between two recommendation of indicators (days)
+INDICATOR_RECOMMEND_PERIOD = 40
+
 ## async send mail
 ASYNC_SEND_MAIL = True
 

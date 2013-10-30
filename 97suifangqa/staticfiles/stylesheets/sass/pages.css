@@ -36,14 +36,23 @@ body {
 
 /* line 48, ../../../sass/sass/pages.scss */
 .text .highlight {
-  background-color: #efeff0;
-  border: 1px solid #c9caca;
-  padding: 2px;
-  font-weight: bold;
+  background-color: #f3f2f0;
+  /*border: 1px solid #c9caca;*/
+  padding:10px 10px 10px 10px;
+  margin:25px 0 25px 0;
+    
 }
 /* line 53, ../../../sass/sass/pages.scss */
 .text .highlight p {
   margin: 0;
+}
+
+.highlight {
+  background-color: #f3f2f0;
+  /*border: 1px solid #c9caca;*/
+  padding: 10px 10px 10px 10px;
+  margin:25px 0 25px 0;
+   
 }
 
 /*
@@ -200,7 +209,6 @@ body.scrolled-down #back-to-top-button {
   /* Wrapping link for logo */
   float: left;
   /* LTR */
-  margin: 0;
   padding: 0;
 }
 /* line 202, ../../../sass/sass/pages.scss */
@@ -431,7 +439,7 @@ span.field-label {
   bottom: 0;
   background: url(../../images/back_main.jpg) no-repeat center top;
   background-size: auto 100%;
-  min-height: 600px;
+  
 }
 /* line 397, ../../../sass/sass/pages.scss */
 .left-picture #sidebar-first #header {

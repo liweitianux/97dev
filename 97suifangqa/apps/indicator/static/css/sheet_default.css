@@ -24,9 +24,10 @@ input[type="radio"]:checked + label {
 #login_container {
 	float: left;
 	position: relative;
-	width: 865px;
+	z-index: 999;
+	width: 900px;
 	height: 85px;
-	margin-left: 457px;
+	margin-left: 320px;
 }
 #login_container .logged-in {
 	float: right;
@@ -67,7 +68,7 @@ input[type="radio"]:checked + label {
     line-height: 1em;
 }
 #login.logged-in .drop-down-menu {
-    background-color: #FFFFFF;
+   background-color: #FFFFFF;
     border: 1px solid #C9C9C9;
     border-radius: 2px 2px 2px 2px;
     box-shadow: 0 0 10px rgba(85, 85, 85, 0.5);
@@ -76,8 +77,9 @@ input[type="radio"]:checked + label {
     margin-top: 10px;
     position: absolute;
     z-index: 999;
-    width: 168px;
-    height: 91px;
+    width: 170px;
+    height: 28px;
+    margin-left:-20px;
 }
 #login.logged-in .drop-down-menu .text-pointer {
     background: url("../images/login-menu-popup-pointer.png") no-repeat scroll 0 0 transparent;
@@ -131,10 +133,12 @@ input[type="radio"]:checked + label {
 	width: 696px;
 }
 .index_title {
-	color: #4a4a4a;
+	color: #a8a8a8;
 	font-size: 20px;
-	letter-spacing: 2px;
-	font-weight: bold;
+	font-weight: normal;
+	font-size:1.4em;
+	margin-bottom:10px;
+	margin-top:-10px;
 }
 .index_sub_title {
 	margin-top: 9px;
@@ -178,14 +182,17 @@ input[type="radio"]:checked + label {
 	float: left;
 }
 .detail_card_info .card_title .collapse_btn {
-	width: 80px;
-	height: 23px;
+	width: 100px;
+	height: 35px;
 	line-height: 23px;
 	font-size: 14px;
 	vertical-align: baseline;
 	position: relative;
 	bottom: -10px;
 	float: right;
+	margin-top:-12px;
+	padding-top:0.3em;
+	font-size: 15px;
 }
 .detail_card_info .search_data_div {
 	margin-top: 9px;
@@ -194,10 +201,36 @@ input[type="radio"]:checked + label {
 }
 .detail_card_info .search_data_div input[type='button'] {
 	width: 100px;
-	height: 23px;
 	line-height: 23px;
 	float: left;
+	text-align: center;	
+	padding-right:20px;
+	padding-top:5px; 
+	height: 35px;
+	font-size: 15px;
+	border-radius: 3px;
+	border-color: #d9d9d9;
+	font-color:#7e7e7e;
+	margin-right:5px;
 }
+
+.detail_card_info .search_data_div input[type='button']:hover{
+	 cursor: pointer;
+  -webkit-appearance: none;
+  background-color: #99cc33;
+  border: 1px solid #f3f2f0;
+  -webkit-box-shadow: 0px 0px 2px white;
+  -moz-box-shadow: 0px 0px 2px white;
+  box-shadow: 0px 0px 2px white;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  color: white;
+	
+}
+
 .detail_card_info .search_data_div .shift_date {
 	margin-left: 4px;
 }
@@ -216,20 +249,28 @@ input[type="radio"]:checked + label {
 }
 .detail_card_info .search_data_div .datepicker_container .datepicker {
 	background: #FFFFFF;
-	border: 1px solid #9C9C9C;
+	border: 1px solid #d9d9d9;
 	color: #B9B9B9;
-	width: 117px;
-	height: 17px;
-	line-height: 17px;
+	width: 110px;
+	height: 30px;
 	position: relative;
 	padding-top: 2px;
 	padding-bottom: 2px;
+	padding-left:10px;
+	border-radius:3px;
+	margin-left: 5px;
 }
+.detail_card_info .search_data_div .datepicker_container .datepicker:focus{
+	border-color: #99cc33;
+	outline:0;
+}
+
 .detail_card_info .search_data_div .datepicker_container .ui-datepicker-trigger {
 	position: absolute;
 	top: 2px;
 	right: 8px;
 	cursor: pointer;
+	margin-top: 6px;
 }
 .detail_card_info .chart {
 	height: 400px;
@@ -243,19 +284,23 @@ input[type="radio"]:checked + label {
 .detail_card_info .table_div table tr td {
 	border: 1px solid #CACACA;
 	text-align: center;
+	height: 40px;
 }
 .detail_card_info .table_div table .first_line {
 	background: #99CC33;
-	height: 29px;
+	height: 35px;
 	color: #FFFFFF;
+	font-size:16px;
 }
 .detail_card_info .table_div table .state .normal {
-	background-color: #B8DB70;
+	color:inherit; 
 	padding: 2px;
 }
 .detail_card_info .table_div table .state .abnormal {
-	background-color: #FFB3B3;
-	padding: 2px;
+	border-radius: 3px;
+	margin:3px 0 3px 0;
+	height: 35px;
+	color:#99cc33;
 }
 .detail_card_info .table_div table .state .unknown {
 	background-color: #B3D9FF;
@@ -269,19 +314,31 @@ input[type="radio"]:checked + label {
 	width: 107px;
 	height: 24px;
 	line-height: 24px;
+	color:#7d7d7d;
+	background-color: white;
+	font-size:15px;
+	margin:5px 19px 5px 0;
+	border-color:white;
 }
 .detail_card_info .see_more .see_more_btn:disabled {
-	background-color: #CCCCCC;
+	color:#7d7d7d;
+	background-color: white;
+	font-size:15px;
+	margin:5px 19px 5px 0;
+	border-color:white;
 }
 .index_card {
 	width: 328px;
 	height: 434px;
 	border: 1px solid #CACACA;
 	margin-top: 9px;
-	border-radius: 2px;
+	border-radius: 3px;
 	padding: 5px 5px 0 8px;
 	position: relative;
 }
+
+
+
 /* recommended indicator's card */
 #index_status_container .recommended {
 	width: 326px;
@@ -291,21 +348,24 @@ input[type="radio"]:checked + label {
 .index_card_fir {
 	float: left;
 }
+
 .index_card_sec {
 	float: right;
 }
 .index_card .card_title {
 	height: 40px;
 	line-height: 40px;
-	color: #7D7D7D;
+	/*color: #7D7D7D;*/
 	font-weight: bold;
 	font-size: 18px;
+	border-radius:5px;
 }
 .index_card .refer_range {
 	color: #4B4B4B;
 }
 .index_card .refer_range .refer_text {
 	margin-right: 5px;
+	margin-bottom:10px;
 }
 .index_card .refer_range .refer_value {
 	margin-right: 5px;
@@ -316,7 +376,7 @@ input[type="radio"]:checked + label {
 	margin-top: 7px;
 }
 .index_card .edit_data .explain_icon {
-	margin-right: 2px;
+	margin-right: 5px;
 	float: right;
 }
 .index_card .edit_data .small_edit_icon {
@@ -382,16 +442,30 @@ input[type="radio"]:checked + label {
 }
 .index_card .editing_data .data .data_input {
 	width: 165px;
-	height: 17px;
+	height: 26px;
+	border: 1px solid #d9d9d9;
 	line-height: 17px;
 	padding-top: 2px;
 	padding-bottom: 2px;
 	margin-right: 8px;
+	margin-top:-6px;
+	border-radius:3px;
+	-moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+	font-size:14px;
+	line-height: 20px;
+	vertical-align: middle;
 }
+.index_card .editing_data .data .data_input:focus {
+	border: 1px solid #99cc33;	
+}
+
 .index_card .editing_data .data_unit {
 	float: left;
 	height: 25px;
 	line-height: 25px;
+	margin-top:0px;
 }
 .index_card .editing_data .date .datepicker_container {
 	width: 148px;
@@ -400,24 +474,32 @@ input[type="radio"]:checked + label {
 	margin-top: 5px;
 }
 .index_card .editing_data .date .datepicker_container .datepicker {
-	background: #FFFFFF;
-	border: 1px solid #9C9C9C;
+	background: white;
+	border: 1px solid #d9d9d9;
 	color: #B9B9B9;
-	width: 131px;
-	height: 17px;
+	width: 165px;
+	height: 26px;
 	line-height: 17px;
 	position: relative;
 	padding-top: 2px;
 	padding-bottom: 2px;
+	margin-top:0px;
+	border-radius:3px;
 }
 .index_card .editing_data .date .datepicker_container .ui-datepicker-trigger {
 	position: absolute;
 	top: 2px;
 	right: 8px;
+	margin-top:5px;
+	margin-right:-30px;
 	cursor: pointer;
 }
+
+.index_card .editing_data .date .datepicker_container .datepicker:focus {
+	border-color:#99cc33;
+}
 .index_card .editing_data .date .datepicker_container .valid {
-	border: 2px solid green;
+	color: #000;
 }
 .index_card .editing_data .date .datepicker_container .invalid {
 	border: 2px solid red;
@@ -426,9 +508,9 @@ input[type="radio"]:checked + label {
 .index_card .editing_data .cancel_edit_icon {
 	float: right;
 	background:url(../images/cancel_edit.png) no-repeat;
-	width: 23px;
-	height: 23px;
-	margin-right: 3px;
+	width: 24px;
+	height: 24px;
+	margin-right: 5px;
 	cursor: pointer;
 }
 .index_card .editing_data .confirm_edit_icon {
@@ -436,6 +518,7 @@ input[type="radio"]:checked + label {
 	background:url(../images/confirm_edit.png) no-repeat;
 	width: 23px;
 	height: 23px;
+	margin-right:10px;
 	cursor: pointer;
 }
 
@@ -451,7 +534,7 @@ input[type="radio"]:checked + label {
 	height: 85px;
 	width: 85px;
 	float: left;
-	margin: 45px 0 0 135px;
+	margin: 45px 0 0 120px;
 	cursor: pointer;
 }
 .index_card .edit_icon_container .curve_icon {
@@ -459,14 +542,17 @@ input[type="radio"]:checked + label {
 	height: 125px;
 	width: 105px;
 	float: left;
+	margin-left: 15px;
 }
 .index_card .edit_icon_container .edit_text {
-	color: #4B4B4B;
+	color: #8E8E8E;
 	text-align: center;
 	height: 20px;
 	line-height: 20px;
-	margin-top: 11px;
+	margin-top: 20px;
 	margin-bottom: 100px;
+	margin-right: 5px;
+	font-size:15px
 }
 
 .index_card .chart {
@@ -488,6 +574,11 @@ input[type="radio"]:checked + label {
 	cursor: pointer;
 	text-decoration: none;
 }
+
+.index_card .card_bottom .understand_index a:hover, .index_card .card_bottom .simulation_sheet a:hover, .index_card .card_bottom .detail_history a:hover {
+	color: #99cc33;
+}
+
 .index_card .card_bottom .understand_index {
 	width: 120px;
 }
@@ -503,6 +594,8 @@ input[type="radio"]:checked + label {
 	right: 0;
 	margin: 5px 5px 0 0;
 	cursor: pointer;
+	margin-top:10px;
+	margin-right:10px;
 }
 .index_card .card_delete_hover {
 	background: url('../images/closed_hover.png') no-repeat;
@@ -511,7 +604,7 @@ input[type="radio"]:checked + label {
 	position: absolute;
 	top: -3px;
 	right: -2px;
-	margin: 5px 5px 0 0;
+	margin: 10px 10px 0 0;
 	cursor: pointer;
 }
 .act_card_container {
@@ -535,6 +628,8 @@ input[type="radio"]:checked + label {
 	letter-spacing: 1px;
 	cursor: pointer;
 }
+
+
 .move_div_2_left {
 	float: left;
 }

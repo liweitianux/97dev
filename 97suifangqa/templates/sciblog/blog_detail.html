@@ -11,9 +11,12 @@
 	  {% include "sciblog/blog_search_form.html" %}
 	</div>	
 	<div class="related-questions">
-		<h3>关联问题</h3>
+		<h3 style="margin-left:-5px;margin-bottom:25px;margin-top:2px;">相关问题</h3>
 		{% for query in blog.query.all %}
-		<div><a href="{% url query_blogs %}?q={{ query.content }}" title="查询与此问题相关的文章">{{ query.content }}</a></div>
+		<!--div style="width:260px;height:1px;margin:0 -12px 0 -14px;padding:0px;background-color:#f2f2f0;overflow:hidden;"></div-->
+		<ul style="margin-left:-18px;margin-right:-5px;">
+		<li style="margin:-20px 10px -15px auto;"><a href="{% url query_blogs %}?q={{ query.content }}" title="查询与此问题相关的文章">{{ query.content }}</a></li>
+		</ul>
 		{% endfor %}
 	</div>
 	<div class="toc">
@@ -42,9 +45,10 @@
 			</li>
 		</ul>
 	</div>
+	
 	<header id="header">
-		<div id="logo">
-			<img src="{% static "images/slilogo.png" %}" alt="">
+		<div id="logo" style="margin-left:35px;margin-bottom:-20px;">
+			<a href="../index"><img src="{% static "images/slilogo.png" %}" alt=""></a>
 		</div>
 	</header>
 </aside>
@@ -84,12 +88,12 @@
 	<div id="card-abstract"></div>
 	<div class="lists-container">
 		<nav class="comments expandable expanded" data-expand-group-selector="#sidebar-second .lists-container nav">
-			<h4 class="expand-heading">段落注释</h4>
+			<h4 class="expand-heading">文中注释</h4>
 			<ol class="expand-container jargon-links" id="paracomments-list">
 			</ol>
 		</nav>
 		<nav class="jargon-list expandable" data-expand-group-selector="#sidebar-second .lists-container nav">
-			<h4 class="expand-heading">专业名词</h4>
+			<h4 class="expand-heading">术语科普</h4>
 			<ul class="expand-container jargon-links" id="propernouns-list">
 			</ul>
 		</nav>
@@ -103,10 +107,11 @@
 		<div class="breadcrumb">
 			<ul class="links inline">
 				<!--li><a href="" class="button dark-grey-button first">更多文章</a></li-->
-				<li><a id="return-to-results-button" href="{% url blog_detail blog.id 'results'%}" class="button dark-grey-button">返回治疗结果</a></li>
+				<!--li><a id="return-to-results-button" href="{% url blog_detail blog.id 'results'%}" class="button dark-grey-button">返回</a></li-->
+				<br>
 			</ul>
 		</div>
-		<h1 class="blog-title">{{ blog.subhead }}</h1>
+		<h1 class="blog-title">{{ blog.subhead|safe }}</h1>
 		<h2 class="section-name">{% block sectionname %}临床策略{% endblock %}</h2>
 		<!-- if firstSection -->
 		{% block navigation %}
@@ -153,14 +158,14 @@
 		{% if user.is_authenticated %}
 		<a class="button like-button grey-button collect"><img src="{% static "images/grey-heart.png" %}" alt="">收藏该条注释</a>
 		{% else %}
-		<div class="button like-button disabled grey-button" disabled="disabled"><a href="{% url login %}?next={{ request.path }}" class="login-button">登陆</a>97随访网站搜索此条目</div>
+		<div class="button like-button disabled grey-button" disabled="disabled"><a href="{% url login %}?next={{ request.path }}" class="login-button">登陆</a>医时代网站搜索此条目</div>
 		{% endif %}
 	</div>
 	<!-- else -->
 	<!-- for ... -->
 	<div id="back-to-top-button" title="返回顶部"></div>
 	<div id="related-questions-confirm" class="dialog-content confirm-dialog">
-		<p>我们将要帮您重新搜索医学文章，会离开本文页面，您确定吗？</p>
+		<p>我们将要帮您重新搜索临床治疗经验，会离开本文页面，您确定吗？</p>
 		<div class="controls">
 			<button class="dialog-ok">确认</button>
 			&nbsp;

@@ -1,7 +1,7 @@
 {% extends "sciblog/blog_detail.html" %}
 {% block bodyclasses %}{{ block.super }} blog-results{% endblock %}
 {% block sectionname %}
-病友治疗结果
+<span style="font-weight:normal;">治疗结果</span>
 {% endblock %}
 
 {% block navigation %}
@@ -9,6 +9,7 @@
 
 {% load group_list %}
 {% block block_pieces %}
+
 {% for chunk in blog.results.all|chunks:3 %}
 <div class="cards three-columns">
   {% for result in chunk %}
@@ -40,6 +41,7 @@
 
 {% endfor %}
 </div>
+
 <br />
 {% endfor %}
 {% endblock %}

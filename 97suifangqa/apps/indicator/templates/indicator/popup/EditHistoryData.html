@@ -3,7 +3,7 @@
 {% load dict_get %}
 
 {% block title %}
-编辑历史数据 | 随访工具 | 97 随访
+编辑历史数据 | 随访工具 | 医时代
 {% endblock %}
 
 {% block css %}
@@ -41,7 +41,8 @@
         'FLOAT_TYPE': '{{ indicator_obj.FLOAT_TYPE }}',
         'RANGE_TYPE': '{{ indicator_obj.RANGE_TYPE }}',
         'FLOAT_RANGE_TYPE': '{{ indicator_obj.FLOAT_RANGE_TYPE }}',
-        'PM_TYPE': '{{ indicator_obj.PM_TYPE }}'
+        'PM_TYPE': '{{ indicator_obj.PM_TYPE }}',
+        'KIND_TYPE': '{{ indicator_obj.KIND_TYPE }}'
     };
     var data_type = '{{ indicator_obj.dataType }}';
     // indicator record
@@ -64,7 +65,7 @@
       <div class="refer_range">
         <span class="refer_text">{{ indicator_dict|dict_get:"ref_text" }}</span>
         <span class="refer_value">{{ indicator_dict|dict_get:"ref_value"|safe }}</span>
-        <span class="data_unit">{% if indicator_dict|dict_get:"std_unit_symbol" %}({{ indicator_dict|dict_get:"std_unit_symbol" }}){% endif %}</span>
+        <span class="data_unit">{% if indicator_dict|dict_get:"std_unit_symbol" %}{{ indicator_dict|dict_get:"std_unit_symbol" }}{% endif %}</span>
       </div>
       <div class="edit_data">
         <div class="date">
@@ -73,8 +74,8 @@
         </div>
         <div class="data">
           <span class="prompt">结果</span>
-          <span class="data_value">{{ record_dict|dict_get:"value_html"|safe }}</span>
-          <span class="data_unit">{% if record_dict|dict_get:"unit_symbol" %}({{ record_dict|dict_get:"unit_symbol" }}){% endif %}</span>
+          <span class="data_value">{{ record_dict|dict_get:"value_html"|safe }}&nbsp;</span>
+          <span class="data_unit">{% if record_dict|dict_get:"unit_symbol" %}{{ record_dict|dict_get:"unit_symbol" }}{% endif %}</span>
         </div>
         <div class="state">
           <span class="prompt">状态</span>
@@ -91,7 +92,19 @@
         </div>
         <input type="button" id="edit_btn" value="修改记录" />
         <input type="button" id="delete_btn" value="删除记录" />
+        <div style="clear:both;"></div>
       </div>
+
+      <div class="delete_prompt" style="display:none;">
+        <div class="prompt_btns" id="cancel_delete_btn">
+          <img alt="cancel_delete" src="{% static "images/cancel_edit.png" %}" />
+        </div>
+        <div class="prompt_btns" id="confirm_delete_btn">
+          <img alt="confirm_delete" src="{% static "images/confirm_edit.png" %}" />
+        </div>
+        <div class="prompt">确认删除该记录？</div>
+      </div>
+
       <div class="editing_data">
         {% csrf_token %}
         <div class="date">
@@ -102,6 +115,7 @@
           </div>
         </div>
         <div class="data data_type_{{ indicator_obj.dataType }}">
+          
           <div class="prompt">修改记录</div>
           {% if indicator_obj.dataType == indicator_obj.INTEGER_TYPE %}
           {# INTEGER_TYPE #}
@@ -123,12 +137,15 @@
             <input type="radio" id="plus_r" name="pm_data" value="+" />
             <label for="plus_r">阳性(+)</label>
           </div>
+          {% elif indicator_obj.dataType == indicator_obj.KIND_TYPE %}
+          {# KIND_TYPE #}
+          TODO
           {% else %}
           {# UNKNOWN TYPE #}
           ERROR: unknown data type
           {% endif %}
         </div>
-        <div class="data_unit">{% if record_dict|dict_get:"unit_symbol" %}({{ record_dict|dict_get:"unit_symbol" }}){% endif %}</div>
+        <div class="data_unit">{% if record_dict|dict_get:"unit_symbol" %}{{ record_dict|dict_get:"unit_symbol" }}{% endif %}</div>
         <div class="reason">
           <div class="prompt">修改原因</div>
           <input class="reason_input to_validate" type="text" value="" />

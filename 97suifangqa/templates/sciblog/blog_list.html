@@ -14,10 +14,10 @@
 	<div class="hover-overlay">
 		<div class="region-wrap">
 			<div class="user-info">
-				<h3>用户姓名</h3>
+				<h3>{{ user.username }}</h3>
 			</div>
 			<div class="search-history">
-				<h3>搜索历史</h3>
+				<h3>搜索记录</h3>
 				<ul>
 				  {% for search in search_history %}
 				  <li><a href="{% url query_blogs %}?q={{ search }}">{{ search }}</a></li>
@@ -25,7 +25,7 @@
 				</ul>
 			</div>
 			<div class="related-questions">
-				<h3>相关问题</h3>
+				<h3>您可能对一下问题也感兴趣</h3>
 				<ul>
 				{% for query in questions%}
 				<li>
@@ -34,38 +34,59 @@
 				{% endfor %}
 				</ul>
 			</div>
+			<div class="search-history">
+				<h3><a href="{% url blog_collection %}" target="_blank">我的收藏</a></h3>
+				
+			</div>
+			
 		</div>
 	</div>
 {% endblock %}
 {% block body %}
 	<section id="blog-list-top-nav">
 		{% include "login-menu.inc.html" %}
-		<nav class="search-type-nav">
-			<ul class="links inline">
-			  <li class="first-level"><a href="" class="{% if tab == 'list' %}active{% endif %}">搜索结果</a></li>
-				<!--li class="first-level"><a href="">术语</a></li-->
-				<li class="first-level"><a href="{% url blog_collection %}" class="{% if tab == 'collection' %}active{% endif %}">我的收藏</a></li>
-			</ul>
-		</nav>
+		
 	</section>
 	<section id="blog-list-content">
-	<h2 class="section-name">专业术语</h2>
-	  {% for noun in ppnouns %}
+	
+	<div style="margin-top:-25px;">
+		<div style="width:630px;height:1px;margin:40px 0 -3px 0;padding:0px;background-color:#b3b3b1;overflow:hidden;"></div>
+		<h2 class="section-name" style="color:#a8a8a8;font-weight:normal;">术语科普</h2>
+		<div style="width:630px;height:1px;margin:2px 0 30px 0;padding:0px;background-color:#b3b3b1;overflow:hidden;"></div>	
+	</div>
+	
+		{% for noun in ppnouns %}
 	  <ul class="articles">
 	  <li class="article">
 			<div class="article-title"><!--a href=""-->{{noun.firstkeyword }}<!--/a--></div>
 			<div class="excerpt">
-			{{ noun.firstparagraph }}
+			{{ noun.detail|safe }}
 			</div>
 		</li>
+		<div style="width:630px;height:1px;margin:20px 0 35px 0;padding:0px;background-color:#f2f2f0;overflow:hidden;"></div>
 	  {% endfor %}
 	  </ul>
-	  <h2 class="section-name">医学文章</h2>
+		
+		
+		
+		
+		
+		<div style="width:630px;height:1px;margin:-41px 0 40px 0;padding:0px;background-color:#fff;overflow:hidden;"></div>
+		<!--div style="width:150px;border:1px solid #d5d5d5;margin:-21px auto 40px auto;padding:0px;overflow:hidden;"></div-->
+		
+		<div style="margin-top:-35px;">
+		<div style="width:630px;height:1px;margin-bottom:-5px;padding:0px;background-color:#b3b3b1;overflow:hidden;"></div>
+		<h2 class="section-name" style="color:#a8a8a8;font-weight:normal;margin-bottom:5px;">临床治疗经验</h2>
+		<div style="width:630px;height:1px;margin:0 0 30px 0;padding:0px;background-color:#b3b3b1;overflow:hidden;"></div>
+		</div>
+		
+		
+		
 		{% if has_blogs %}
 		<div class="articles">
 			{% for blog in blogs %}
 			<div class="article">
-				<div class="article-title"><a href="{% url blog_detail blog.id %}">{{ blog.subhead }}</a></div>
+				<div class="article-title"><a href="{% url blog_detail blog.id %}" target="_blank">{{ blog.subhead|safe }}</a></div>
 				<ul class="article-subtitles inline">
 					<!--li> 
 						<span>难度：</span>
@@ -92,22 +113,28 @@
 						{% endfor %}
 						</ul>
 					</li-->
-					<li> <span>杂志：</span><span>{{ blog.journal }}</span></li>
+					<li> <span>杂志：</span><span>{{ blog.journal|safe }}</span></li>
 					<li> <span>作者：</span><span>{{ blog.communication_author }}</span></li>
 				</ul>
 				<br />
 				<div class="excerpt">
 				{{ blog.conclusion|safe }}
 				</div>
+				<div style="width:630px;height:1px;margin:40px 0 20px 0;padding:0px;background-color:#f2f2f0;overflow:hidden;"></div>
 			</div>
 			{% endfor %}
 		</div>
 		{% else %}
-		<div class="not-found">
+		<div class="not-found" style="margin-bottom:50px;">
 			<img src="{% static "images/blog-not-found.png" %}" alt="">
-			<div class="message">没有搜索到{% if tab == 'list'%}文章{% else %}收藏{% endif %}</div>
+			<div class="message">{% if tab == 'list'%}没有搜索到匹配的{% else %}暂时未收藏{% endif %}医学文章</div>
 		</div>
 		{% endif %}
+		
+		
+		
+	  
+		
 	</section>
 
 {% endblock %}

@@ -1,23 +1,20 @@
 {% extends "sciblog/blog_detail.html" %}
-{% block bodyclasses %}{{ block.super }} blog-results blog-results-detail{% endblock %}
+{% block bodyclasses %}{{ block.super }} blog-results  blog-results-detail{% endblock %}
+
+
 {% block sectionname %}
-病友治疗结果
+<span style="font-weight:normal;">详细治疗结果</span>
 {% endblock %}
 
 {% block navigation %}
 {% endblock %}
 
-{% block  cards_abstract %}
- <div class="cards-abstract">
-	 <div>
-	   <p>{{ result.abstract }}</p>
-	 </div>
-</div>
-{% endblock %}
+
+
 
 {% load group_list %}
 {% block block_pieces %}
-<div class="cards three-columns">
+<div class="cards three-columns" style="margin:5px 0  0 -5px;">
   <div class="column-first">
 	<div class="card {{ result.color }}" href="">
 	  <div class="front">
@@ -44,6 +41,9 @@
 	<p>{{ result.abstract }}</p>
   </div>
 </div>
-<br />
+<div style="width:645px;height:1px;margin:35px 0 10px -20px;padding:0px;background-color:#e6e6e6;overflow:hidden;"></div>
 {{ result.content }}
+<br><br>
+<a id="return-to-results-button" href="{% url blog_detail blog.id 'results'%}" class="button dark-grey-button" style="margin-left:245px;font-size:15px;height:30px;padding-bottom:9px;padding-top:8px;color:white;background-color:#242628;">返回治疗结果</a>
 {% endblock %}
+

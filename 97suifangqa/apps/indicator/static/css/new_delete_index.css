@@ -3,9 +3,9 @@
 	float: left;
 	position: relative;
 	z-index: 999;
-	width: 865px;
+	width: 900px;
 	height: 85px;
-	margin-left: 457px;
+	margin-left: 320px;
 }
 #login_container .logged-in {
 	float: right;
@@ -55,8 +55,9 @@
     margin-top: 10px;
     position: absolute;
     z-index: 999;
-    width: 168px;
-    height: 91px;
+    width: 170px;
+    height: 28px;
+    margin-left:-20px;
 }
 #login.logged-in .drop-down-menu .text-pointer {
     background: url("../images/login-menu-popup-pointer.png") no-repeat scroll 0 0 transparent;
@@ -98,6 +99,7 @@
 #new_delete_container {
 	float: left;
 	margin-left: 457px;
+	margin-top:-11px;
 	position: relative;
 	/*
 	position: absolute;
@@ -110,11 +112,15 @@
 }
 .new_delete_title .content {
 	float: left;
-	font-weight: bold;
+	font-weight: normal;
 	font-size: 20px;
-	color: #4A4A4A;
+	color: #a8a8a8;
 	height: 26px;
 	line-height: 26px;
+	margin-bottom: 10px;
+	cursor: default;
+	margin-top: -2px;
+
 }
 .new_delete_title .search {
 	float: right;
@@ -125,45 +131,69 @@
 }
 .new_delete_title .search input {
 	float: left;
-	height: 20px;
+	height: 30px;
 	line-height: normal;
-	width: 127px;
-	border: 1px solid #CACACA;
+	width: 150px;
+	border: 1px solid #d9d9d9;
 	background-color: #FFFFFF;
-	padding: 0;
-	border-radius: 2px;
+	padding-bottom:3px;
+	border-radius: 3px;
 	color: #000000;
 	position: relative;
 	top: 2px;
-	margin-right: 2px;
+	margin-left:-50px;
+	font-weight: normal;
+	margin-top: -7px;
+
+}
+.new_delete_title .search input:focus {
+	border-color:#99cc33;
+	outline:0;
 }
 .new_delete_title .search input::-moz-placeholder {
-	color: #9D9D9D;
-	font-weight: bold;
+	color: #72717;
+	font-weight: normal;
+}
+.new_delete_title .search input::placeholder {
+	color: #727171;
+	font-weight: normal;
+}
+.new_delete_title .search input::-webkit-placeholder {
+	color: #727171;
+	font-weight: normal;
 }
 .new_delete_title .search img {
 	float: right;
 	position: relative;
 	top: 2px;
 	cursor: pointer;
+	margin-top: -7px;
+
 }
 .index_navigation {
-	margin: 10px 0;
+	margin-top: 10px;
+	margin-bottom: 6px;
+	width: 705px;
 }
 .index_navigation .index_type {
 	float: left;
-	width: 77px;
-	height: 22px;
+	width: 90px;
+	height: 28px;
 	line-height: 22px;
 	text-align: center;
-	border: 1px solid #B5B5B5;
-	border-radius: 2px;
-	margin-right: 9px;
+	border: 1px solid #d9d9d9;
+	border-radius: 3px;
+	margin-right: 8.6px;
+	margin-top: 2px;
+	margin-bottom: 4px;
+	padding-top: 6px;
+	font-size: 15px;
 }
 .index_navigation .index_type a {
 	color: #7E7E7E;
 	cursor: pointer;
 	text-decoration: none;
+	margin-bottom:-10px;
 }
 /*
 .index_navigation #index_all {
@@ -186,10 +216,11 @@
 	float: left;
 	width: 302px;
 	height: 437px;
-	border: 1px solid #b6b6b6;
+	border: 1px solid #d9d9d9;
 	z-index: 1;
 	position: relative;
 	padding: 6px 12px 0 12px;
+	border-radius: 3px;
 }
 .show_indexes .add_concerned_icon {
 	float: left;
@@ -234,16 +265,22 @@
 }
 .index_line {
 	margin-top: 3px;
+	height: 23px;
+	border-radius: 3px;
+	padding-left: 5px;
+	padding-top:2px;
+	padding-bottom:2px;
 }
 .index_line .index_name, .index_line .index_category {
 	float: left;
-	font-size: 14px;
+	font-size: 15px;
 	width: 45px;
 	height: 20px;
-	line-height: 20px;
-	color: #4A4A4A;
-	font-weight: bold;
-	cursor: pointer;
+	line-height: 1.6em;
+	color: #909090;
+	font-weight: normal;
+	cursor: default;
+	
 }
 .index_lines .add .icon {
 	width: 20px;
@@ -265,7 +302,9 @@
 	left: 260px;
 }
 .index_lines .add, .index_lines .minus {
-	background: #8FC31F;
+	background: #8fc21f;
+	height: 23px;
+	margin-bottom:3px;
 }
 .index_line .index_name {
 	width: 185px;
@@ -298,12 +337,21 @@
 }
 .all_condition .index_all_letter div {
 	float: left;
-	color: #8F8F8F;
-	font-size: 15px;
-	margin-right: 7px;
+	color: #b3b3b2;
+	font-size: 16px;
+	margin-right: 8px;
+	margin-top:3px;
 	cursor: pointer;
+	font-weight: normal;
+	/* letter-spacing: 2px; */
+	border-color: #b3b3b3
+	
 }
-.all_condition .index_all_letter .letter_selected{
+.all_condition .index_all_letter .disabled {
+	cursor: default;
+	color: #D9D9D9;
+}
+.all_condition .index_all_letter .letter_selected {
 	color: #99CC33;
 }
 .index_letter_container {
@@ -318,7 +366,7 @@
 	height: 32px;
 	line-height: 32px;
 	font-weight: bold;
-	font-size: 32px;
+	font-size: 22px;
 	color: #4A4A4A;
 	border-bottom: 1px solid #BFBFBF;
 }
@@ -343,21 +391,26 @@
     margin-bottom: 10px;
 }
 .link_container .status_link {
-    width: 694px;
+     width: 105px;
     height: 37px;
     line-height: 37px;
-    border: 1px solid #B5B5B5;
-    border-radius: 2px;
+    border-radius: 3px;
     /* background-color: #F7F7F7; */
-    background-color: #F3F3F1;
+    background-color: #99cc33;
     text-align: center;
+    float: right;
+	font-color:white;
 }
+
+.link_container .status_link:hover{
+	background-color:#93C430;
+	cursor: default;
+}
+
 .link_container .status_link a {
-    color: #4A4A4A;
+    color: white;
     text-decoration: none;
-    font-weight: bold;
-    font-size: 19px;
-    letter-spacing: 1px;
+    font-size: 16px;
     cursor: pointer;
 }
 
